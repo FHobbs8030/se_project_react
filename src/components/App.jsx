@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { Routes, Route } from 'react-router-dom';
 import Header from './Header.jsx';
 import Main from './Main.jsx';
 import Footer from './Footer.jsx';
@@ -90,70 +90,68 @@ function App() {
   }, []);
 
   return (
-    <BrowserRouter>
-      <CurrentTemperatureUnitContext.Provider value={{ isCelsius, setIsCelsius }}>
-        <div className="page">
-          <div className="app">
-            <div className="app__content">
-              <Header onAddClick={handleAddClick}>
-                <ToggleSwitch />
-              </Header>
+    <CurrentTemperatureUnitContext.Provider value={{ isCelsius, setIsCelsius }}>
+      <div className="page">
+        <div className="app">
+          <div className="app__content">
+            <Header onAddClick={handleAddClick}>
+              <ToggleSwitch />
+            </Header>
 
-              <Routes>
-                <Route
-                  path="/"
-                  element={
-                    <Main
-                      weatherData={weatherData}
-                      clothingItems={clothingItems}
-                      onCardClick={handleCardClick}
-                      isCelsius={isCelsius}
-                    />
-                  }
-                />
-                <Route path="/profile" element={<Profile />} />
-              </Routes>
-
-              <Footer />
-            </div>
-
-            {selectedItem && isItemModalOpen && (
-              <ItemModal
-                item={selectedItem}
-                onClose={handleCloseModal}
-                onConfirmDelete={() => {
-                  setItemToDelete(selectedItem);
-                  setIsConfirmModalOpen(true);
-                }}
+            <Routes>
+              <Route
+                path="/"
+                element={
+                  <Main
+                    weatherData={weatherData}
+                    clothingItems={clothingItems}
+                    onCardClick={handleCardClick}
+                    isCelsius={isCelsius}
+                  />
+                }
               />
-            )}
+              <Route path="/profile" element={<Profile />} />
+            </Routes>
 
-            {isAddModalOpen && (
-              <AddItemModal
-                isOpen={isAddModalOpen}
-                onCloseModal={handleCloseModal}
-                onAddItem={handleAddGarmentSubmit}
-              />
-            )}
-
-            {isConfirmModalOpen && (
-              <ConfirmDeleteModal
-                onConfirm={() => {
-                  if (itemToDelete?.id) {
-                    handleDeleteItem(itemToDelete.id);
-                    setIsConfirmModalOpen(false);
-                    setIsItemModalOpen(false);
-                  } else {
-                    console.error('No valid ID for deletion.');
-                  }
-                }}
-                onCancel={() => setIsConfirmModalOpen(false)}
-              />
-            )}
+            <Footer />
           </div>
+
+          {selectedItem && isItemModalOpen && (
+            <ItemModal
+              item={selectedItem}
+              onClose={handleCloseModal}
+              onConfirmDelete={() => {
+                setItemToDelete(selectedItem);
+                setIsConfirmModalOpen(true);
+              }}
+            />
+          )}
+
+          {isAddModalOpen && (
+            <AddItemModal
+              isOpen={isAddModalOpen}
+              onCloseModal={handleCloseModal}
+              onAddItem={handleAddGarmentSubmit}
+            />
+          )}
+
+          {isConfirmModalOpen && (
+            <ConfirmDeleteModal
+              onConfirm={() => {
+                if (itemToDelete?.id) {
+                  handleDeleteItem(itemToDelete.id);
+                  setIsConfirmModalOpen(false);
+                  setIsItemModalOpen(false);
+                } else {
+                  console.error('No valid ID for deletion.');
+                }
+              }}
+              onCancel={() => setIsConfirmModalOpen(false)}
+            />
+          )}
         </div>
-      </CurrentTemperatureUnitContext.Provider>
-    </BrowserRouter>
+      </div>
+    </CurrentTemperatureUnitContext.Provider>
   );
 }
 
