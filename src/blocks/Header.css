@@ -37,7 +37,7 @@
 .header__toggle-wrapper {
   display: flex;
   align-items: center;
-  height: 40px; /* Ensures vertical centering */
+  height: 40px; 
 }
 
 .header__button {
@@ -69,6 +69,17 @@
   height: 40px;
   border-radius: 50%;
   border: 1px solid rgba(0, 0, 0, 0.5);
+}
+
+.header__nav-link {
+  margin-right: 12px;
+  text-decoration: none;
+  color: black;
+  font-weight: 500;
+}
+
+.header__nav-link:last-child {
+  margin-right: 0;
 }
 
 @media screen and (max-width: 600px) {

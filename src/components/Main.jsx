@@ -1,5 +1,4 @@
-import React from "react";
-import { useOutletContext } from "react-router-dom";
+import React, { useContext } from "react";
 import { CurrentTemperatureUnitContext } from "../contextStore/CurrentTemperatureUnitContext";
 import ItemCard from "./ItemCard";
 import WeatherCard from "./WeatherCard";
@@ -7,11 +6,10 @@ import "../blocks/Main.css";
 import "../blocks/ItemCard.css";
 import "../blocks/Cards.css";
 
-function Main() {
-  const { weatherData, clothingItems, onCardClick } = useOutletContext();
-  const { currentTemperatureUnit } = React.useContext(CurrentTemperatureUnitContext);
+function Main({ weatherData, clothingItems, onCardClick }) {
+  const { currentTemperatureUnit } = useContext(CurrentTemperatureUnitContext);
 
-  const rawTemperature = weatherData?.temp ?? null;
+  const rawTemperature = weatherData?.temp ?? weatherData?.temperature ?? null;
 
   const convertedTemperature =
     typeof rawTemperature === "number"

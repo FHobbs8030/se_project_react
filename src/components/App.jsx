@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from "react";
+import { Routes, Route, useLocation } from "react-router-dom";
 import Header from "./Header.jsx";
 import Footer from "./Footer.jsx";
 import ToggleSwitch from "./ToggleSwitch.jsx";
 import ItemModal from "./ItemModal.jsx";
 import AddItemModal from "./AddItemModal.jsx";
 import ConfirmDeleteModal from "./ConfirmDeleteModal.jsx";
-import { Outlet } from "react-router-dom";
+import Main from "./Main.jsx";
+import Profile from "./Profile.jsx";
 import "../blocks/App.css";
 
 import { fetchWeatherByCoords, filterWeatherData } from "../utils/weatherApi";
@@ -108,14 +110,28 @@ function App() {
               <ToggleSwitch />
             </Header>
 
-            <Outlet
-              context={{
-                weatherData,
-                clothingItems,
-                onCardClick: handleCardClick,
-                currentTemperatureUnit,
-              }}
-            />
+            <Routes>
+              <Route
+                path="/"
+                element={
+                  <Main
+                    weatherData={weatherData}
+                    clothingItems={clothingItems}
+                    onCardClick={handleCardClick}
+                  />
+                }
+              />
+              <Route
+                path="/profile"
+                element={
+                  <Profile
+                    clothingItems={clothingItems}
+                    onCardClick={handleCardClick}
+                    onAddClick={handleAddClick}
+                  />
+                }
+              />
+            </Routes>
 
             <Footer />
           </div>
