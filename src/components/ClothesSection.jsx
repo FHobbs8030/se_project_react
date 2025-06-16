@@ -2,7 +2,12 @@ import React from 'react';
 import ItemCard from './ItemCard';
 import '../blocks/ClothesSection.css';
 
-function ClothesSection({ clothingItems, onCardClick, onAddClick, onDeleteItem }) {
+function ClothesSection({
+  clothingItems,
+  onCardClick,
+  onAddClick,
+  onDeleteItem,
+}) {
   return (
     <section className="clothes-section">
       <div className="clothes-section__header">
@@ -11,16 +16,23 @@ function ClothesSection({ clothingItems, onCardClick, onAddClick, onDeleteItem }
           + Add New
         </button>
       </div>
-      <ul className="clothes-section__items">
-        {clothingItems.map((item) => (
-          <ItemCard
-            key={item.id}
-            item={item}
-            onCardClick={onCardClick}
-            onDeleteItem={onDeleteItem}
-          />
-        ))}
-      </ul>
+
+      {!clothingItems ? (
+        <p>Loading your clothes...</p>
+      ) : clothingItems.length === 0 ? (
+        <p>You haven't added any items yet.</p>
+      ) : (
+        <div className="clothes-grid">
+          {clothingItems.map((item) => (
+            <ItemCard
+              key={item.id}
+              item={item}
+              onCardClick={onCardClick}
+              onDeleteItem={onDeleteItem}
+            />
+          ))}
+        </div>
+      )}
     </section>
   );
 }

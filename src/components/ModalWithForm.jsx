@@ -2,7 +2,17 @@ import React from 'react';
 import useEscapeKey from '../hooks/useEscapeKey';
 import '../blocks/ModalWithForm.css';
 
-function ModalWithForm({ title, name, buttonText, onClose, onSubmit, isOpen, children, isSubmitDisabled, errors = {} }) {
+function ModalWithForm({
+  title,
+  name,
+  buttonText,
+  onClose,
+  onSubmit,
+  isOpen,
+  children,
+  isSubmitDisabled,
+  errors = {},
+}) {
   useEscapeKey(onClose);
 
   const handleOverlayClick = (e) => {
@@ -10,17 +20,31 @@ function ModalWithForm({ title, name, buttonText, onClose, onSubmit, isOpen, chi
   };
 
   return (
-    <div className={`modal ${isOpen ? 'modal_opened' : ''}`} onClick={handleOverlayClick}>
+    <div
+      className={`modal ${isOpen ? 'modal_opened' : ''}`}
+      onClick={handleOverlayClick}
+    >
       <div className="modal__content">
-        <button className="modal__close" onClick={onClose}>&times;</button>
+        <button className="modal__close" type="button" onClick={onClose}>
+          &times;
+        </button>
         <h3 className="modal__title">{title}</h3>
-        <form className="modal__form" name={name} onSubmit={onSubmit}>
-          {React.Children.map(children, child => {
-            if (child && child.props && child.props.name && errors[child.props.name] !== undefined) {
+        <form className="modal__form" name={name} onSubmit={onSubmit} noValidate>
+          {React.Children.map(children, (child) => {
+            if (
+              child &&
+              child.props &&
+              child.props.name &&
+              Object.prototype.hasOwnProperty.call(errors, child.props.name)
+            ) {
               return (
-                <div>
+                <div className="modal__input-group">
                   {child}
-                  <p className={`modal__error ${errors[child.props.name] ? '' : 'modal__error_hidden'}`}>
+                  <p
+                    className={`modal__error ${
+                      errors[child.props.name] ? '' : 'modal__error_hidden'
+                    }`}
+                  >
                     {errors[child.props.name] || ''}
                   </p>
                 </div>
@@ -28,9 +52,12 @@ function ModalWithForm({ title, name, buttonText, onClose, onSubmit, isOpen, chi
             }
             return child;
           })}
+
           <button
             type="submit"
-            className={`modal__submit-button ${isSubmitDisabled ? 'modal__submit-button_disabled' : ''}`}
+            className={`modal__submit-button ${
+              isSubmitDisabled ? 'modal__submit-button_disabled' : ''
+            }`}
             disabled={isSubmitDisabled}
           >
             {buttonText}

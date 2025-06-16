@@ -23,3 +23,17 @@
   flex-wrap: wrap;
   gap: 20px;
 }
+
+.clothes-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+  background: white; 
+  padding: 20px;
+}
+
+.item-card {
+  background: white;
+  border: 1px solid #ccc;
+  height: 250px; 
+}

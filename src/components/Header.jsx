@@ -1,10 +1,14 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import Logo from "../images/Logo.svg";
 import Avatar from "../images/Avatar.png";
 import "../blocks/Header.css";
 
 function Header({ onAddClick, children }) {
+  const location = useLocation();
+  const isHomePage = location.pathname === "/";
+  const isProfilePage = location.pathname === "/profile";
+
   const currentDate = new Date().toLocaleString("default", {
     month: "long",
     day: "numeric",
@@ -19,10 +23,13 @@ function Header({ onAddClick, children }) {
       <div className="header__right">
         <div className="header__toggle-wrapper">{children}</div>
 
-        {/* ✅ Navigation links */}
         <nav className="header__nav">
-          <Link to="/" className="header__nav-link">Home</Link>
-          <Link to="/profile" className="header__nav-link">Profile</Link>
+          {!isHomePage && (
+            <Link to="/" className="header__nav-link">Home</Link>
+          )}
+          {!isProfilePage && (
+            <Link to="/profile" className="header__nav-link">Profile</Link>
+          )}
         </nav>
 
         <button className="header__button" onClick={onAddClick}>

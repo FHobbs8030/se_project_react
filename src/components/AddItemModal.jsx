@@ -50,6 +50,7 @@ function AddItemModal({ isOpen, onAddItem, onCloseModal }) {
       isOpen={isOpen}
       onClose={onCloseModal}
       onSubmit={handleSubmit}
+      isSubmitDisabled={!isFormValid}
     >
       <label className="modal__label">Name</label>
       <input
@@ -58,7 +59,9 @@ function AddItemModal({ isOpen, onAddItem, onCloseModal }) {
         value={name}
         onChange={(e) => setName(e.target.value)}
       />
-      <span className={formErrors.name ? 'modal__error' : 'modal__error_hidden'}>{formErrors.name}</span>
+      <span className={formErrors.name ? 'modal__error' : 'modal__error_hidden'}>
+        {formErrors.name}
+      </span>
 
       <label className="modal__label">Image URL</label>
       <input
@@ -67,43 +70,29 @@ function AddItemModal({ isOpen, onAddItem, onCloseModal }) {
         value={imageUrl}
         onChange={(e) => setImageUrl(e.target.value)}
       />
-      <span className={formErrors.imageUrl ? 'modal__error' : 'modal__error_hidden'}>{formErrors.imageUrl}</span>
+      <span className={formErrors.imageUrl ? 'modal__error' : 'modal__error_hidden'}>
+        {formErrors.imageUrl}
+      </span>
 
       <fieldset className="modal__fieldset">
         <legend className="modal__label">Select weather type</legend>
         <div className="modal__radio-group">
-          <label className="modal__radio-label">
-            <input
-              type="radio"
-              name="weather"
-              value="hot"
-              checked={weather === 'hot'}
-              onChange={handleChange}
-            />
-            <span>Hot</span>
-          </label>
-          <label className="modal__radio-label">
-            <input
-              type="radio"
-              name="weather"
-              value="warm"
-              checked={weather === 'warm'}
-              onChange={handleChange}
-            />
-            <span>Warm</span>
-          </label>
-          <label className="modal__radio-label">
-            <input
-              type="radio"
-              name="weather"
-              value="cold"
-              checked={weather === 'cold'}
-              onChange={handleChange}
-            />
-            <span>Cold</span>
-          </label>
+          {['hot', 'warm', 'cold'].map((type) => (
+            <label key={type} className="modal__radio-label">
+              <input
+                type="radio"
+                name="weather"
+                value={type}
+                checked={weather === type}
+                onChange={handleChange}
+              />
+              <span>{type.charAt(0).toUpperCase() + type.slice(1)}</span>
+            </label>
+          ))}
         </div>
-        <span className={formErrors.weather ? 'modal__error' : 'modal__error_hidden'}>{formErrors.weather}</span>
+        <span className={formErrors.weather ? 'modal__error' : 'modal__error_hidden'}>
+          {formErrors.weather}
+        </span>
       </fieldset>
     </ModalWithForm>
   );
