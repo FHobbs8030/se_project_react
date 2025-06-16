@@ -1,39 +1,34 @@
-import '../blocks/WeatherCard.css';
-import { getBackgroundImage } from '../utils/getBackgroundImage'; 
+import React from "react";
+import { CurrentTemperatureUnitContext } from "../contextStore/CurrentTemperatureUnitContext";
+import { getBackgroundImage } from "../utils/getBackgroundImage";
+import "../blocks/WeatherCard.css";
 
-function WeatherCard({ weatherData, isCelsius }) {
+function WeatherCard({ weatherData }) {
+  const { currentTemperatureUnit } = React.useContext(CurrentTemperatureUnitContext);
+
   const rawTemp = weatherData?.temp ?? null;
-  const condition = weatherData?.condition ?? '';
-  const timestamp = weatherData?.dt;
-  const sunrise = weatherData?.sys?.sunrise;
-  const sunset = weatherData?.sys?.sunset;
+  const condition = weatherData?.type;
+  const timestamp = weatherData?.timestamp;
+  const sunrise = weatherData?.sunrise;
+  const sunset = weatherData?.sunset;
+
+  const convertedTemp =
+    typeof rawTemp === "number"
+      ? currentTemperatureUnit === "C"
+        ? Math.round(((rawTemp - 32) * 5) / 9)
+        : Math.round(rawTemp)
+      : "--";
+
+  const unit = currentTemperatureUnit === "C" ? "°C" : "°F";
 
   const backgroundImage = getBackgroundImage(condition, timestamp, sunrise, sunset);
 
-  if (rawTemp === null || !backgroundImage) {
-    return (
-      <section className="weather-card">
-        <p className="weather-card__temp">--</p>
-      </section>
-    );
-  }
-
-  const displayTemp = isCelsius
-    ? Math.round((rawTemp - 32) * 5 / 9)
-    : Math.round(rawTemp);
-
-  const unit = isCelsius ? '°C' : '°F';
-
-  const cardStyle = {
-    backgroundImage: `url(${backgroundImage})`,
-    backgroundSize: 'cover',
-    backgroundPosition: 'right center',
-    backgroundRepeat: 'no-repeat',
-  };
-
   return (
-    <section className="weather-card" style={cardStyle}>
-      <p className="weather-card__temp">{displayTemp}{unit}</p>
+    <section className="weather-card" style={{ backgroundImage: `url(${backgroundImage})` }}>
+      <p className="weather-card__temp">
+        {convertedTemp}
+        {unit}
+      </p>
     </section>
   );
 }

@@ -1,3 +1,14 @@
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html, body {
+  overflow-x: hidden;
+  max-width: 100vw;
+}
+
 .item-modal {
   position: fixed;
   inset: 0;
@@ -20,9 +31,18 @@
   position: relative;
   box-shadow: 0 2px 12px rgba(0, 0, 0, 0.2);
   overflow-y: auto;
+  overflow-x: hidden;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+}
+
+.item-modal__content img {
+  width: 100%;
+  height: auto;
+  max-width: 100%;
+  display: block;
+  object-fit: contain;
 }
 
 .item-modal__close {
@@ -40,9 +60,12 @@
   width: 100%;
   height: auto;
   max-height: 300px;
-  object-fit: cover;
+  object-fit: contain;
   border-radius: 4px;
   margin-bottom: 20px;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .item-modal__footer {
@@ -85,4 +108,27 @@
 
 .item-modal__delete-button:hover {
   text-decoration: underline;
+}
+
+@media (max-width: 480px) {
+  .app__content {
+    max-width: 100vw;
+    padding: 16px;
+    overflow-x: hidden;
+  }
+
+  .item-modal__content {
+    max-width: 100vw;
+    width: 100%;
+    padding: 16px;
+  }
+
+  .item-modal__image,
+  .item-modal__content img {
+    max-width: 100%;
+    width: 100%;
+    height: auto;
+    object-fit: contain;
+    display: block;
+  }
 }

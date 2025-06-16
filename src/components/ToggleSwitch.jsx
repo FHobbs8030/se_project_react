@@ -1,30 +1,23 @@
-import React, { useContext } from 'react';
-import '../blocks/ToggleSwitch.css';
-import { CurrentTemperatureUnitContext } from '../contextStore/CurrentTemperatureUnitContext';
+import React, { useContext } from "react";
+import { CurrentTemperatureUnitContext } from "../contextStore/CurrentTemperatureUnitContext";
+import "../blocks/ToggleSwitch.css";
 
-function ToggleSwitch({ debugUnit }) {
-  const { isCelsius, setIsCelsius } = useContext(CurrentTemperatureUnitContext);
-
-  const handleToggle = () => {
-    setIsCelsius((prev) => !prev);
-  };
+function ToggleSwitch() {
+  const { currentTemperatureUnit, handleToggleSwitchChange } = useContext(CurrentTemperatureUnitContext);
 
   return (
-    <div className="toggle-switch-wrapper">
-      <label className="toggle-switch">
-        <input type="checkbox" checked={isCelsius} onChange={handleToggle} />
-        <span className="slider" data-unit={isCelsius ? 'C' : 'F'}>
-          <span className="unit unit--f">F</span>
-          <span className="unit unit--c">C</span>
-          <span className="circle" />
-        </span>
-      </label>
-      {debugUnit && (
-        <div className="toggle-switch-debug">
-          Debug Unit: {isCelsius ? 'Celsius' : 'Fahrenheit'}
-        </div>
-      )}
-    </div>
+    <label className="toggle-switch">
+      <input
+        type="checkbox"
+        onChange={handleToggleSwitchChange}
+        checked={currentTemperatureUnit === "C"}
+      />
+      <span className="slider">
+        <span className={`unit unit--f ${currentTemperatureUnit === "F" ? "active" : ""}`}>F</span>
+        <span className={`unit unit--c ${currentTemperatureUnit === "C" ? "active" : ""}`}>C</span>
+        <span className="circle" />
+      </span>
+    </label>
   );
 }
 

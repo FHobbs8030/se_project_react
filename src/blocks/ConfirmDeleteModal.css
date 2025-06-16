@@ -8,25 +8,30 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  z-index: 1100; /* Ensure it's above other modals */
+  z-index: 1100;
 }
 
 .confirm-modal__box {
-  background: #fff; /* White background */
-  padding: 32px;
+  background: #fff;
+  padding: 0;
   border-radius: 12px;
-  width: 500px;
+  width: 670px;
+  height: 280px;
+  max-width: 90vw;
+  max-height: 90vh;
   text-align: center;
   position: relative;
-  font-family: sans-serif;
+  top: -2px;
+  left: 3px;
+  font-family: 'Cabinet Grotesk', sans-serif;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
   z-index: 1200;
 }
 
 .confirm-modal__close {
   position: absolute;
-  top: 12px;
-  right: 16px;
+  top: 0px;
+  right: 0px;
   background: none;
   border: none;
   font-size: 24px;
@@ -34,14 +39,42 @@
 }
 
 .confirm-modal__message {
-  font-size: 18px;
-  margin-bottom: 16px;
-  color: #000;
+  text-align: center;
+  margin: 24px 0 16px;
 }
 
-.confirm-modal__subtext {
-  font-size: 16px;
-  color: #555;
+.confirm-modal__message-box {
+  width: 367px;
+  height: 48px;
+  margin: 0 auto;
+}
+
+.confirm-modal__question {
+  position: absolute;
+  top: 60px;
+  left: 142px;
+  font-family: 'Cabinet Grotesk', sans-serif;
+  font-size: 20px;
+  font-weight: 700;
+  width: 367px;
+  line-height: 24px;
+  padding: 1px 6px;
+  color: #000;
+  margin: 0;
+}
+
+.confirm-modal__note {
+  position: absolute;
+  top: 84px;
+  left: 215px;
+  padding: 1px 6px;
+  font-family: 'Cabinet Grotesk', sans-serif;
+  font-size: 20px;
+  font-weight: 700;
+  line-height: 24px;
+  text-align: center;
+  color: #000;
+  margin: 0;
 }
 
 .confirm-modal__actions {
@@ -51,19 +84,32 @@
   margin-top: 24px;
 }
 
-.confirm-modal__confirm {
-  color: #f03;
+.confirm-modal__delete-button {
+  position: absolute;
+  bottom: 106px;
+  left: 258px;
+  width: 150px;
+  line-height: 24px;
   background: none;
   border: none;
-  font-size: 16px;
-  font-weight: bold;
+  font-size: 20px;
   cursor: pointer;
+  font-family: 'Cabinet Grotesk', sans-serif;
+  color: #ff4d00;
+  font-weight: 700;
 }
 
-.confirm-modal__cancel {
+.confirm-modal__cancel-button {
+  position: absolute;
+  bottom: 58px;
+  left: 295px;
+  width: 75px;
+  line-height: 24px;
+  padding: 1px 6px;
   background: none;
   border: none;
-  font-size: 16px;
+  font-size: 20px;
   cursor: pointer;
   color: #000;
+  font-family: 'Cabinet Grotesk', sans-serif;
 }
