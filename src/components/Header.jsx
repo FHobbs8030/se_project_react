@@ -21,26 +21,24 @@ function Header({ onAddClick, children }) {
         <p className="header__date-location">{currentDate}, Carson City</p>
       </div>
       <div className="header__right">
-        <div className="header__toggle-wrapper">{children}</div>
+  {isHomePage && (
+    <div className="header__toggle-wrapper">{children}</div>
+  )}
 
-        <nav className="header__nav">
-          {!isHomePage && (
-            <Link to="/" className="header__nav-link">Home</Link>
-          )}
-          {!isProfilePage && (
-            <Link to="/profile" className="header__nav-link">Profile</Link>
-          )}
-        </nav>
+  <nav className="header__nav">
+    {!isHomePage && <Link to="/">Home</Link>}
+    {!isProfilePage && <Link to="/profile">Profile</Link>}
+  </nav>
 
-        <button className="header__button" onClick={onAddClick}>
-          + Add Clothes
-        </button>
+  <button className="header__button" onClick={onAddClick}>
+    + Add Clothes
+  </button>
 
-        <div className="header__profile">
-          <p className="header__username">Terrence Tegegne</p>
-          <img src={Avatar} alt="User avatar" className="header__avatar" />
-        </div>
-      </div>
+  <div className="header__profile">
+    <p className="header__username">Terrence Tegegne</p>
+    <img src={Avatar} alt="User avatar" className="header__avatar" />
+  </div>
+</div>
     </header>
   );
 }
