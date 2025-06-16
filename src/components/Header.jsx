@@ -1,10 +1,11 @@
 import React from "react";
 import { Link } from "react-router-dom";
+import ToggleSwitch from "./ToggleSwitch";
 import Logo from "../images/Logo.svg";
 import Avatar from "../images/Avatar.png";
 import "../blocks/Header.css";
 
-function Header({ onAddClick, children }) {
+function Header({ onAddClick }) {
   const currentDate = new Date().toLocaleString("default", {
     month: "long",
     day: "numeric",
@@ -16,8 +17,11 @@ function Header({ onAddClick, children }) {
         <img src={Logo} alt="Logo" className="header__logo" />
         <p className="header__date-location">{currentDate}, Carson City</p>
       </div>
+
       <div className="header__right">
-        <div className="header__toggle-wrapper">{children}</div>
+        <div className="header__toggle-wrapper">
+          <ToggleSwitch />
+        </div>
 
         <nav className="header__nav">
           <Link to="/" className="header__nav-link header__nav-link--spaced">

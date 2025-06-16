@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from "react";
-import { Routes, Route, useLocation } from "react-router-dom";
+import { Routes, Route } from "react-router-dom";
 import Header from "./Header.jsx";
 import Footer from "./Footer.jsx";
-import ToggleSwitch from "./ToggleSwitch.jsx";
 import ItemModal from "./ItemModal.jsx";
 import AddItemModal from "./AddItemModal.jsx";
 import ConfirmDeleteModal from "./ConfirmDeleteModal.jsx";
@@ -106,9 +105,7 @@ function App() {
       <div className="page">
         <div className="app">
           <div className="app__content">
-            <Header onAddClick={handleAddClick}>
-              <ToggleSwitch />
-            </Header>
+            <Header onAddClick={handleAddClick} />
 
             <Routes>
               <Route
