@@ -1,4 +1,4 @@
-const API_KEY = import.meta.env.VITE_WEATHER_API_KEY;
+const API_KEY = "3d0d531d6ea32e66f08e7e0fa3be4ea0";
 const BASE_URL = "https://api.openweathermap.org/data/2.5/weather";
 
 const isDay = ({ sunrise, sunset }, now) => {
