@@ -32,9 +32,11 @@ function App() {
   };
 
   const fallbackWeatherData = {
-    temperature: null,
+    temperature: 72,
+    type: "warm",
     isDay: true,
-    location: "Unknown",
+    condition: "clear",
+    location: "Carson City",
   };
 
   const handleAddClick = () => setIsAddModalOpen(true);
@@ -76,11 +78,17 @@ function App() {
 
     fetchWeatherByCoords(latitude, longitude)
       .then((data) => {
-        const filtered = filterWeatherData(data);
-        setWeatherData(filtered);
+        try {
+          const filtered = filterWeatherData(data);
+          console.log("🌤 Filtered weather data:", filtered);
+          setWeatherData(filtered);
+        } catch (e) {
+          console.warn("⚠️ Weather data format error, using fallback.");
+          setWeatherData(fallbackWeatherData);
+        }
       })
       .catch((err) => {
-        console.error("Weather fetch error:", err);
+        console.error("❌ Weather fetch failed, using fallback:", err);
         setWeatherData(fallbackWeatherData);
       });
   }, []);
