@@ -21,9 +21,9 @@ function Main({ weatherData, clothingItems, onCardClick }) {
   const weatherType = weatherData?.type ?? null;
 
   const filteredItems =
-    weatherType === null
-      ? clothingItems
-      : clothingItems.filter((item) => item.weather === weatherType);
+    weatherType && clothingItems?.length > 0
+      ? clothingItems.filter((item) => item.weather === weatherType)
+      : [];
 
   const unit = currentTemperatureUnit === "C" ? "°C" : "°F";
 
@@ -37,9 +37,17 @@ function Main({ weatherData, clothingItems, onCardClick }) {
       </p>
       <section className="cards">
         <ul className="cards__list">
-          {filteredItems.map((item) => (
-            <ItemCard key={item.id || item._id} item={item} onCardClick={onCardClick} />
-          ))}
+          {filteredItems.length > 0 ? (
+            filteredItems.map((item) => (
+              <ItemCard
+                key={item.id || item._id}
+                item={item}
+                onCardClick={onCardClick}
+              />
+            ))
+          ) : (
+            <p className="cards__fallback">No matching clothes for this weather.</p>
+          )}
         </ul>
       </section>
     </main>
