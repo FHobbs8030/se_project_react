@@ -3,22 +3,70 @@ const BASE_URL = isLocal ? "http://localhost:3001/clothingItems" : null;
 
 const mockItems = [
   {
-    id: "1",
+    id: "0",
     name: "Sneakers",
     imageUrl: "https://cdn-icons-png.flaticon.com/512/892/892458.png",
     weather: "cold"
   },
+   {
+    id: "1",
+    name: "Sneakers",
+    weather: "cold",
+    imageUrl: "https://practicum-content.s3.us-west-1.amazonaws.com/software-engineer/wtwr-project/Sneakers.png"
+  },
   {
     id: "2",
-    name: "Coat",
-    imageUrl: "https://cdn-icons-png.flaticon.com/512/892/892662.png",
-    weather: "cold"
+    name: "Cap",
+    weather: "cold",
+    imageUrl: "https://images.unsplash.com/photo-1556306535-0f09a537f0a3?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NHx8Y2FwfGVufDB8fDB8fHww"
   },
   {
     id: "3",
     name: "Jacket",
-    imageUrl: "https://cdn-icons-png.flaticon.com/512/892/892689.png",
-    weather: "cold"
+    weather: "cold",
+    imageUrl: "https://practicum-content.s3.us-west-1.amazonaws.com/software-engineer/wtwr-project/Jacket.png"
+  },
+  {
+    id: "4",
+    name: "Coat",
+    weather: "cold",
+    imageUrl: "https://m.media-amazon.com/images/I/61ITnBYRGeL._AC_SX679_.jpg"
+  },
+  {
+    id: "5",
+    name: "Hoodie",
+    weather: "warm",
+    imageUrl: "https://practicum-content.s3.us-west-1.amazonaws.com/software-engineer/wtwr-project/Hoodie.png"
+  },
+  {
+    id: "6",
+    name: "Cap",
+    weather: "warm",
+    imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c8/Anstosskappe.jpg/960px-Anstosskappe.jpg?20120605132422"
+  },
+  {
+    id: "7",
+    name: "Sneakers",
+    weather: "warm",
+    imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/1/16/Nike_dunk.jpg/250px-Nike_dunk.jpg"
+  },
+  {
+    id: "8",
+    name: "T-Shirt",
+    weather: "hot",
+    imageUrl: "https://practicum-content.s3.us-west-1.amazonaws.com/software-engineer/wtwr-project/T-Shirt.png"
+  },
+  {
+    id: "9",
+    name: "Sunglasses",
+    weather: "hot",
+    imageUrl: "https://images.unsplash.com/photo-1511499767150-a48a237f0083?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8U3VuZ2xhc3Nlc3xlbnwwfHwwfHx8MA%3D%3D"
+  },
+  {
+    id: "10",
+    name: "Cap",
+    weather: "hot",
+    imageUrl: "https://practicum-content.s3.us-west-1.amazonaws.com/software-engineer/wtwr-project/Cap.png"
   }
 ];
 
