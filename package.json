@@ -9,9 +9,9 @@
     "build": "vite build",
     "lint": "eslint . --ext js,jsx --report-unused-disable-directives",
     "preview": "vite preview",
-    "predeploy": "npm run build",
-    "deploy": "gh-pages -d dist",
-    "server": "json-server --watch db.json --port 3001"
+    "server": "json-server --watch db.json --port 3001",
+    "predeploy": "npm run build && cp dist/index.html dist/404.html",
+    "deploy": "gh-pages -d dist"
   },
   "dependencies": {
     "normalize.css": "^8.0.1",
