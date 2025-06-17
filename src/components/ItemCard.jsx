@@ -8,7 +8,8 @@ function ItemCard({ item, onCardClick }) {
       <img
         className="card__image"
         src={item.imageUrl}
-        alt={item.name}
+        alt={item.name || "Clothing item"}
+        loading="lazy"
         onClick={() => onCardClick(item)}
       />
     </li>
