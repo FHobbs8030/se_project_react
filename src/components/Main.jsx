@@ -1,56 +1,44 @@
-import React, { useContext } from "react";
-import { CurrentTemperatureUnitContext } from "../contextStore/CurrentTemperatureUnitContext";
-import ItemCard from "./ItemCard";
-import WeatherCard from "./WeatherCard";
+import React from "react";
+import { useOutletContext } from "react-router-dom";
+import WeatherCard from "./WeatherCard.jsx";
+import ItemCard from "./ItemCard.jsx";
 import "../blocks/Main.css";
-import "../blocks/ItemCard.css";
-import "../blocks/Cards.css";
 
-function Main({ weatherData, clothingItems, onCardClick }) {
-  const { currentTemperatureUnit } = useContext(CurrentTemperatureUnitContext);
+function Main() {
+  const { weatherData, clothingItems, onCardClick } = useOutletContext();
 
-  const rawTemperature = weatherData?.temp ?? weatherData?.temperature ?? null;
+  if (!weatherData) {
+    return (
+      <section className="main">
+        <WeatherCard />
+        <p className="main__message">Can't fetch weather / Showing all items:</p>
+        <div className="main__cards">
+          {clothingItems.map((item) => (
+            <ItemCard key={item.id} item={item} onCardClick={onCardClick} />
+          ))}
+        </div>
+      </section>
+    );
+  }
 
-  const convertedTemperature =
-    typeof rawTemperature === "number"
-      ? currentTemperatureUnit === "C"
-        ? Math.round(((rawTemperature - 32) * 5) / 9)
-        : Math.round(rawTemperature)
-      : null;
-
-  const weatherType = weatherData?.type ?? null;
-
-  const filteredItems =
-    weatherType && clothingItems?.length > 0
-      ? clothingItems.filter((item) => item.weather === weatherType)
-      : [];
-
-  const unit = currentTemperatureUnit === "C" ? "°C" : "°F";
+  const filteredItems = clothingItems.filter(
+    (item) => item.weather === weatherData.type
+  );
 
   return (
-    <main className="main">
+    <section className="main">
       <WeatherCard weatherData={weatherData} />
-      <p className="main__intro">
-        {typeof convertedTemperature === "number"
-          ? `Today is ${convertedTemperature}${unit} / You may want to wear:`
-          : `Can't fetch weather / Showing all items:`}
+      <p className="main__message">
+        {filteredItems.length > 0
+          ? `Showing clothes for ${weatherData.type} weather:`
+          : "No matching clothes for this weather."}
       </p>
-      <section className="cards">
-        <ul className="cards__list">
-          {filteredItems.length > 0 ? (
-            filteredItems.map((item) => (
-              <ItemCard
-                key={item.id || item._id}
-                item={item}
-                onCardClick={onCardClick}
-              />
-            ))
-          ) : (
-            <p className="cards__fallback">No matching clothes for this weather.</p>
-          )}
-        </ul>
-      </section>
-    </main>
+      <div className="main__cards">
+        {filteredItems.map((item) => (
+          <ItemCard key={item.id} item={item} onCardClick={onCardClick} />
+        ))}
+      </div>
+    </section>
   );
 }
 

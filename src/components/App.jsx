@@ -1,12 +1,10 @@
 import React, { useState, useEffect } from "react";
-import { Routes, Route } from "react-router-dom";
+import { Outlet } from "react-router-dom";
 import Header from "./Header.jsx";
 import Footer from "./Footer.jsx";
 import ItemModal from "./ItemModal.jsx";
 import AddItemModal from "./AddItemModal.jsx";
 import ConfirmDeleteModal from "./ConfirmDeleteModal.jsx";
-import Main from "./Main.jsx";
-import Profile from "./Profile.jsx";
 import "../blocks/App.css";
 
 import { fetchWeatherByCoords, filterWeatherData } from "../utils/weatherApi";
@@ -114,29 +112,16 @@ function App() {
         <div className="app">
           <div className="app__content">
             <Header onAddClick={handleAddClick} />
-
-            <Routes>
-              <Route
-                path="/"
-                element={
-                  <Main
-                    weatherData={weatherData}
-                    clothingItems={clothingItems}
-                    onCardClick={handleCardClick}
-                  />
-                }
-              />
-              <Route
-                path="/profile"
-                element={
-                  <Profile
-                    clothingItems={clothingItems}
-                    onCardClick={handleCardClick}
-                    onAddClick={handleAddClick}
-                  />
-                }
-              />
-            </Routes>
+            
+            {/* Nested route content renders here */}
+            <Outlet
+              context={{
+                weatherData,
+                clothingItems,
+                onCardClick: handleCardClick,
+                onAddClick: handleAddClick,
+              }}
+            />
 
             <Footer />
           </div>

@@ -11,6 +11,13 @@
   text-align: left;
 }
 
+.main__cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 24px;
+  padding: 16px;
+}
+
 .mainweather {
   text-align: left;
   margin: 2.5rem 0 2.125rem 2.5rem;

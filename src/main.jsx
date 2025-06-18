@@ -32,7 +32,7 @@ const handleCardClick = (item) => {
 const router = createBrowserRouter(
   [
     {
-      path: "/",
+      path: "/*",
       element: (
         <App
           weatherData={mockWeatherData}
@@ -48,7 +48,7 @@ const router = createBrowserRouter(
     },
   ],
   {
-    basename: "/se_project_react",
+    basename: import.meta.env.DEV ? "/" : "/se_project_react",
     future: {
       v7_startTransition: true,
       v7_relativeSplatPath: true,

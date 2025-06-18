@@ -1,12 +1,15 @@
-import React from 'react';
-import SideBar from './SideBar';
-import ClothesSection from './ClothesSection';
-import '../blocks/Profile.css';
+import React from "react";
+import { useOutletContext } from "react-router-dom";
+import SideBar from "./SideBar.jsx";
+import ClothesSection from "./ClothesSection.jsx";
+import "../blocks/Profile.css";
 
-function Profile({ clothingItems, onCardClick, onAddClick, onLogout }) {
+function Profile() {
+  const { clothingItems, onCardClick, onAddClick } = useOutletContext();
+
   return (
     <div className="profile">
-      <SideBar onLogout={onLogout} />
+      <SideBar onLogout={() => console.log("Log out clicked")} />
       <ClothesSection
         clothingItems={clothingItems}
         onCardClick={onCardClick}
