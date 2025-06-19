@@ -24,16 +24,24 @@ function Main({ weatherData, clothingItems, onCardClick }) {
     );
   }
 
-  const weatherType = weatherData.type.toLowerCase();
-  const filteredItems = clothingItems.filter(
-    (item) => item.weather.toLowerCase() === weatherType
-  );
-
   const rawTemp = weatherData?.temperature;
   const displayTemp = isCelsius
     ? Math.round(((rawTemp - 32) * 5) / 9)
     : Math.round(rawTemp);
   const unit = isCelsius ? "C" : "F";
+
+  let weatherType;
+  if (displayTemp >= 75) {
+    weatherType = "hot";
+  } else if (displayTemp >= 60) {
+    weatherType = "warm";
+  } else {
+    weatherType = "cold";
+  }
+
+  const filteredItems = clothingItems.filter(
+    (item) => item.weather.toLowerCase() === weatherType
+  );
 
   return (
     <section className="main">
