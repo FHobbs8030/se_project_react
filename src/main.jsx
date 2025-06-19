@@ -12,11 +12,34 @@ import Profile from "./components/Profile.jsx";
 import NotFound from "./components/NotFound.jsx";
 import "./index.css";
 
+// Mock development data
+const mockWeatherData = {
+  temperature: 68,
+  location: "Carson City",
+  isDay: true,
+};
+
+const mockClothingItems = [
+  { id: 1, name: "Hoodie", imageUrl: "https://via.placeholder.com/150" },
+  { id: 2, name: "Cap", imageUrl: "https://via.placeholder.com/150" },
+  { id: 3, name: "Sneakers", imageUrl: "https://via.placeholder.com/150" },
+];
+
+const handleCardClick = (item) => {
+  console.log("Card clicked:", item);
+};
+
 const router = createBrowserRouter(
   [
     {
       path: "/*",
-      element: <App />, // ✅ Removed props
+      element: (
+        <App
+          weatherData={mockWeatherData}
+          clothingItems={mockClothingItems}
+          onCardClick={handleCardClick}
+        />
+      ),
       children: [
         { index: true, element: <Main /> },
         { path: "profile", element: <Profile /> },

@@ -1,33 +1,41 @@
-import React from "react";
+import React, { useContext } from "react";
 import { CurrentTemperatureUnitContext } from "../contextStore/CurrentTemperatureUnitContext";
 import { getBackgroundImage } from "../utils/getBackgroundImage";
 import "../blocks/WeatherCard.css";
 
 function WeatherCard({ weatherData }) {
-  const { currentTemperatureUnit } = React.useContext(CurrentTemperatureUnitContext);
+  const { currentTemperatureUnit } = useContext(CurrentTemperatureUnitContext);
+  const isCelsius = currentTemperatureUnit === "C";
 
-  const rawTemp = weatherData?.temp ?? null;
-  const condition = weatherData?.type;
-  const timestamp = weatherData?.timestamp;
+  const rawTemp = weatherData?.temperature ?? null;
+  const condition = weatherData?.condition;
+  const timestamp = weatherData?.dt;
   const sunrise = weatherData?.sunrise;
   const sunset = weatherData?.sunset;
 
-  const convertedTemp =
-    typeof rawTemp === "number"
-      ? currentTemperatureUnit === "C"
-        ? Math.round(((rawTemp - 32) * 5) / 9)
-        : Math.round(rawTemp)
-      : "--";
-
-  const unit = currentTemperatureUnit === "C" ? "°C" : "°F";
-
   const backgroundImage = getBackgroundImage(condition, timestamp, sunrise, sunset);
 
+  if (rawTemp === null || !backgroundImage) {
+    return (
+      <section className="weather-card" style={{ backgroundColor: "#00aaff" }}>
+        <p className="weather-card__temp">--°{isCelsius ? "C" : "F"}</p>
+      </section>
+    );
+  }
+
+  const displayTemp = isCelsius
+    ? Math.round(((rawTemp - 32) * 5) / 9)
+    : Math.round(rawTemp);
+
   return (
-    <section className="weather-card" style={{ backgroundImage: `url(${backgroundImage})` }}>
+    <section
+      className="weather-card"
+      style={{
+        backgroundImage: `url(${backgroundImage})`,
+      }}
+    >
       <p className="weather-card__temp">
-        {convertedTemp}
-        {unit}
+        {displayTemp}°{isCelsius ? "C" : "F"}
       </p>
     </section>
   );

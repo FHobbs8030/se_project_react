@@ -18,8 +18,8 @@ const getWeatherType = (temp) => {
 const filterWeatherData = (data) => {
   const result = {};
   result.city = data.name;
-  result.temp = Math.round(data.main.temp);
-  result.type = getWeatherType(result.temp);
+  result.temperature = Math.round(data.main.temp); 
+  result.type = getWeatherType(result.temperature);
   result.isDay = isDay(data.sys, Date.now());
   result.condition = data.weather[0].main.toLowerCase();
   return result;
