@@ -21,8 +21,6 @@
   max-height: 90vh;
   text-align: center;
   position: relative;
-  top: -2px;
-  left: 3px;
   font-family: 'Cabinet Grotesk', sans-serif;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
   z-index: 1200;
@@ -38,56 +36,43 @@
   cursor: pointer;
 }
 
-.confirm-modal__message {
-  text-align: center;
-  margin: 24px 0 16px;
-}
-
 .confirm-modal__message-box {
-  width: 367px;
-  height: 48px;
-  margin: 0 auto;
+  width: 100%;
+  max-width: 460px;
+  margin: 40px auto 24px;
+  padding: 0 12px;
 }
 
 .confirm-modal__question {
-  position: absolute;
-  top: 60px;
-  left: 142px;
   font-family: 'Cabinet Grotesk', sans-serif;
   font-size: 20px;
   font-weight: 700;
-  width: 367px;
-  line-height: 24px;
-  padding: 1px 6px;
+  line-height: 28px;
+  padding: 8px 0;
   color: #000;
   margin: 0;
 }
 
 .confirm-modal__note {
-  position: absolute;
-  top: 84px;
-  left: 215px;
-  padding: 1px 6px;
   font-family: 'Cabinet Grotesk', sans-serif;
-  font-size: 20px;
-  font-weight: 700;
-  line-height: 24px;
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 22px;
   text-align: center;
   color: #000;
-  margin: 0;
+  margin: 8px 0 0;
+  white-space: normal;
+  word-break: break-word;
 }
 
 .confirm-modal__actions {
   display: flex;
   justify-content: center;
   gap: 32px;
-  margin-top: 24px;
+  margin-top: 16px;
 }
 
 .confirm-modal__delete-button {
-  position: absolute;
-  bottom: 106px;
-  left: 258px;
   width: 150px;
   line-height: 24px;
   background: none;
@@ -100,9 +85,6 @@
 }
 
 .confirm-modal__cancel-button {
-  position: absolute;
-  bottom: 58px;
-  left: 295px;
   width: 75px;
   line-height: 24px;
   padding: 1px 6px;

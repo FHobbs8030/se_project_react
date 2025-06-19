@@ -64,13 +64,6 @@
       "id": "d7ad"
     },
     {
-      "_id": 10,
-      "name": "Scarf",
-      "weather": "cold",
-      "imageUrl": "https://practicum-content.s3.us-west-1.amazonaws.com/software-engineer/wtwr-project/Scarf.png?etag=74efbee93810c926b5507e862c6cb76c",
-      "id": "c2a7"
-    },
-    {
       "_id": 11,
       "name": "Shorts",
       "weather": "Hot",
@@ -90,13 +83,6 @@
       "weather": "hot",
       "imageUrl": "https://practicum-content.s3.us-west-1.amazonaws.com/software-engineer/wtwr-project/Sunglasses.png?etag=a1bced9e331d36cb278c45df51150432",
       "id": "ed5f"
-    },
-    {
-      "_id": 15,
-      "name": "Sweatshirt",
-      "weather": "warm",
-      "imageUrl": "https://practicum-content.s3.us-west-1.amazonaws.com/software-engineer/wtwr-project/Sweatshirt.png?etag=008a9674757bea2e0bdb31242e364be0",
-      "id": "f834"
     },
     {
       "_id": 16,
