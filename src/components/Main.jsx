@@ -1,12 +1,10 @@
 import React, { useContext } from "react";
-import { useOutletContext } from "react-router-dom";
 import WeatherCard from "./WeatherCard.jsx";
 import ItemCard from "./ItemCard.jsx";
 import { CurrentTemperatureUnitContext } from "../contextStore/CurrentTemperatureUnitContext";
 import "../blocks/Main.css";
 
-function Main() {
-  const { weatherData, clothingItems, onCardClick } = useOutletContext();
+function Main({ weatherData, clothingItems, onCardClick }) {
   const { currentTemperatureUnit } = useContext(CurrentTemperatureUnitContext);
   const isCelsius = currentTemperatureUnit === "C";
 
@@ -26,8 +24,9 @@ function Main() {
     );
   }
 
+  const weatherType = weatherData.type.toLowerCase();
   const filteredItems = clothingItems.filter(
-    (item) => item.weather === weatherData.type
+    (item) => item.weather.toLowerCase() === weatherType
   );
 
   const rawTemp = weatherData?.temperature;

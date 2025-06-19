@@ -1,22 +1,19 @@
 import React from "react";
-import { useNavigate } from "react-router-dom";
-import { useOutletContext } from "react-router-dom";
 import SideBar from "./SideBar";
 import ClothesSection from "./ClothesSection";
 import "../blocks/Profile.css";
 
-function Profile() {
-  const navigate = useNavigate();
-  const { clothingItems, onCardClick, onAddClick } = useOutletContext();
-
-  const handleLogout = () => {
-    console.log("🚪 Logging out...");
-    navigate("/");
-  };
-
+function Profile({
+  clothingItems,
+  onCardClick,
+  onAddClick,
+  onLogout,
+  onDeleteItem,
+  weatherData
+}) {
   return (
     <div className="profile">
-      <SideBar onLogout={handleLogout} />
+      <SideBar onLogout={onLogout} />
 
       <div className="profile-main">
         <div className="profile-header">
@@ -31,6 +28,8 @@ function Profile() {
             clothingItems={clothingItems}
             onCardClick={onCardClick}
             onAddClick={onAddClick}
+            onDeleteItem={onDeleteItem}
+            weatherType={weatherData?.type}
           />
         </div>
       </div>

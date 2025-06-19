@@ -1,10 +1,13 @@
 import React, { useState, useEffect } from "react";
-import { Outlet } from "react-router-dom";
+import { Routes, Route, useNavigate } from "react-router-dom";
 import Header from "./Header.jsx";
 import Footer from "./Footer.jsx";
 import ItemModal from "./ItemModal.jsx";
 import AddItemModal from "./AddItemModal.jsx";
 import ConfirmDeleteModal from "./ConfirmDeleteModal.jsx";
+import Profile from "./Profile.jsx";
+import Main from "./Main.jsx";
+import NotFound from "./NotFound.jsx";
 import "../blocks/App.css";
 
 import { fetchWeatherByCoords, filterWeatherData } from "../utils/weatherApi";
@@ -16,6 +19,7 @@ import {
 import { CurrentTemperatureUnitContext } from "../contextStore/CurrentTemperatureUnitContext";
 
 function App() {
+  const navigate = useNavigate();
   const [weatherData, setWeatherData] = useState(null);
   const [clothingItems, setClothingItems] = useState([]);
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
@@ -70,6 +74,10 @@ function App() {
     }
   };
 
+  const handleLogout = () => {
+    navigate("/");
+  };
+
   useEffect(() => {
     const latitude = 39.1638;
     const longitude = -119.7674;
@@ -112,17 +120,32 @@ function App() {
         <div className="app">
           <div className="app__content">
             <Header onAddClick={handleAddClick} />
-            
-            {/* Nested route content renders here */}
-            <Outlet
-              context={{
-                weatherData,
-                clothingItems,
-                onCardClick: handleCardClick,
-                onAddClick: handleAddClick,
-              }}
-            />
-
+            <Routes>
+              <Route
+                path="/"
+                element={
+                  <Main
+                    weatherData={weatherData}
+                    clothingItems={clothingItems}
+                    onCardClick={handleCardClick}
+                  />
+                }
+              />
+              <Route
+                path="/profile"
+                element={
+                  <Profile
+                    clothingItems={clothingItems}
+                    onCardClick={handleCardClick}
+                    onAddClick={handleAddClick}
+                    onLogout={handleLogout}
+                    onDeleteItem={handleDeleteItem}
+                    weatherData={weatherData}
+                  />
+                }
+              />
+              <Route path="*" element={<NotFound />} />
+            </Routes>
             <Footer />
           </div>
         </div>
