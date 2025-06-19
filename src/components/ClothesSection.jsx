@@ -10,13 +10,6 @@ function ClothesSection({
 }) {
   return (
     <section className="clothes-section">
-      <div className="clothes-section__header">
-        <h2 className="clothes-section__title">Your items</h2>
-        <button className="clothes-section__add-button" onClick={onAddClick}>
-          + Add New
-        </button>
-      </div>
-
       {!clothingItems ? (
         <p>Loading your clothes...</p>
       ) : clothingItems.length === 0 ? (

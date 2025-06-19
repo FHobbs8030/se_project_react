@@ -1,45 +1,42 @@
-import React from "react";
-import { Link } from "react-router-dom";
-import ToggleSwitch from "./ToggleSwitch";
-import Logo from "../images/Logo.svg";
-import Avatar from "../images/Avatar.png";
-import "../blocks/Header.css";
+import React from 'react';
+import { Link } from 'react-router-dom';
+import ToggleSwitch from './ToggleSwitch.jsx';
+import Logo from '../images/Logo.svg';
+import Avatar from '../images/Avatar.png';
+import '../blocks/Header.css';
 
 function Header({ onAddClick }) {
-  const currentDate = new Date().toLocaleString("default", {
-    month: "long",
-    day: "numeric",
+  const currentDate = new Date().toLocaleString('default', {
+    month: 'long',
+    day: 'numeric',
   });
 
   return (
     <header className="header">
       <div className="header__left">
-        <img src={Logo} alt="Logo" className="header__logo" />
+        <Link to="/">
+          <img src={Logo} alt="WTWR Logo" className="header__logo" />
+        </Link>
         <p className="header__date-location">{currentDate}, Carson City</p>
       </div>
 
       <div className="header__right">
-        <div className="header__toggle-wrapper">
-          <ToggleSwitch />
-        </div>
+        <ToggleSwitch />
 
-        <nav className="header__nav">
-          <Link to="/" className="header__nav-link header__nav-link--spaced">
-            Main
-          </Link>
-          <Link to="/profile" className="header__nav-link">
-            Profile
-          </Link>
-        </nav>
+        {/* Removed nav links */}
 
-        <button className="header__button" onClick={onAddClick}>
+        <button className="header__add-button" onClick={onAddClick}>
           + Add Clothes
         </button>
 
-        <div className="header__profile">
-          <p className="header__username">Terrence Tegegne</p>
-          <img src={Avatar} alt="User avatar" className="header__avatar" />
-        </div>
+        <Link to="/profile" className="header__user-info">
+          <p className="header__user-name">Terrence Tegegne</p>
+          <img
+            src={Avatar}
+            alt="User Avatar"
+            className="header__user-avatar"
+          />
+        </Link>
       </div>
     </header>
   );

@@ -91,7 +91,7 @@ html, body {
 .item-modal__weather {
   font-size: 14px;
   margin: 4px 0 0;
-  color: #555;
+  color: #000;
 }
 
 .item-modal__delete-button {

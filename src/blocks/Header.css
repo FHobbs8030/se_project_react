@@ -1,115 +1,66 @@
-/* Header.css */
-@import url('../vendor/fonts/fonts.css');
-
 .header {
-  width: calc(100% - 80px);
-  max-width: 1440px;
-  min-height: 40px;
-  margin: 0 auto;
-  padding: 32px 0 20px 0;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  font-family: 'Cabinet Grotesk', 'Inter', sans-serif;
+  padding: 16px 32px;
+  background-color: white;
 }
 
-.header__left,
-.header__right {
+.header__left {
   display: flex;
   align-items: center;
-  gap: 20px;
+  gap: 24px;
 }
 
 .header__logo {
-  height: 40px;
-}
-
-.header__date-location {
-  width: 100%;
-  max-width: 190px;
-  font-family: Cabinet Grotesk;
-  font-weight: 700;
-  font-size: 20px;
-  line-height: 24px;
-  margin: 11px 0 13px 0;
-}
-
-.header__toggle-wrapper {
-  display: flex;
-  align-items: center;
-  height: 40px; 
-}
-
-.header__button {
-  padding: 8px 12px;
-  color: #000;
-  font-family: Cabinet Grotesk;
-  font-weight: 700;
-  font-size: 20px;
-  line-height: 24px;
-  border: none;
+  height: 36px;
   cursor: pointer;
 }
 
-.header__profile {
+.header__date-location {
+  font-size: 16px;
+  font-weight: 500;
+  color: #333;
+}
+
+.header__right {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+}
+
+.header__add-button {
+  background-color: #f5f5f5;
+  border: none;
+  padding: 6px 12px;
+  font-size: 14px;
+  font-weight: bold;
+  cursor: pointer;
+  border-radius: 4px;
+  transition: background-color 0.2s ease;
+}
+
+.header__add-button:hover {
+  background-color: #e0e0e0;
+}
+
+.header__user-info {
   display: flex;
   align-items: center;
   gap: 10px;
-}
-
-.header__username {
-  font-family: Cabinet Grotesk;
-  font-weight: 700;
-  font-size: 20px;
-  line-height: 100%;
-}
-
-.header__avatar {
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  border: 1px solid rgba(0, 0, 0, 0.5);
-}
-
-.header__nav-link {
-  margin-right: 12px;
   text-decoration: none;
-  color: black;
+  color: inherit;
+  cursor: pointer;
+}
+
+.header__user-name {
+  font-size: 14px;
   font-weight: 500;
 }
 
-.header__nav-link:last-child {
-  margin-right: 0;
-}
-
-@media screen and (max-width: 600px) {
-  .header {
-    flex-direction: column;
-    align-items: center;
-    text-align: center;
-    margin: 0 auto 1rem;
-    padding: 1rem;
-    height: auto;
-    width: calc(100% - 40px);
-  }
-
-  .header__left,
-  .header__right {
-    flex-direction: column;
-    align-items: center;
-    gap: 1rem;
-    width: 100%;
-    margin-bottom: 1rem;
-  }
-
-  .header__date-location {
-    margin: 0.5rem 0;
-    width: 100%;
-    text-align: center;
-  }
-
-  .header__toggle-wrapper {
-    height: auto;
-    margin-bottom: 1rem;
-  }
+.header__user-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
 }
