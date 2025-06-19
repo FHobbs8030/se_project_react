@@ -43,13 +43,6 @@
       "id": "3a4f"
     },
     {
-      "_id": 7,
-      "name": "Jeans",
-      "weather": "warm",
-      "imageUrl": "https://practicum-content.s3.us-west-1.amazonaws.com/software-engineer/wtwr-project/Jeans.png?etag=58345e8bef1ce5f95ac882e71d309e6c",
-      "id": "5070"
-    },
-    {
       "_id": 8,
       "name": "Loafers",
       "weather": "warm",

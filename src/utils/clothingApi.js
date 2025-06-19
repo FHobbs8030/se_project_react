@@ -8,7 +8,7 @@ const mockItems = [
     imageUrl: "https://cdn-icons-png.flaticon.com/512/892/892458.png",
     weather: "cold"
   },
-   {
+  {
     id: "1",
     name: "Sneakers",
     weather: "cold",
@@ -18,7 +18,7 @@ const mockItems = [
     id: "2",
     name: "Cap",
     weather: "cold",
-    imageUrl: "https://images.unsplash.com/photo-1556306535-0f09a537f0a3?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NHx8Y2FwfGVufDB8fDB8fHww"
+    imageUrl: "https://images.unsplash.com/photo-1556306535-0f09a537f0a3?w=500&auto=format&fit=crop&q=60"
   },
   {
     id: "3",
@@ -42,7 +42,7 @@ const mockItems = [
     id: "6",
     name: "Cap",
     weather: "warm",
-    imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c8/Anstosskappe.jpg/960px-Anstosskappe.jpg?20120605132422"
+    imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c8/Anstosskappe.jpg/960px-Anstosskappe.jpg"
   },
   {
     id: "7",
@@ -60,7 +60,7 @@ const mockItems = [
     id: "9",
     name: "Sunglasses",
     weather: "hot",
-    imageUrl: "https://images.unsplash.com/photo-1511499767150-a48a237f0083?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8U3VuZ2xhc3Nlc3xlbnwwfHwwfHx8MA%3D%3D"
+    imageUrl: "https://images.unsplash.com/photo-1511499767150-a48a237f0083?w=500&auto=format&fit=crop&q=60"
   },
   {
     id: "10",
@@ -70,7 +70,7 @@ const mockItems = [
   }
 ];
 
-// ✅ GET
+// GET
 export const getClothingItems = () => {
   if (!BASE_URL) return Promise.resolve(mockItems);
 
@@ -85,7 +85,7 @@ export const getClothingItems = () => {
     });
 };
 
-// ✅ POST
+// POST
 export const addClothingItem = async (item) => {
   if (!BASE_URL) {
     return Promise.resolve({ ...item, id: Date.now().toString() });
@@ -104,13 +104,19 @@ export const addClothingItem = async (item) => {
   return response.json();
 };
 
-// ✅ DELETE
-export const deleteClothingItem = (id) => {
-  if (!BASE_URL) {
-    return Promise.resolve(); // No-op in fallback mode
+// DELETE
+export const deleteClothingItem = async (id) => {
+  if (!BASE_URL) return Promise.resolve();
+
+  const response = await fetch(`${BASE_URL}/${id}`, { method: "DELETE" });
+
+  if (response.status === 404) {
+    throw new Error(`Item with id ${id} not found on server.`);
   }
 
-  return fetch(`${BASE_URL}/${id}`, {
-    method: "DELETE"
-  });
+  if (!response.ok) {
+    throw new Error("Failed to delete item.");
+  }
+
+  return response;
 };
