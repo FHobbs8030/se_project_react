@@ -43,13 +43,6 @@
       "id": "3a4f"
     },
     {
-      "_id": 8,
-      "name": "Loafers",
-      "weather": "warm",
-      "imageUrl": "https://practicum-content.s3.us-west-1.amazonaws.com/software-engineer/wtwr-project/Loafers.png?etag=dc2d6e1ca7b297597406e35c40aef030",
-      "id": "80ea"
-    },
-    {
       "_id": 9,
       "name": "Sandals",
       "weather": "hot",
@@ -83,6 +76,30 @@
       "weather": "hot",
       "imageUrl": "https://practicum-content.s3.us-west-1.amazonaws.com/software-engineer/wtwr-project/T-Shirt.png?etag=44ed1963c44ab19cd2f5011522c5fc09",
       "id": "7c7e"
+    },
+    {
+      "id": "29a6",
+      "name": "Polo Shirt",
+      "imageUrl": "https://m.media-amazon.com/images/I/811B6rR4OHL._AC_UL320_.jpg",
+      "weather": "warm"
+    },
+    {
+      "id": "f0f8",
+      "name": "Ball Caps",
+      "imageUrl": "https://m.media-amazon.com/images/I/61FEYgqDw7L._AC_UL320_.jpg",
+      "weather": "warm"
+    },
+    {
+      "id": "88c8",
+      "name": "Pants",
+      "imageUrl": "https://m.media-amazon.com/images/I/61KWeCM0DuL._AC_UL320_.jpg",
+      "weather": "warm"
+    },
+    {
+      "id": "05c9",
+      "name": "Shoes",
+      "imageUrl": "https://m.media-amazon.com/images/I/61ktctUTxwL._AC_UL320_.jpg",
+      "weather": "warm"
     }
   ]
 }
