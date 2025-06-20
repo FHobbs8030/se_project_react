@@ -1,69 +1,47 @@
 .profile {
   display: flex;
-  gap: 40px;
-  padding: 40px;
+  flex-direction: row;
 }
 
 .profile-main {
   flex: 1;
-  display: flex;
-  flex-direction: column;
+  padding: 0 20px 20px 20px;
 }
 
 .profile-header {
   display: flex;
   align-items: center;
-  margin: 0px;
-  width: 100%;
-}
-
-.your-items-title {
-  font-size: 20px;
-  font-weight: bold;
   margin: 0;
+  padding: 0;
 }
 
-.add-new-button {
-  padding: 8px 12px;
-  font-weight: bold;
+.profile-header__title {
+  width: 94;
+  max-width: 100%;
+  max-height: 25;
+  font-family: Cabinet Grotesk;
+  font-weight: 700;
+  font-size: 20px;
+  line-height: 100%;
+  color: #333;
+  margin: 0px;
+}
+
+.profile-header__add-button {
+  color: #00000099;
+  width: 120px;
+  max-width: 100%;
+  font-family: Cabinet Grotesk;
+  font-weight: 700;
+  font-size: 20px;
+  line-height: 100%;
+  padding: 8px 16px;
+  border-radius: 6px;
   border: none;
-  background-color: #f4f4f4;
   cursor: pointer;
-  border-radius: 4px;
-  transition: background-color 0.2s ease;
+  transition: background-color 0.3s ease;
 }
 
-.add-new-button:hover {
-  background-color: #ddd;
-}
-
-.profile-header__left {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
-
-.profile-header__right {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  margin-left: auto;
-}
-
-@media screen and (max-width: 768px) {
-  .profile {
-    flex-direction: column;
-    gap: 20px;
-    padding: 20px;
-  }
-
-  .profile-main {
-    width: 100%;
-  }
-
-  .profile-header {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 12px;
-  }
+.profile-header__add-button:hover {
+  background-color: #444;
 }

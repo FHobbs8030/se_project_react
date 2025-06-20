@@ -11,7 +11,7 @@ function SideBar() {
           alt="User Avatar"
           className="sidebar__avatar"
         />
-        <p className="sidebar__greeting">Terrence Tegegne</p>
+        <p className="sidebar__username">Terrence Tegegne</p>
       </div>
     </aside>
   );

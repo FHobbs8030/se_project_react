@@ -2,7 +2,6 @@
   width: 200px;
   padding: 0px;
   background-color: #f4f4f4;
-  border-right: 1px solid #ddd;
 }
 
 .sidebar__user-inline {
@@ -18,9 +17,14 @@
   object-fit: cover;
 }
 
-.sidebar__greeting {
-  font-size: 14px;
-  font-weight: 500;
-  color: #333;
-  white-space: nowrap;
+.sidebar__username {
+  font-family: Cabinet Grotesk;
+  font-weight: 700;
+  font-size: 20px;
+  line-height: 100%;
+  margin: 0;
+  white-space: nowrap;      
+  overflow: hidden;         
+  text-overflow: ellipsis;  
 }
+
