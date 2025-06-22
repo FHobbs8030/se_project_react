@@ -1,31 +1,29 @@
-import React from 'react';
-import ItemCard from './ItemCard';
-import '../blocks/ClothesSection.css';
+import React from "react";
+import ItemCard from "./ItemCard";
+import "../blocks/Cards.css";
 
-function ClothesSection({
-  clothingItems,
-  onCardClick,
-  onAddClick,
-  onDeleteItem,
-}) {
+function ClothesSection({ clothingItems, onCardClick, weatherType, title }) {
+  // Filter items that match the current weather type (case-insensitive)
+  const filteredItems = clothingItems.filter(
+    (item) => item.weather?.toLowerCase() === weatherType?.toLowerCase()
+  );
+
   return (
     <section className="clothes-section">
-      {!clothingItems ? (
-        <p>Loading your clothes...</p>
-      ) : clothingItems.length === 0 ? (
-        <p>You haven't added any items yet.</p>
-      ) : (
-        <div className="clothes-grid">
-          {clothingItems.map((item) => (
-            <ItemCard
-              key={item.id}
-              item={item}
-              onCardClick={onCardClick}
-              onDeleteItem={onDeleteItem}
-            />
-          ))}
-        </div>
-      )}
+      <p className="clothes-section__text">
+        {title || `Today is ${weatherType} / You may want to wear:`}
+      </p>
+      <div className="main__cards">
+        {filteredItems.length > 0 ? (
+          filteredItems.map((item) => (
+            <ItemCard key={item.id} item={item} onCardClick={onCardClick} />
+          ))
+        ) : (
+          <p className="clothes-section__text">
+            No matching clothes for this weather.
+          </p>
+        )}
+      </div>
     </section>
   );
 }
