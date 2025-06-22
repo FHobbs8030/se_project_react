@@ -1,7 +1,9 @@
 .main {
-  width: calc(100% - 80px); 
-  max-width: 1440px; 
-  margin: 0 auto; 
+  width: 100%;
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: 0;
+  box-sizing: border-box;
 }
 
 .main__intro {
@@ -13,9 +15,11 @@
 
 .main__cards {
   display: grid;
-  grid-template-columns: repeat(4, 1fr); 
-  gap: 24px;
-  padding: 16px;
+  grid-template-columns: repeat(auto-fit, 325px);
+  justify-content: center;
+  gap: 20px;
+  padding: 16px 0;
+  width: 100%;
 }
 
 .mainweather {
@@ -24,10 +28,12 @@
 }
 
 .main__message {
-  font-size: 16px;
-  font-weight: 500;
+  font-family: Cabinet Grotesk;
+  font-weight: 700;
+  font-size: 20px;
+  line-height: 100%;
   margin: 12px 0;
-  color: #222;
+  color: #000;
 }
 
 .main__temp-display {

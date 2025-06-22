@@ -1,13 +1,8 @@
-.sidebar {
-  width: 200px;
-  padding: 0px;
-  background-color: #f4f4f4;
-}
-
 .sidebar__user-inline {
   display: flex;
   align-items: center;
   gap: 10px;
+  width: 229px;
 }
 
 .sidebar__avatar {

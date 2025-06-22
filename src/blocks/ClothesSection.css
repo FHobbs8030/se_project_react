@@ -1,5 +1,5 @@
 .clothes-section {
-  padding: 16px 0 16px 0;
+  padding: 16px 0 16px 16px;
   background-color: white;
   width: 100%;
   box-sizing: border-box;
@@ -7,16 +7,16 @@
 
 .clothes-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr); 
+  grid-template-columns: repeat(auto-fit, 325px);
+  justify-content: center;
   gap: 24px;
-  max-width: 960px; 
-  margin: 0 auto;
+  padding: 2px;
 }
 
 @media screen and (max-width: 768px) {
   .clothes-grid {
     grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-    gap: 16px;
+    gap: 20px;
   }
 
   .item-card {

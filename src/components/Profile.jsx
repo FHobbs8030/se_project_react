@@ -16,14 +16,14 @@ function Profile({
       <SideBar onLogout={onLogout} />
 
       <div className="profile-main">
-        <div className="profile-header">
-          <p className="profile-header__title">Your items</p>
-          <button className="profile-header__add-button" onClick={onAddClick}>
-            + Add new
-          </button>
-        </div>
+        <div className="profile-content">
+          <div className="profile-header">
+            <p className="profile-header__title">Your items</p>
+            <button className="profile-header__add-button" onClick={onAddClick}>
+              + Add new
+            </button>
+          </div>
 
-        <div className="clothing-section">
           <ClothesSection
             clothingItems={clothingItems}
             onCardClick={onCardClick}

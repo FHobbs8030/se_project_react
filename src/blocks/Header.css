@@ -18,9 +18,11 @@
 }
 
 .header__date-location {
-  font-size: 16px;
-  font-weight: 500;
-  color: #333;
+  font-family: Cabinet Grotesk;
+  font-weight: 700;
+  font-size: 20px;
+  line-height: 24px;
+  color: #000;
 }
 
 .header__right {
@@ -30,11 +32,15 @@
 }
 
 .header__add-button {
-  background-color: #f5f5f5;
+  width: 100%;
+  max-width: 146px;
+  font-family: Cabinet Grotesk;
+  font-weight: 700;
+  font-size: 20px;
+  line-height: 24px;
+  color: #000;
   border: none;
   padding: 6px 12px;
-  font-size: 14px;
-  font-weight: bold;
   cursor: pointer;
   border-radius: 4px;
   transition: background-color 0.2s ease;
@@ -54,10 +60,19 @@
 }
 
 .header__user-name {
+  width: 182px;
   font-family: Cabinet Grotesk;
   font-weight: 700;
   font-size: 20px;
   line-height: 100%;
+  margin: 0px;
+  padding: 6px 12px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.header__user-name:hover {
+  background-color: #e0e0e0;
 }
 
 .header__user-avatar {
