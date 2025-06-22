@@ -11,27 +11,32 @@ function checkResponse(res) {
 }
 
 function request(url, options) {
-  if (!url) {
-    return Promise.resolve(defaultClothingItems);
-  }
   return fetch(url, options).then(checkResponse);
 }
 
 export const getClothingItems = () => {
+  if (!BASE_URL) {
+    // Use fallback for GitHub Pages
+    return Promise.resolve(defaultClothingItems);
+  }
   return request(BASE_URL);
 };
 
 export const addClothingItem = (item) => {
+  if (!BASE_URL) {
+    return Promise.reject("Cannot add items in production");
+  }
   return request(BASE_URL, {
     method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
+    headers: { "Content-Type": "application/json" },
     body: JSON.stringify(item),
   });
 };
 
 export const deleteClothingItem = (itemId) => {
+  if (!BASE_URL) {
+    return Promise.reject("Cannot delete items in production");
+  }
   return request(`${BASE_URL}/${itemId}`, {
     method: "DELETE",
   });
