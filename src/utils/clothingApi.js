@@ -1,4 +1,4 @@
-import { defaultClothingItems } from "./utils/defaultClothingItems";
+import { defaultClothingItems } from "./defaultClothingItems";
 
 const isLocal = window.location.hostname === "localhost";
 const BASE_URL = isLocal ? "http://localhost:3001/clothingItems" : null;
