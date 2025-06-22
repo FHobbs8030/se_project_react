@@ -9,3 +9,29 @@ export const getClothingItems = () => {
     return res.json();
   });
 };
+
+export const addClothingItem = (item) => {
+  return fetch(BASE_URL, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(item),
+  }).then((res) => {
+    if (!res.ok) {
+      throw new Error(`Error adding item: ${res.status}`);
+    }
+    return res.json();
+  });
+};
+
+export const deleteClothingItem = (itemId) => {
+  return fetch(`${BASE_URL}/${itemId}`, {
+    method: "DELETE",
+  }).then((res) => {
+    if (!res.ok) {
+      throw new Error(`Error deleting item: ${res.status}`);
+    }
+    return res.json();
+  });
+};
