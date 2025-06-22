@@ -1,3 +1,5 @@
+import { defaultClothingItems } from "./utils/defaultClothingItems";
+
 const isLocal = window.location.hostname === "localhost";
 const BASE_URL = isLocal ? "http://localhost:3001/clothingItems" : null;
 
@@ -9,6 +11,9 @@ function checkResponse(res) {
 }
 
 function request(url, options) {
+  if (!url) {
+    return Promise.resolve(defaultClothingItems);
+  }
   return fetch(url, options).then(checkResponse);
 }
 
