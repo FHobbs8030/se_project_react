@@ -1,5 +1,3 @@
-import { defaultClothingItems } from "./defaultClothingItems";
-
 const isLocal = window.location.hostname === "localhost";
 const BASE_URL = isLocal ? "http://localhost:3001/clothingItems" : null;
 
@@ -16,8 +14,7 @@ function request(url, options) {
 
 export const getClothingItems = () => {
   if (!BASE_URL) {
-    // Use fallback for GitHub Pages
-    return Promise.resolve(defaultClothingItems);
+    return Promise.reject("BASE_URL is not defined");
   }
   return request(BASE_URL);
 };

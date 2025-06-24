@@ -32,6 +32,7 @@
   line-height: 100%;
   color: #333;
   margin: 0px;
+  padding: 10px;
 }
 
 .profile-header__add-button {
@@ -42,7 +43,7 @@
   font-weight: 700;
   font-size: 20px;
   line-height: 100%;
-  padding: 8px 16px;
+  padding: 10px;
   border-radius: 6px;
   border: none;
   cursor: pointer;
@@ -50,5 +51,5 @@
 }
 
 .profile-header__add-button:hover {
-  background-color: #444;
+   background-color: #e0e0e0;
 }
