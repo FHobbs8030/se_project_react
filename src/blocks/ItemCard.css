@@ -18,6 +18,7 @@
   width: 73px;
   height: 24px;
   background-color: #ffffff;
+  color: #00000099;
   border-radius: 4px;
   font-family: Cabinet Grotesk;
   font-weight: 700;
@@ -29,7 +30,6 @@
 .card__image-container {
   width: 100%;
   height: 200px;
-  background-color: #eee;
   border-radius: 8px;
   display: flex;
   align-items: center;

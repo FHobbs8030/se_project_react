@@ -11,18 +11,20 @@ function Main({ weatherData, clothingItems, onCardClick }) {
   if (!weatherData) {
     return (
       <section className="main">
-        <WeatherCard />
-        <p className="main__message">
-          Can't fetch weather / You may want to wear:
-        </p>
-        <div className="main__cards">
-          {clothingItems.map((item) => (
-            <ItemCard
-              key={item.id || `${item.name}-${Math.random()}`}
-              item={item}
-              onCardClick={onCardClick}
-            />
-          ))}
+        <div className="main__content">
+          <WeatherCard />
+          <p className="main__message">
+            Can't fetch weather / You may want to wear:
+          </p>
+          <div className="main__cards">
+            {clothingItems.map((item) => (
+              <ItemCard
+                key={item.id || `${item.name}-${Math.random()}`}
+                item={item}
+                onCardClick={onCardClick}
+              />
+            ))}
+          </div>
         </div>
       </section>
     );
@@ -49,22 +51,24 @@ function Main({ weatherData, clothingItems, onCardClick }) {
 
   return (
     <section className="main">
-      <WeatherCard weatherData={weatherData} />
-      <p className="main__message">
-        Today is {displayTemp}°{unit} / You may want to wear:
-      </p>
-      <div className="main__cards">
-        {filteredItems.length > 0 ? (
-          filteredItems.map((item) => (
-            <ItemCard
-              key={item.id || `${item.name}-${Math.random()}`}
-              item={item}
-              onCardClick={onCardClick}
-            />
-          ))
-        ) : (
-          <p className="main__message">No matching clothes for this weather.</p>
-        )}
+      <div className="main__content">
+        <WeatherCard weatherData={weatherData} />
+        <p className="main__message">
+          Today is {displayTemp}°{unit} / You may want to wear:
+        </p>
+        <div className="main__cards">
+          {filteredItems.length > 0 ? (
+            filteredItems.map((item) => (
+              <ItemCard
+                key={item.id || `${item.name}-${Math.random()}`}
+                item={item}
+                onCardClick={onCardClick}
+              />
+            ))
+          ) : (
+            <p className="main__message">No matching clothes for this weather.</p>
+          )}
+        </div>
       </div>
     </section>
   );

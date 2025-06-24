@@ -1,7 +1,7 @@
-import React from "react";
-import SideBar from "./SideBar";
-import ClothesSection from "./ClothesSection";
-import "../blocks/Profile.css";
+import React from 'react';
+import SideBar from './SideBar';
+import ClothesSection from './ClothesSection';
+import '../blocks/Profile.css';
 
 function Profile({
   clothingItems,
@@ -9,7 +9,7 @@ function Profile({
   onAddClick,
   onLogout,
   onDeleteItem,
-  weatherData
+  weatherData,
 }) {
   return (
     <div className="profile">
@@ -30,6 +30,7 @@ function Profile({
             onAddClick={onAddClick}
             onDeleteItem={onDeleteItem}
             weatherType={weatherData?.type}
+            showMessage={false}
           />
         </div>
       </div>
