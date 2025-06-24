@@ -11,20 +11,18 @@ function Main({ weatherData, clothingItems, onCardClick }) {
   if (!weatherData) {
     return (
       <section className="main">
-        <div className="main__content">
-          <WeatherCard />
-          <p className="main__message">
-            Can't fetch weather / You may want to wear:
-          </p>
-          <div className="main__cards">
-            {clothingItems.map((item) => (
-              <ItemCard
-                key={item.id || `${item.name}-${Math.random()}`}
-                item={item}
-                onCardClick={onCardClick}
-              />
-            ))}
-          </div>
+        <WeatherCard />
+        <p className="main__message">
+          Can't fetch weather / You may want to wear:
+        </p>
+        <div className="main__cards">
+          {clothingItems.map((item) => (
+            <ItemCard
+              key={item.id || `${item.name}-${Math.random()}`}
+              item={item}
+              onCardClick={onCardClick}
+            />
+          ))}
         </div>
       </section>
     );
@@ -36,10 +34,11 @@ function Main({ weatherData, clothingItems, onCardClick }) {
     : Math.round(rawTemp);
   const unit = isCelsius ? "C" : "F";
 
+  // Always use Fahrenheit for weatherType logic
   let weatherType;
-  if (displayTemp >= 75) {
+  if (rawTemp >= 75) {
     weatherType = "hot";
-  } else if (displayTemp >= 60) {
+  } else if (rawTemp >= 60) {
     weatherType = "warm";
   } else {
     weatherType = "cold";
@@ -51,24 +50,22 @@ function Main({ weatherData, clothingItems, onCardClick }) {
 
   return (
     <section className="main">
-      <div className="main__content">
-        <WeatherCard weatherData={weatherData} />
-        <p className="main__message">
-          Today is {displayTemp}°{unit} / You may want to wear:
-        </p>
-        <div className="main__cards">
-          {filteredItems.length > 0 ? (
-            filteredItems.map((item) => (
-              <ItemCard
-                key={item.id || `${item.name}-${Math.random()}`}
-                item={item}
-                onCardClick={onCardClick}
-              />
-            ))
-          ) : (
-            <p className="main__message">No matching clothes for this weather.</p>
-          )}
-        </div>
+      <WeatherCard weatherData={weatherData} />
+      <p className="main__message">
+        Today is {displayTemp}°{unit} / You may want to wear:
+      </p>
+      <div className="main__cards">
+        {filteredItems.length > 0 ? (
+          filteredItems.map((item) => (
+            <ItemCard
+              key={item.id || `${item.name}-${Math.random()}`}
+              item={item}
+              onCardClick={onCardClick}
+            />
+          ))
+        ) : (
+          <p className="main__message">No matching clothes for this weather.</p>
+        )}
       </div>
     </section>
   );

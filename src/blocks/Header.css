@@ -2,7 +2,7 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  width:100%;
+  width: 100%;
   padding: 16px 40px;
   background-color: white;
 }
@@ -16,6 +16,10 @@
 .header__logo {
   height: 36px;
   cursor: pointer;
+}
+
+.header__logo:hover {
+  background-color: #e0e0e0;
 }
 
 .header__date-location {
@@ -80,4 +84,10 @@
   height: 40px;
   border-radius: 50%;
   object-fit: cover;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.header__user-avatar:hover {
+  background-color: #e0e0e0;
 }
