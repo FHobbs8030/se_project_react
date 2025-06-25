@@ -86,15 +86,15 @@ function App() {
       .then((data) => {
         try {
           const filtered = filterWeatherData(data);
-          console.log("🌤 Filtered weather data:", filtered);
+          console.log("\ud83c\udf24 Filtered weather data:", filtered);
           setWeatherData(filtered);
         } catch (e) {
-          console.warn("⚠️ Weather data format error, using fallback.");
+          console.warn("\u26a0\ufe0f Weather data format error, using fallback.");
           setWeatherData(fallbackWeatherData);
         }
       })
       .catch((err) => {
-        console.error("❌ Weather fetch failed, using fallback:", err);
+        console.error("\u274c Weather fetch failed, using fallback:", err);
         setWeatherData(fallbackWeatherData);
       });
   }, []);
