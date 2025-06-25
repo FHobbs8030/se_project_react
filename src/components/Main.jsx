@@ -7,15 +7,15 @@ import "../blocks/Main.css";
 function Main({ weatherData, clothingItems, onCardClick }) {
   const { currentTemperatureUnit } = useContext(CurrentTemperatureUnitContext);
 
-  // Debug log
   console.log("🐞 weatherData in Main:", weatherData);
 
-  // Fallback UI if weatherData hasn't loaded
-  if (!weatherData) {
+  if (!weatherData || typeof weatherData !== "object") {
     return <p>Loading weather data...</p>;
   }
 
-  const rawTemp = weatherData?.temperature;
+  const rawTemp = weatherData.temperature;
+  const weatherType = weatherData.condition || "unknown";
+
   const displayTemp =
     rawTemp !== undefined && rawTemp !== null
       ? Math.round(
@@ -25,14 +25,18 @@ function Main({ weatherData, clothingItems, onCardClick }) {
         )
       : "--";
 
-  const weatherType = weatherData?.type || "unknown";
-  const clothingToShow = clothingItems.filter(
+  const clothingToShow = clothingItems?.filter(
     (item) => item.weather === weatherType
-  );
+  ) || [];
 
   return (
     <main className="main">
-      <WeatherCard day={weatherData.isDay} type={weatherData.condition} />
+      <WeatherCard
+        day={weatherData.isDay}
+        type={weatherType}
+        temperature={displayTemp}
+        unit={currentTemperatureUnit}
+      />
 
       <section className="main__weather">
         <p className="main__temp-display">
@@ -47,7 +51,7 @@ function Main({ weatherData, clothingItems, onCardClick }) {
         </p>
       </section>
 
-      <ul className="main__cards">
+      <ul className="main__clothing-items">
         {clothingToShow.length > 0 ? (
           clothingToShow.map((item) => (
             <ItemCard key={item.id} item={item} onCardClick={onCardClick} />

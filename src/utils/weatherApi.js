@@ -1,66 +1,48 @@
-// src/utils/weatherApi.js
+const APIkey = "3d0d531d6ea32e66f08e7e0fa3be4ea0";
+const latitude = 39.1638;
+const longitude = -119.7674;
 
-const API_KEY = import.meta.env.VITE_WEATHER_API_KEY || "3d0d531d6ea32e66f08e7e0fa3be4ea0";
-const BASE_URL = "https://api.openweathermap.org/data/2.5/weather";
-
-// Helper to check if it's daytime
-const isDay = ({ sunrise, sunset }, now) => {
-  return sunrise * 1000 < now && now < sunset * 1000;
+const getWeatherType = (weatherCode) => {
+  if (weatherCode >= 200 && weatherCode < 600) return "rainy";
+  if (weatherCode >= 600 && weatherCode < 700) return "snow";
+  if (weatherCode >= 700 && weatherCode < 800) return "cloudy";
+  if (weatherCode === 800) return "clear";
+  if (weatherCode > 800) return "cloudy";
+  return "clear";
 };
 
-// Convert temperature to weather type
-const getWeatherType = (temp) => {
-  if (temp > 86) return "hot";
-  if (temp >= 65 && temp <= 86) return "warm";
-  return "cold";
+const isDaytime = (currentTime, sunrise, sunset) => {
+  return currentTime >= sunrise && currentTime < sunset;
 };
 
-// Format weather data into custom structure
-const filterWeatherData = (data) => {
-  const now = Date.now();
-  return {
-    city: data.name,
-    temperature: Math.round(data.main.temp),
-    type: getWeatherType(data.main.temp),
-    isDay: isDay(data.sys, now),
-    condition: data.weather[0].main.toLowerCase(),
-    location: data.name,
-  };
-};
-
-// Fetch weather data based on coordinates
-export const fetchWeatherByCoords = (lat, lon) => {
-  const useFallback =
-    !API_KEY || (window.location.hostname !== "localhost" && !API_KEY);
-
-  const fallbackData = {
-    name: "Carson City",
-    main: { temp: 72 },
-    sys: {
-      sunrise: 1718620800, // 6:00 AM
-      sunset: 1718671200,  // 8:00 PM
-    },
-    weather: [{ main: "Clear" }],
-  };
-
-  if (useFallback) {
-    console.warn("⚠️ No valid API key found. Using fallback weather data.");
-    return Promise.resolve(fallbackData);
-  }
-
-  const url = `${BASE_URL}?lat=${lat}&lon=${lon}&appid=${API_KEY}&units=imperial`;
-
-  console.log("🌐 Fetching weather from:", url);
-
-  return fetch(url)
+export const fetchWeatherData = () => {
+  return fetch(
+    `https://api.openweathermap.org/data/2.5/weather?lat=${latitude}&lon=${longitude}&appid=${APIkey}&units=imperial`
+  )
     .then((res) => {
-      if (!res.ok) throw new Error("Weather fetch failed");
+      if (!res.ok) {
+        throw new Error("Weather API request failed");
+      }
       return res.json();
     })
+    .then((data) => {
+      const weatherCode = data.weather[0].id;
+      const weatherType = getWeatherType(weatherCode);
+
+      const currentTime = data.dt;
+      const sunrise = data.sys.sunrise;
+      const sunset = data.sys.sunset;
+      const isDay = isDaytime(currentTime, sunrise, sunset);
+
+      return {
+        temperature: data.main.temp,
+        condition: weatherType, // used by WeatherCard
+        type: weatherType,      // used by Main.jsx
+        isDay: isDay,
+      };
+    })
     .catch((err) => {
-      console.error("❌ Weather API error:", err);
-      return fallbackData;
+      console.error("Error fetching weather data:", err);
+      return null;
     });
 };
-
-export { filterWeatherData, getWeatherType };

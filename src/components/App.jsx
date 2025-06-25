@@ -1,22 +1,21 @@
-import React, { useState, useEffect } from "react";
-import { Routes, Route, useNavigate } from "react-router-dom";
-import Header from "./Header.jsx";
-import Footer from "./Footer.jsx";
-import ItemModal from "./ItemModal.jsx";
-import AddItemModal from "./AddItemModal.jsx";
-import ConfirmDeleteModal from "./ConfirmDeleteModal.jsx";
-import Profile from "./Profile.jsx";
-import Main from "./Main.jsx";
-import NotFound from "./NotFound.jsx";
-import "../blocks/App.css";
-
-import { fetchWeatherByCoords, filterWeatherData } from "../utils/weatherApi";
+import React, { useState, useEffect } from 'react';
+import { Routes, Route, useNavigate } from 'react-router-dom';
+import Header from './Header.jsx';
+import Footer from './Footer.jsx';
+import ItemModal from './ItemModal.jsx';
+import AddItemModal from './AddItemModal.jsx';
+import ConfirmDeleteModal from './ConfirmDeleteModal.jsx';
+import Profile from './Profile.jsx';
+import Main from './Main.jsx';
+import NotFound from './NotFound.jsx';
+import '../blocks/App.css';
+import { fetchWeatherData } from "../utils/weatherApi";
 import {
   getClothingItems,
   addClothingItem,
   deleteClothingItem,
-} from "../utils/clothingApi";
-import { CurrentTemperatureUnitContext } from "../contextStore/CurrentTemperatureUnitContext";
+} from '../utils/clothingApi';
+import { CurrentTemperatureUnitContext } from '../contextStore/CurrentTemperatureUnitContext';
 
 function App() {
   const navigate = useNavigate();
@@ -27,18 +26,18 @@ function App() {
   const [isItemModalOpen, setIsItemModalOpen] = useState(false);
   const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
   const [itemToDelete, setItemToDelete] = useState(null);
-  const [currentTemperatureUnit, setCurrentTemperatureUnit] = useState("F");
+  const [currentTemperatureUnit, setCurrentTemperatureUnit] = useState('F');
 
   const handleToggleSwitchChange = () => {
-    setCurrentTemperatureUnit((prev) => (prev === "F" ? "C" : "F"));
+    setCurrentTemperatureUnit(prev => (prev === 'F' ? 'C' : 'F'));
   };
 
   const fallbackWeatherData = {
     temperature: 72,
-    type: "warm",
+    type: 'warm',
     isDay: true,
-    condition: "clear",
-    location: "Carson City",
+    condition: 'clear',
+    location: 'Carson City',
   };
 
   const handleAddClick = () => setIsAddModalOpen(true);
@@ -48,53 +47,52 @@ function App() {
     setSelectedItem(null);
   };
 
-  const handleCardClick = (item) => {
+  const handleCardClick = item => {
     setSelectedItem(item);
     setIsItemModalOpen(true);
   };
 
-  const handleAddGarmentSubmit = async (newItem) => {
+  const handleAddGarmentSubmit = async newItem => {
     try {
       const savedItem = await addClothingItem(newItem);
       setClothingItems([savedItem, ...clothingItems]);
       handleCloseModal();
     } catch (err) {
-      console.error("Error adding item:", err);
+      console.error('Error adding item:', err);
     }
   };
 
-  const handleDeleteItem = async (id) => {
+  const handleDeleteItem = async id => {
     try {
       await deleteClothingItem(id);
-      setClothingItems((prevItems) =>
-        prevItems.filter((item) => item.id !== id)
-      );
+      setClothingItems(prevItems => prevItems.filter(item => item.id !== id));
     } catch (err) {
-      console.error("Error deleting item:", err);
+      console.error('Error deleting item:', err);
     }
   };
 
   const handleLogout = () => {
-    navigate("/");
+    navigate('/');
   };
 
   useEffect(() => {
     const latitude = 39.1638;
     const longitude = -119.7674;
 
-    fetchWeatherByCoords(latitude, longitude)
-      .then((data) => {
+    fetchWeatherData()
+      .then(data => {
         try {
-          const filtered = filterWeatherData(data);
-          console.log("\ud83c\udf24 Filtered weather data:", filtered);
-          setWeatherData(filtered);
+          console.log('🌤 Weather data:', data);
+          setWeatherData(data);
         } catch (e) {
-          console.warn("\u26a0\ufe0f Weather data format error, using fallback.");
+          console.warn(
+            '\u26a0\ufe0f Weather data format error, using fallback.'
+          );
           setWeatherData(fallbackWeatherData);
         }
       })
-      .catch((err) => {
-        console.error("\u274c Weather fetch failed, using fallback:", err);
+      .catch(err => {
+        console.error('\u274c Weather fetch failed, using fallback:', err);
         setWeatherData(fallbackWeatherData);
       });
   }, []);
@@ -105,7 +103,7 @@ function App() {
         const items = await getClothingItems();
         setClothingItems(items);
       } catch (err) {
-        console.error("Error loading clothing items:", err);
+        console.error('Error loading clothing items:', err);
       }
     };
 
@@ -177,7 +175,7 @@ function App() {
                 setIsConfirmModalOpen(false);
                 setIsItemModalOpen(false);
               } else {
-                console.error("No valid ID for deletion.");
+                console.error('No valid ID for deletion.');
               }
             }}
             onCancel={() => setIsConfirmModalOpen(false)}

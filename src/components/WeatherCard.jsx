@@ -30,10 +30,22 @@ const weatherImages = {
   },
 };
 
+// Map API types to your keys
+const mapWeatherType = (type) => {
+  const normalized = type.toLowerCase();
+  if (["clear", "sunny"].includes(normalized)) return "clear";
+  if (["clouds", "cloudy", "overcast"].includes(normalized)) return "cloudy";
+  if (["rain", "drizzle"].includes(normalized)) return "rain";
+  if (["storm", "thunderstorm"].includes(normalized)) return "storm";
+  if (["snow", "sleet"].includes(normalized)) return "snow";
+  return "clear"; 
+};
+
 function WeatherCard({ day, type, temperature = "--", unit = "F" }) {
   const timeOfDay = day ? "day" : "night";
-  const imageSrc = weatherImages[timeOfDay][type] || weatherImages[timeOfDay]["clear"];
-  const imageAlt = `${type} ${day ? "day" : "night"}`;
+  const weatherKey = mapWeatherType(type);
+  const imageSrc = weatherImages[timeOfDay][weatherKey];
+  const imageAlt = `${weatherKey} ${timeOfDay}`;
 
   return (
     <section className="weather-card">
