@@ -44,7 +44,7 @@
 }
 
 .weather-card__overlay.night {
-  background-color: #0f192d; /* Dark overlay for night */
+ background-color: 		#2d6b91 /* Dark overlay for night */
 }
 
 /* Optional: Adjust layout for very small screens */

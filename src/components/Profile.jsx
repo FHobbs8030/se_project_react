@@ -11,6 +11,15 @@ function Profile({
   onDeleteItem,
   weatherData,
 }) {
+  // Derive weatherType from weatherData.condition and temperature
+  let weatherType = 'warm'; // fallback
+
+  if (weatherData?.condition === 'snow' || weatherData?.temperature < 50) {
+    weatherType = 'cold';
+  } else if (weatherData?.condition === 'rain' || weatherData?.temperature > 75) {
+    weatherType = 'hot';
+  }
+
   return (
     <div className="profile">
       <SideBar onLogout={onLogout} />
@@ -29,7 +38,7 @@ function Profile({
             onCardClick={onCardClick}
             onAddClick={onAddClick}
             onDeleteItem={onDeleteItem}
-            weatherType={weatherData?.type}
+            weatherType={weatherType}
             showMessage={false}
           />
         </div>
