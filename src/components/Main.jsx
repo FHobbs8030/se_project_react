@@ -39,9 +39,6 @@ function Main({ weatherData, clothingItems, onCardClick }) {
       />
 
       <section className="main__weather">
-        <p className="main__temp-display">
-          {displayTemp}°{currentTemperatureUnit}
-        </p>
         <p className="main__message">
           Today is{" "}
           {displayTemp !== "--"

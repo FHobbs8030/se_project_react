@@ -1,68 +1,52 @@
 .weather-card {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  background-size: cover;
-  background-position: right center;
-  background-repeat: no-repeat;
-  background-color: #00A3FF;
-  height: 80px;
+  position: relative;
   max-width: 1360px;
-  margin: 20px auto;
-  padding: 0 24px;
-  font-family: 'Cabinet Grotesk', 'Inter', sans-serif;
-  font-weight: 700;
-  font-size: 36px;
-  line-height: 40px;
-  color: #ffffff;
+  margin: 0;
   border-radius: 10px;
-  box-sizing: border-box;
   overflow: hidden;
 }
 
-.weather-card__temp {
-  margin: 0;
-}
-
-.weather-card__image {
-  width: 80px;
-  height: 80px;
-  object-fit: contain;
+.weather-card__full {
   display: block;
-  margin-left: 16px;
+  width: 100%;
+  height: 80px;
+  object-fit: cover;
 }
 
-@media screen and (max-width: 1029px) {
-  .weather-card {
-    width: 100%;
-    margin: 20px auto;
-    padding: 0 20px;
-  }
-
-  .weather-card__image {
-    width: 60px;
-    height: 60px;
-  }
+.weather-card__overlay {
+  position: absolute;
+  top: 0;
+  left: 40px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  height: 100%;
+  color: #fff;
+  font-family: 'Cabinet Grotesk', 'Inter', sans-serif;
+  font-weight: 700;
+  z-index: 1;
 }
 
-@media screen and (max-width: 600px) {
-  .weather-card {
-    width: 85%;
-    font-size: 24px;
-    line-height: 28px;
-    height: 60px;
-    padding: 10px 15px;
-    margin-top: 2rem;
-  }
-
-  .weather-card__image {
-    width: 50px;
-    height: 50px;
-  }
+.weather-card__temp {
+  position: absolute;
+  left: 16px;
+  font-size: 28px;
+  font-weight: bold;
+  padding: 8px 14px;
+  border-radius: 6px;
+  /* background-color: #00A3FF;  */
+  color: white;
+  z-index: 2;
 }
 
-@media screen and (max-width: 480px) {
-  .weather-card {
-    width: calc(100% - 40px);
-  }
+.weather-card__overlay .weather-card__temp {
+  background-color: #00A3FF;
 }
+
+/* .weather-card__overlay.day .weather-card__temp {
+  background-color: #87cefa; /* soft glow for day 
+} */
+
+/* .weather-card__overlay.night .weather-card__temp {
+  background-color: #1e1e2f; /* deeper tone for night 
+} */
