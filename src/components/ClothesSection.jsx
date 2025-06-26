@@ -1,6 +1,7 @@
 import React from "react";
 import ItemCard from "./ItemCard";
 import "../blocks/Cards.css";
+import '../blocks/ClothesSection.css';
 
 function ClothesSection({ clothingItems, onCardClick, weatherType, title, showMessage = true }) {
   // Filter items that match the current weather type (case-insensitive)
