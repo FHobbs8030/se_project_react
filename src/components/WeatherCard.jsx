@@ -33,7 +33,7 @@ const cardImages = {
   },
 };
 
-const normalizeWeatherType = type => {
+const normalizeWeatherType = (type) => {
   const t = type.toLowerCase();
   if (['clear', 'sunny'].includes(t)) return 'clear';
   if (['clouds', 'cloudy', 'overcast'].includes(t)) return 'cloudy';
@@ -45,7 +45,7 @@ const normalizeWeatherType = type => {
 };
 
 function WeatherCard({ day, type, temperature, unit }) {
-  const timeOfDay = day ? "day" : "night";
+  const timeOfDay = day ? 'day' : 'night';
   const weatherKey = normalizeWeatherType(type);
   const imageSrc = cardImages[timeOfDay][weatherKey];
   const altText = `${weatherKey} ${timeOfDay} weather card`;
@@ -53,7 +53,7 @@ function WeatherCard({ day, type, temperature, unit }) {
   return (
     <section className="weather-card">
       <img src={imageSrc} alt={altText} className="weather-card__full" />
-      <div className="weather-card__overlay">
+      <div className={`weather-card__overlay ${timeOfDay}`}>
         <p className="weather-card__temp">{temperature}°{unit}</p>
       </div>
     </section>

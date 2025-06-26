@@ -2,52 +2,44 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  width: 100%;
-  padding: 16px 40px;
-  background-color: white;
+  padding: 16px 24px;
+  background-color: #ffffff;
+  font-family: 'Cabinet Grotesk', 'Inter', sans-serif;
+  border-bottom: 1px solid #e0e0e0;
 }
 
 .header__left {
   display: flex;
   align-items: center;
-  gap: 24px;
+  gap: 16px;
 }
 
 .header__logo {
-  height: 40px;
-  cursor: pointer;
-}
-
-.header__logo:hover {
-  background-color: #e0e0e0;
+  height: 32px;
+  width: auto;
 }
 
 .header__date-location {
-  font-family: Cabinet Grotesk;
-  font-weight: 700;
-  font-size: 20px;
-  line-height: 24px;
-  color: #000;
+  font-size: 16px;
+  font-weight: 500;
+  color: #333;
 }
 
 .header__right {
   display: flex;
   align-items: center;
-  gap: 24px;
+  gap: 16px;
 }
 
 .header__add-button {
-  width: 100%;
-  max-width: 146px;
-  font-family: Cabinet Grotesk;
-  font-weight: 700;
-  font-size: 20px;
-  line-height: 24px;
+  background-color: #f4f4f4;
+  color: #000;
+  font-weight: bold;
+  padding: 8px 16px;
+  border-radius: 6px;
   border: none;
-  padding: 6px 12px;
   cursor: pointer;
-  border-radius: 4px;
-  transition: background-color 0.2s ease;
+  transition: background-color 0.3s;
 }
 
 .header__add-button:hover {
@@ -57,37 +49,46 @@
 .header__user-info {
   display: flex;
   align-items: center;
-  gap: 10px;
   text-decoration: none;
-  color: inherit;
-  cursor: pointer;
+  gap: 8px;
 }
 
 .header__user-name {
-  width: 182px;
-  font-family: Cabinet Grotesk;
-  font-weight: 700;
-  font-size: 20px;
-  line-height: 100%;
-  margin: 0px;
-  padding: 6px 12px;
-  cursor: pointer;
-  transition: background-color 0.2s ease;
-}
-
-.header__user-name:hover {
-  background-color: #e0e0e0;
+  font-size: 16px;
+  font-weight: 600;
+  color: #000;
+  margin: 0;
 }
 
 .header__user-avatar {
-  width: 40px;
   height: 40px;
+  width: 40px;
   border-radius: 50%;
   object-fit: cover;
-  cursor: pointer;
-  transition: background-color 0.2s ease;
 }
 
-.header__user-avatar:hover {
-  background-color: #e0e0e0;
+/* Responsive: switch to column below 868px */
+@media screen and (max-width: 868px) {
+  .header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+
+  .header__left,
+  .header__right {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .header__right {
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+
+  .header__user-info {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
 }
