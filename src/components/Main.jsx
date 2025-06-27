@@ -1,24 +1,39 @@
 import React, { useContext } from 'react';
+import { useOutletContext } from 'react-router-dom';
 import ItemCard from './ItemCard';
 import WeatherCard from './WeatherCard';
 import { CurrentTemperatureUnitContext } from '../contextStore/CurrentTemperatureUnitContext';
 import '../blocks/Main.css';
 
-function Main({ weatherData, clothingItems, onCardClick }) {
+function Main() {
+  const {
+    weatherData,
+    clothingItems,
+    onCardClick,
+    isLoadingWeather,
+    weatherError,
+  } = useOutletContext();
+
   const { currentTemperatureUnit } = useContext(CurrentTemperatureUnitContext);
 
-  console.log('🐞 weatherData in Main:', weatherData);
+  if (isLoadingWeather) {
+    return <p className="main__message">Loading weather data...</p>;
+  }
+
+  if (weatherError) {
+    return <p className="main__message">{weatherError}</p>;
+  }
 
   if (!weatherData || typeof weatherData !== 'object') {
-    return <p>Loading weather data...</p>;
+    return <p className="main__message">Weather data is unavailable.</p>;
   }
 
   const rawTemp = weatherData.temperature;
-  let weatherType = 'warm'; // default
+  let weatherType = 'warm';
 
-  if (weatherData.condition === 'snow' || weatherData.temperature < 50) {
+  if (weatherData.condition === 'snow' || rawTemp < 50) {
     weatherType = 'cold';
-  } else if (weatherData.condition === 'rain' || weatherData.temperature > 75) {
+  } else if (weatherData.condition === 'rain' || rawTemp > 75) {
     weatherType = 'hot';
   }
 
@@ -33,13 +48,6 @@ function Main({ weatherData, clothingItems, onCardClick }) {
     clothingItems?.filter(
       item => item.weather.toLowerCase() === weatherType.toLowerCase()
     ) || [];
-
-  // 🔍 Debugging logs
-  console.log('🌡 Raw Temp:', rawTemp);
-  console.log('🎯 Display Temp:', displayTemp);
-  console.log('☁️ Weather Type (condition):', weatherType);
-  console.log('🧺 Clothing Items:', clothingItems);
-  console.log('👕 Filtered Items to Show:', clothingToShow);
 
   return (
     <main className="main">
@@ -56,14 +64,18 @@ function Main({ weatherData, clothingItems, onCardClick }) {
           {displayTemp !== '--'
             ? `${displayTemp}°${currentTemperatureUnit}`
             : 'unknown'}{' '}
-           / You may want to wear:
+          / You may want to wear:
         </p>
       </section>
 
       <ul className="main__clothing-items">
         {clothingToShow.length > 0 ? (
           clothingToShow.map(item => (
-            <ItemCard key={item.id} item={item} onCardClick={onCardClick} />
+            <ItemCard
+              key={item._id || item.id}
+              item={item}
+              onCardClick={onCardClick}
+            />
           ))
         ) : (
           <p>No matching clothes for this weather.</p>

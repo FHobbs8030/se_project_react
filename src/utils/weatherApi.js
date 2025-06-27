@@ -1,4 +1,4 @@
-const APIkey = "3d0d531d6ea32e66f08e7e0fa3be4ea0";
+const APIkey = import.meta.env.VITE_WEATHER_API_KEY;
 const latitude = 39.1638;
 const longitude = -119.7674;
 
@@ -16,9 +16,10 @@ const isDaytime = (currentTime, sunrise, sunset) => {
 };
 
 export const fetchWeatherData = () => {
-  return fetch(
-    `https://api.openweathermap.org/data/2.5/weather?lat=${latitude}&lon=${longitude}&appid=${APIkey}&units=imperial`
-  )
+  const url = `https://api.openweathermap.org/data/2.5/weather?lat=${latitude}&lon=${longitude}&appid=${APIkey}&units=imperial`;
+  console.log("🌐 Final weather API URL:", url);
+
+  return fetch(url)
     .then((res) => {
       if (!res.ok) {
         throw new Error("Weather API request failed");
@@ -36,8 +37,8 @@ export const fetchWeatherData = () => {
 
       return {
         temperature: data.main.temp,
-        condition: weatherType, // used by WeatherCard
-        type: weatherType,      // used by Main.jsx
+        condition: weatherType,
+        type: weatherType,
         isDay: isDay,
       };
     })

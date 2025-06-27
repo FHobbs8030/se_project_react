@@ -11,7 +11,6 @@ import Profile from "./components/Profile.jsx";
 import NotFound from "./components/NotFound.jsx";
 import "./index.css";
 
-// Mock development data
 const mockWeatherData = {
   temperature: 68,
   location: "Carson City",

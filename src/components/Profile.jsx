@@ -11,12 +11,14 @@ function Profile({
   onDeleteItem,
   weatherData,
 }) {
-  // Derive weatherType from weatherData.condition and temperature
-  let weatherType = 'warm'; // fallback
+  let weatherType = 'warm';
 
-  if (weatherData?.condition === 'snow' || weatherData?.temperature < 50) {
+  const temp = weatherData?.temperature;
+  const condition = weatherData?.condition;
+
+  if (condition === 'snow' || temp < 50) {
     weatherType = 'cold';
-  } else if (weatherData?.condition === 'rain' || weatherData?.temperature > 75) {
+  } else if (condition === 'rain' || temp > 75) {
     weatherType = 'hot';
   }
 

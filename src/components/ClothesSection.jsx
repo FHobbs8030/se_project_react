@@ -1,12 +1,17 @@
-import React from "react";
-import ItemCard from "./ItemCard";
-import "../blocks/Cards.css";
+import React from 'react';
+import ItemCard from './ItemCard';
+import '../blocks/Cards.css';
 import '../blocks/ClothesSection.css';
 
-function ClothesSection({ clothingItems, onCardClick, weatherType, title, showMessage = true }) {
-  // Filter items that match the current weather type (case-insensitive)
+function ClothesSection({
+  clothingItems = [],
+  onCardClick,
+  weatherType,
+  title,
+  showMessage = true,
+}) {
   const filteredItems = clothingItems.filter(
-    (item) => item.weather?.toLowerCase() === weatherType?.toLowerCase()
+    item => item.weather?.toLowerCase() === weatherType?.toLowerCase()
   );
 
   return (
@@ -18,8 +23,12 @@ function ClothesSection({ clothingItems, onCardClick, weatherType, title, showMe
       )}
       <div className="main__cards">
         {filteredItems.length > 0 ? (
-          filteredItems.map((item) => (
-            <ItemCard key={item.id} item={item} onCardClick={onCardClick} />
+          filteredItems.map(item => (
+            <ItemCard
+              key={item._id || item.id}
+              item={item}
+              onCardClick={onCardClick}
+            />
           ))
         ) : (
           <p className="clothes-section__text">

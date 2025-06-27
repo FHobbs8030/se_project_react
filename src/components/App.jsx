@@ -5,11 +5,11 @@ import Footer from './Footer.jsx';
 import ItemModal from './ItemModal.jsx';
 import AddItemModal from './AddItemModal.jsx';
 import ConfirmDeleteModal from './ConfirmDeleteModal.jsx';
-import Profile from './Profile.jsx';
 import Main from './Main.jsx';
+import Profile from './Profile.jsx';
 import NotFound from './NotFound.jsx';
 import '../blocks/App.css';
-import { fetchWeatherData } from "../utils/weatherApi";
+import { fetchWeatherData } from '../utils/weatherApi';
 import {
   getClothingItems,
   addClothingItem,
@@ -27,6 +27,8 @@ function App() {
   const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
   const [itemToDelete, setItemToDelete] = useState(null);
   const [currentTemperatureUnit, setCurrentTemperatureUnit] = useState('F');
+  const [isLoadingWeather, setIsLoadingWeather] = useState(true);
+  const [weatherError, setWeatherError] = useState(null);
 
   const handleToggleSwitchChange = () => {
     setCurrentTemperatureUnit(prev => (prev === 'F' ? 'C' : 'F'));
@@ -41,6 +43,7 @@ function App() {
   };
 
   const handleAddClick = () => setIsAddModalOpen(true);
+
   const handleCloseModal = () => {
     setIsAddModalOpen(false);
     setIsItemModalOpen(false);
@@ -76,24 +79,18 @@ function App() {
   };
 
   useEffect(() => {
-    const latitude = 39.1638;
-    const longitude = -119.7674;
-
+    setIsLoadingWeather(true);
     fetchWeatherData()
       .then(data => {
-        try {
-          console.log('🌤 Weather data:', data);
-          setWeatherData(data);
-        } catch (e) {
-          console.warn(
-            '\u26a0\ufe0f Weather data format error, using fallback.'
-          );
-          setWeatherData(fallbackWeatherData);
-        }
+        setWeatherData(data);
+        setWeatherError(null);
       })
       .catch(err => {
-        console.error('\u274c Weather fetch failed, using fallback:', err);
+        setWeatherError('Unable to load weather');
         setWeatherData(fallbackWeatherData);
+      })
+      .finally(() => {
+        setIsLoadingWeather(false);
       });
   }, []);
 
@@ -106,7 +103,6 @@ function App() {
         console.error('Error loading clothing items:', err);
       }
     };
-
     fetchItems();
   }, []);
 
@@ -126,6 +122,8 @@ function App() {
                     weatherData={weatherData}
                     clothingItems={clothingItems}
                     onCardClick={handleCardClick}
+                    isLoadingWeather={isLoadingWeather}
+                    weatherError={weatherError}
                   />
                 }
               />
