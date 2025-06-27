@@ -16,15 +16,16 @@
 }
 
 .weather-card__overlay {
-  position: absolute;
-  top: 0;
-  left: 0;
-  height: 100%;
-  width: 120px; /* Overlay section for temperature */
-  z-index: 2;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+ position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 100%;
+    max-width: 1360px;
+    z-index: 2;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .weather-card__temp {

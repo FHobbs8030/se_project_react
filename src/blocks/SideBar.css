@@ -3,6 +3,7 @@
   align-items: center;
   gap: 10px;
   width: 229px;
+  margin: 0 0 0 40px;
 }
 
 .sidebar__avatar {

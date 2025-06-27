@@ -1,18 +1,21 @@
 import React from 'react';
 import '../blocks/WeatherCard.css';
 
-import clearDay from '../images/cards/clear-day.svg';
-import clearNight from '../images/cards/clear-night.svg';
-import cloudyDay from '../images/cards/cloudy-day.svg';
-import cloudyNight from '../images/cards/cloudy-night.svg';
-import foggyDay from '../images/cards/foggy-day.svg';
-import foggyNight from '../images/cards/foggy-night.svg';
-import rainyDay from '../images/cards/rainy-day.svg';
-import rainyNight from '../images/cards/rainy-night.svg';
-import snowyDay from '../images/cards/snowy-day.svg';
-import snowyNight from '../images/cards/snowy-night.svg';
-import stormyDay from '../images/cards/stormy-day.svg';
-import stormyNight from '../images/cards/stormy-night.svg';
+// Day icons
+import clearDay from '../images/icons/day/clear.svg';
+import cloudyDay from '../images/icons/day/cloudy.svg';
+import foggyDay from '../images/icons/day/foggy.svg';
+import rainyDay from '../images/icons/day/rain.svg';
+import snowyDay from '../images/icons/day/snowy.svg';
+import stormyDay from '../images/icons/day/stormy.svg';
+
+// Night icons
+import clearNight from '../images/icons/night/clear.svg';
+import cloudyNight from '../images/icons/night/cloudy.svg';
+import foggyNight from '../images/icons/night/foggy.svg';
+import rainyNight from '../images/icons/night/rain.svg';
+import snowyNight from '../images/icons/night/snowy.svg';
+import stormyNight from '../images/icons/night/stormy.svg';
 
 const cardImages = {
   day: {
@@ -34,10 +37,10 @@ const cardImages = {
 };
 
 const normalizeWeatherType = (type) => {
-  const t = type.toLowerCase();
+  const t = type?.toLowerCase() || '';
   if (['clear', 'sunny'].includes(t)) return 'clear';
   if (['clouds', 'cloudy', 'overcast'].includes(t)) return 'cloudy';
-  if (['fog', 'foggy', 'haze'].includes(t)) return 'foggy';
+  if (['fog', 'foggy', 'haze', 'mist'].includes(t)) return 'foggy';
   if (['rain', 'drizzle'].includes(t)) return 'rain';
   if (['snow', 'sleet'].includes(t)) return 'snowy';
   if (['storm', 'thunderstorm'].includes(t)) return 'stormy';
@@ -47,17 +50,27 @@ const normalizeWeatherType = (type) => {
 function WeatherCard({ day, type, temperature, unit }) {
   const timeOfDay = day ? 'day' : 'night';
   const weatherKey = normalizeWeatherType(type);
-  const imageSrc = cardImages[timeOfDay][weatherKey];
-  const altText = `${weatherKey} ${timeOfDay} weather card`;
+  const imageSrc = cardImages[timeOfDay]?.[weatherKey] || clearDay;
+  const altText = `${weatherKey} ${timeOfDay} weather icon`;
 
   return (
     <section className="weather-card">
-      <img src={imageSrc} alt={altText} className="weather-card__full" />
+      <img src={imageSrc} alt={altText} className="weather-card__image" />
       <div className={`weather-card__overlay ${timeOfDay}`}>
-        <p className="weather-card__temp">{temperature}°{unit}</p>
+        <p className="weather-card__temp">
+          {temperature}°{unit}
+        </p>
       </div>
     </section>
   );
 }
+
+// Optional: default props
+WeatherCard.defaultProps = {
+  day: true,
+  type: 'clear',
+  temperature: '--',
+  unit: 'F',
+};
 
 export default WeatherCard;
