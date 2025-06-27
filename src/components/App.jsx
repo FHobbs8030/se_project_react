@@ -1,13 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { Routes, Route, useNavigate } from 'react-router-dom';
+import { Outlet, useNavigate } from 'react-router-dom';
 import Header from './Header.jsx';
 import Footer from './Footer.jsx';
 import ItemModal from './ItemModal.jsx';
 import AddItemModal from './AddItemModal.jsx';
 import ConfirmDeleteModal from './ConfirmDeleteModal.jsx';
-import Main from './Main.jsx';
-import Profile from './Profile.jsx';
-import NotFound from './NotFound.jsx';
 import '../blocks/App.css';
 import { fetchWeatherData } from '../utils/weatherApi';
 import {
@@ -85,7 +82,7 @@ function App() {
         setWeatherData(data);
         setWeatherError(null);
       })
-      .catch(err => {
+      .catch(() => {
         setWeatherError('Unable to load weather');
         setWeatherData(fallbackWeatherData);
       })
@@ -114,34 +111,15 @@ function App() {
         <div className="app">
           <div className="app__content">
             <Header onAddClick={handleAddClick} />
-            <Routes>
-              <Route
-                path="/"
-                element={
-                  <Main
-                    weatherData={weatherData}
-                    clothingItems={clothingItems}
-                    onCardClick={handleCardClick}
-                    isLoadingWeather={isLoadingWeather}
-                    weatherError={weatherError}
-                  />
-                }
-              />
-              <Route
-                path="/profile"
-                element={
-                  <Profile
-                    clothingItems={clothingItems}
-                    onCardClick={handleCardClick}
-                    onAddClick={handleAddClick}
-                    onLogout={handleLogout}
-                    onDeleteItem={handleDeleteItem}
-                    weatherData={weatherData}
-                  />
-                }
-              />
-              <Route path="*" element={<NotFound />} />
-            </Routes>
+            <Outlet
+              context={{
+                weatherData,
+                clothingItems,
+                onCardClick: handleCardClick,
+                isLoadingWeather,
+                weatherError,
+              }}
+            />
             <Footer />
           </div>
         </div>

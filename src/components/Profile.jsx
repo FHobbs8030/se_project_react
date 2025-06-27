@@ -1,31 +1,26 @@
 import React from 'react';
+import { useOutletContext } from 'react-router-dom';
 import SideBar from './SideBar';
 import ClothesSection from './ClothesSection';
 import '../blocks/Profile.css';
 
-function Profile({
-  clothingItems,
-  onCardClick,
-  onAddClick,
-  onLogout,
-  onDeleteItem,
-  weatherData,
-}) {
+function Profile({ onAddClick, onLogout, onDeleteItem }) {
+  const { weatherData, clothingItems, onCardClick } = useOutletContext();
+
   let weatherType = 'warm';
-
   const temp = weatherData?.temperature;
-  const condition = weatherData?.condition;
 
-  if (condition === 'snow' || temp < 50) {
+  if (temp < 60) {
     weatherType = 'cold';
-  } else if (condition === 'rain' || temp > 75) {
+  } else if (temp >= 60 && temp <= 75) {
+    weatherType = 'warm';
+  } else {
     weatherType = 'hot';
   }
 
   return (
     <div className="profile">
       <SideBar onLogout={onLogout} />
-
       <div className="profile-main">
         <div className="profile-content">
           <div className="profile-header">
@@ -34,14 +29,14 @@ function Profile({
               + Add new
             </button>
           </div>
-
           <ClothesSection
             clothingItems={clothingItems}
             onCardClick={onCardClick}
             onAddClick={onAddClick}
             onDeleteItem={onDeleteItem}
             weatherType={weatherType}
-            showMessage={false}
+            showMessage={true}
+            title={`Filtered clothing for ${weatherType} weather`}
           />
         </div>
       </div>

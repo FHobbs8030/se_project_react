@@ -10,17 +10,17 @@ function ClothesSection({
   title,
   showMessage = true,
 }) {
+  console.log('🧥 ClothesSection weatherType:', weatherType);
+  console.log('👕 ClothesSection clothingItems:', clothingItems);
+
   const filteredItems = clothingItems.filter(
     item => item.weather?.toLowerCase() === weatherType?.toLowerCase()
   );
 
+  console.log('🎯 Filtered Items:', filteredItems);
+
   return (
     <section className="clothes-section">
-      {showMessage && (
-        <p className="clothes-section__text">
-          {title || `Today is ${weatherType} / You may want to wear:`}
-        </p>
-      )}
       <div className="main__cards">
         {filteredItems.length > 0 ? (
           filteredItems.map(item => (
