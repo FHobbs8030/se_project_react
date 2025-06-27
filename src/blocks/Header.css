@@ -2,7 +2,8 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 16px 24px;
+  padding: 16px 40px;
+  margin: 0;
   background-color: #ffffff;
   font-family: 'Cabinet Grotesk', 'Inter', sans-serif;
   border: none;
@@ -90,5 +91,11 @@
     display: flex;
     align-items: center;
     gap: 8px;
+  }
+}
+
+@media screen and (max-width: 340px) {
+  .header__user-info {
+    padding: 0 0 0 22px;
   }
 }

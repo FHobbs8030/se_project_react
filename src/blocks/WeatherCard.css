@@ -48,18 +48,8 @@
  background-color: 		#2d6b91 /* Dark overlay for night */
 }
 
-/* Optional: Adjust layout for very small screens */
-@media (max-width: 500px) {
-  .weather-card__full {
-    padding-right: 16px; /* Prevent sun from hitting edge */
-  }
-
-  @media screen and (max-width: 400px) {
-  .weather-card__full {
-    height: 19px;
-  }
+@media screen and (max-width: 600px) {
   .weather-card__temp {
-  font-size: 16px;
+    left: 0;
   }
   }
-}

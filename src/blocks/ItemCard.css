@@ -77,3 +77,15 @@
   background-color: #ff4d4f;
   color: #fff;
 }
+
+@media screen and (max-width: 360px) {
+.card__name {
+  left: 115px;
+}
+}
+
+@media screen and (max-width: 320px) {
+  .card__name {
+    left: 107px;
+  }
+}
