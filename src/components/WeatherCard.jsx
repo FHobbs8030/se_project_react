@@ -1,7 +1,6 @@
 import React from 'react';
 import '../blocks/WeatherCard.css';
 
-// Day icons
 import clearDay from '../images/icons/day/clear.svg';
 import cloudyDay from '../images/icons/day/cloudy.svg';
 import foggyDay from '../images/icons/day/foggy.svg';
@@ -9,7 +8,6 @@ import rainyDay from '../images/icons/day/rain.svg';
 import snowyDay from '../images/icons/day/snowy.svg';
 import stormyDay from '../images/icons/day/stormy.svg';
 
-// Night icons
 import clearNight from '../images/icons/night/clear.svg';
 import cloudyNight from '../images/icons/night/cloudy.svg';
 import foggyNight from '../images/icons/night/foggy.svg';
@@ -44,10 +42,10 @@ const normalizeWeatherType = (type) => {
   if (['rain', 'drizzle'].includes(t)) return 'rain';
   if (['snow', 'sleet'].includes(t)) return 'snowy';
   if (['storm', 'thunderstorm'].includes(t)) return 'stormy';
-  return 'clear'; // fallback
+  return 'clear';
 };
 
-function WeatherCard({ day, type, temperature, unit }) {
+function WeatherCard({ day = true, type = 'clear', temperature = '--', unit = 'F' }) {
   const timeOfDay = day ? 'day' : 'night';
   const weatherKey = normalizeWeatherType(type);
   const imageSrc = cardImages[timeOfDay]?.[weatherKey] || clearDay;
@@ -64,13 +62,5 @@ function WeatherCard({ day, type, temperature, unit }) {
     </section>
   );
 }
-
-// Optional: default props
-WeatherCard.defaultProps = {
-  day: true,
-  type: 'clear',
-  temperature: '--',
-  unit: 'F',
-};
 
 export default WeatherCard;

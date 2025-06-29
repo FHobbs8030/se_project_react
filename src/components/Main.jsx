@@ -52,8 +52,8 @@ function Main() {
   return (
     <main className="main">
       <WeatherCard
-        day={weatherData.isDay}
-        type={weatherType}
+        day={weatherData.isDay ? 'day' : 'night'}
+        type={weatherData.condition}
         temperature={displayTemp}
         unit={currentTemperatureUnit}
       />
