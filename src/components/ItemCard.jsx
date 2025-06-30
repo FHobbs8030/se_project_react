@@ -2,15 +2,19 @@ import React from 'react';
 import '../blocks/ItemCard.css';
 import '../blocks/Cards.css';
 
-function ItemCard({ item, onCardClick }) {
+function ItemCard({ item, onCardClick, needsScaling }) {
+  const imageClassName = `card__image${needsScaling ? ' card__image--scaled' : ''}`;
+
   return (
     <li className="card">
-      <p className="card__name">{item.name}</p>
+      <div className="card__name-wrapper">
+        <p className="card__name">{item.name}</p>
+      </div>
       <div className="card__image-container">
         <img
-          className="card__image"
+          className={imageClassName}
           src={item.imageUrl}
-          alt={item.name || "Clothing item"}
+          alt={item.name || 'Clothing item'}
           loading="lazy"
           onClick={() => onCardClick(item)}
         />

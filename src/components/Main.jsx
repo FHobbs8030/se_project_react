@@ -49,6 +49,8 @@ function Main() {
       item => item.weather.toLowerCase() === weatherType.toLowerCase()
     ) || [];
 
+  const noScaleItems = ['Sneakers', 'Vintage Cap'];
+
   return (
     <main className="main">
       <WeatherCard
@@ -68,19 +70,21 @@ function Main() {
         </p>
       </section>
 
-      <ul className="main__clothing-items">
-        {clothingToShow.length > 0 ? (
-          clothingToShow.map(item => (
-            <ItemCard
-              key={item._id || item.id}
-              item={item}
-              onCardClick={onCardClick}
-            />
-          ))
-        ) : (
-          <p>No matching clothes for this weather.</p>
-        )}
-      </ul>
+     <ul className="main__clothing-items">
+  {clothingToShow.length > 0 ? (
+    clothingToShow.map(item => (
+      <ItemCard
+        key={item._id || item.id}
+        item={item}
+        onCardClick={onCardClick}
+        needsScaling={!noScaleItems.includes(item.name)}
+      />
+    ))
+  ) : (
+    <li className="main__message">No matching clothes for this weather.</li>
+  )}
+</ul>
+
     </main>
   );
 }

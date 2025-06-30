@@ -10,14 +10,11 @@ function ClothesSection({
   title,
   showMessage = true,
 }) {
-  console.log('🧥 ClothesSection weatherType:', weatherType);
-  console.log('👕 ClothesSection clothingItems:', clothingItems);
+  const scaleItems = ['Polo Shirt', 'Pants', 'Shoes', 'Ball Caps'];
 
   const filteredItems = clothingItems.filter(
     item => item.weather?.toLowerCase() === weatherType?.toLowerCase()
   );
-
-  console.log('🎯 Filtered Items:', filteredItems);
 
   return (
     <section className="clothes-section">
@@ -28,6 +25,7 @@ function ClothesSection({
               key={item._id || item.id}
               item={item}
               onCardClick={onCardClick}
+              needsScaling={scaleItems.includes(item.name)}
             />
           ))
         ) : (

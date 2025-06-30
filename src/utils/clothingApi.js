@@ -1,5 +1,7 @@
 const isLocal = window.location.hostname === "localhost";
-const BASE_URL = isLocal ? "http://localhost:3001/clothingItems" : null;
+const BASE_URL = isLocal
+  ? "http://localhost:3001/clothingItems"
+  : "https://your-production-api.com/clothingItems"; // Optional fallback
 
 function checkResponse(res) {
   if (!res.ok) {
@@ -13,16 +15,10 @@ function request(url, options) {
 }
 
 export const getClothingItems = () => {
-  if (!BASE_URL) {
-    return Promise.reject("BASE_URL is not defined");
-  }
   return request(BASE_URL);
 };
 
 export const addClothingItem = (item) => {
-  if (!BASE_URL) {
-    return Promise.reject("Cannot add items in production");
-  }
   return request(BASE_URL, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
@@ -31,9 +27,7 @@ export const addClothingItem = (item) => {
 };
 
 export const deleteClothingItem = (itemId) => {
-  if (!BASE_URL) {
-    return Promise.reject("Cannot delete items in production");
-  }
+  console.log("🔍 Deleting item with ID:", itemId);
   return request(`${BASE_URL}/${itemId}`, {
     method: "DELETE",
   });

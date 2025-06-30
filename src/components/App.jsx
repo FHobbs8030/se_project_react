@@ -27,9 +27,8 @@ function App() {
   const [isLoadingWeather, setIsLoadingWeather] = useState(true);
   const [weatherError, setWeatherError] = useState(null);
 
-  const handleToggleSwitchChange = () => {
+  const handleToggleSwitchChange = () =>
     setCurrentTemperatureUnit(prev => (prev === 'F' ? 'C' : 'F'));
-  };
 
   const fallbackWeatherData = {
     temperature: 72,
@@ -63,17 +62,18 @@ function App() {
   };
 
   const handleDeleteItem = async id => {
+    console.log('Attempting to delete item with ID:', id);
     try {
       await deleteClothingItem(id);
-      setClothingItems(prevItems => prevItems.filter(item => item.id !== id));
+      setClothingItems(prevItems =>
+        prevItems.filter(item => item._id !== id)
+      );
     } catch (err) {
       console.error('Error deleting item:', err);
     }
   };
 
-  const handleLogout = () => {
-    navigate('/');
-  };
+  const handleLogout = () => navigate('/');
 
   useEffect(() => {
     setIsLoadingWeather(true);
@@ -86,9 +86,7 @@ function App() {
         setWeatherError('Unable to load weather');
         setWeatherData(fallbackWeatherData);
       })
-      .finally(() => {
-        setIsLoadingWeather(false);
-      });
+      .finally(() => setIsLoadingWeather(false));
   }, []);
 
   useEffect(() => {
@@ -146,20 +144,7 @@ function App() {
         {isConfirmModalOpen && (
           <ConfirmDeleteModal
             onConfirm={() => {
-              if (itemToDelete?.id) {
-                handleDeleteItem(itemToDelete.id);
+              const deleteId = itemToDelete?._id;
+              if (deleteId) {
+                handleDeleteItem(deleteId);
                 setIsConfirmModalOpen(false);
-                setIsItemModalOpen(false);
-              } else {
-                console.error('No valid ID for deletion.');
-              }
-            }}
-            onCancel={() => setIsConfirmModalOpen(false)}
-          />
-        )}
-      </div>
-    </CurrentTemperatureUnitContext.Provider>
-  );
-}
-
-export default App;
