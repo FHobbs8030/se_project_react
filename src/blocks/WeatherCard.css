@@ -1,61 +1,70 @@
 .weather-card {
   position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
   max-width: 1360px;
-  margin: 0;
+  height: 80px;
+  margin: 0 auto;
   border-radius: 10px;
   overflow: hidden;
 }
 
+.weather-card__overlay {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: 0 16px;
+  height: 100%;
+}
+
+.weather-card__temp {
+  font-size: 32px;
+  font-weight: bold;
+  color: #ffffff;
+}
+
 .weather-card__icon {
+  position: absolute;
+  top: -2px;
+  right: -1px;
+  border-top-right-radius: 10px;
   width: 60px;
   height: 60px;
   object-fit: contain;
   z-index: 2;
 }
 
-.weather-card__full {
-  display: block;
-  width: auto;
-  height: 80px;
-  max-height: 80px;
-  object-fit: contain;
-  margin-left: 16px;
-}
-
-.weather-card__overlay {
-  position: absolute;
-  top: 0;
-  left: 0;
-  height: 100%;
-  width: 100%;
-  max-width: 1360px;
-  z-index: 2;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.weather-card__temp {
-  position: absolute;
-  left: 16px;
-  font-size: 28px;
-  font-weight: bold;
-  padding: 8px 14px;
-  border-radius: 6px;
-  color: white;
-  z-index: 2;
-}
-
 .weather-card__overlay.day {
-  background-color: #00A3FF;
+  background-color: #00a3ff;
 }
 
 .weather-card__overlay.night {
   background-color: #2d6b91;
 }
 
+@media screen and (max-width: 868px) {
+  .weather-card__icon {
+    top: -2px;
+    right: 0px;
+  }
+}
+
 @media screen and (max-width: 600px) {
   .weather-card__temp {
-    left: 0;
+    font-size: 24px;
+  }
+
+  .weather-card__icon {
+    right: 0;
+    width: 48px;
+    height: 48px;
+  }
+}
+
+@media screen and (max-width: 460px) {
+  .weather-card__icon {
+   top: -1px;
   }
 }

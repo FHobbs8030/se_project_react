@@ -1,27 +1,19 @@
 import React from "react";
 import "../blocks/WeatherCard.css";
 
-function WeatherCard({ weatherData }) {
-  if (!weatherData || !weatherData.main || !weatherData.weather || !weatherData.sys) {
-    return null;
-  }
-
-  const temperature = Math.round(weatherData.main.temp);
-  const condition = weatherData.weather[0]?.main?.toLowerCase() || "default";
-  const isDay = weatherData.dt > weatherData.sys.sunrise && weatherData.dt < weatherData.sys.sunset;
-
-  const weatherKey = condition;
-  const timeOfDay = isDay ? "day" : "night";
-  const imageSrc = `/images/icons/${timeOfDay}/${weatherKey}.svg`;
+function WeatherCard({ day, type, temperature, unit }) {
+  const imageSrc = `/images/icons/${day}/${type.toLowerCase()}.svg`;
 
   return (
     <div className="weather-card">
-      <div className={`weather-card__overlay ${timeOfDay}`}>
-        <span className="weather-card__temp">{temperature}°F</span>
+      <div className={`weather-card__overlay ${day}`}>
+        <span className="weather-card__temp">
+          {temperature}°{unit}
+        </span>
         <img
           className="weather-card__icon"
           src={imageSrc}
-          alt={`Weather icon: ${weatherKey}`}
+          alt={`Weather icon: ${type}`}
         />
       </div>
     </div>
