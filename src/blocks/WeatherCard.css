@@ -6,26 +6,33 @@
   overflow: hidden;
 }
 
+.weather-card__icon {
+  width: 60px;
+  height: 60px;
+  object-fit: contain;
+  z-index: 2;
+}
+
 .weather-card__full {
   display: block;
-  width: 100%;
-  height: auto; /* Maintain image aspect ratio */
-  max-height: 80px; /* Prevent overly tall cards */
-  object-fit: contain;  
-  object-fit: cover;
+  width: auto;
+  height: 80px;
+  max-height: 80px;
+  object-fit: contain;
+  margin-left: 16px;
 }
 
 .weather-card__overlay {
- position: absolute;
-    top: 0;
-    left: 0;
-    height: 100%;
-    width: 100%;
-    max-width: 1360px;
-    z-index: 2;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+  max-width: 1360px;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .weather-card__temp {
@@ -39,17 +46,16 @@
   z-index: 2;
 }
 
-/* Day and night overlay backgrounds (using hex colors) */
 .weather-card__overlay.day {
-  background-color: #00A3FF; /* Bright blue for day */
+  background-color: #00A3FF;
 }
 
 .weather-card__overlay.night {
- background-color: 		#2d6b91 /* Dark overlay for night */
+  background-color: #2d6b91;
 }
 
 @media screen and (max-width: 600px) {
   .weather-card__temp {
     left: 0;
   }
-  }
+}

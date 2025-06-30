@@ -1,16 +1,11 @@
-import React from "react";
-import "../blocks/SideBar.css";
-import Avatar from "../images/Avatar.png"; 
+import React from 'react';
+import '../blocks/SideBar.css';
 
 function SideBar() {
   return (
     <aside className="sidebar">
-      <div className="sidebar__user-inline">
-        <img
-          src={Avatar}
-          alt="User Avatar"
-          className="sidebar__avatar"
-        />
+      <div className="sidebar__user">
+        <img src="/images/Avatar.png" alt="User Avatar" className="sidebar__avatar" />
         <p className="sidebar__username">Terrence Tegegne</p>
       </div>
     </aside>

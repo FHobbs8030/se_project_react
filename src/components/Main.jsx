@@ -51,12 +51,7 @@ function Main() {
 
   return (
     <main className="main">
-      <WeatherCard
-        day={weatherData.isDay ? 'day' : 'night'}
-        type={weatherData.condition}
-        temperature={displayTemp}
-        unit={currentTemperatureUnit}
-      />
+      <WeatherCard weatherData={weatherData} />
 
       <section className="main__weather">
         <p className="main__message">
