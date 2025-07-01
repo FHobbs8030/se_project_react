@@ -10,7 +10,7 @@
     "preview": "vite preview",
     "predeploy": "npm run build",
     "deploy": "gh-pages -d dist",
-    "server": "json-server --watch db.json --port 3001",
+    "server": "json-server --watch db.json --port 3001"
   },
   "dependencies": {
     "normalize.css": "^8.0.1",
