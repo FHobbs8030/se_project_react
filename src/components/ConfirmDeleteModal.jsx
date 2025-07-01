@@ -7,17 +7,20 @@ function ConfirmDeleteModal({ onConfirm, onCancel }) {
       <div className="confirm-modal__box">
         <button
           className="confirm-modal__close"
-          aria-label="Close delete modal"
+          aria-label="Close modal"
           onClick={onCancel}
         >
           &times;
         </button>
-        <div className="confirm-modal__message-box">
-          <p className="confirm-modal__question">Are you sure you want to delete this item?</p>
-          <p className="confirm-modal__note">This action is irreversible.</p>
-        </div>
-        <div className="confirm-modal__actions">
-          <button className="confirm-modal__delete-button" onClick={onConfirm}>
+        <h3 className="confirm-modal__title">
+          Are you sure you want to delete this item?
+        </h3>
+        <p className="confirm-modal__text">This action is irreversible.</p>
+        <div className="confirm-modal__buttons">
+          <button
+            className="confirm-modal__delete-button"
+            onClick={onConfirm}
+          >
             Yes, delete item
           </button>
           <button className="confirm-modal__cancel-button" onClick={onCancel}>

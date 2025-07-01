@@ -43,6 +43,7 @@ function App() {
   const handleCloseModal = () => {
     setIsAddModalOpen(false);
     setIsItemModalOpen(false);
+    setIsConfirmModalOpen(false);
     setSelectedItem(null);
   };
 
@@ -64,9 +65,7 @@ function App() {
   const handleDeleteItem = async id => {
     try {
       await deleteClothingItem(id);
-      setClothingItems(prevItems =>
-        prevItems.filter(item => item._id !== id)
-      );
+      setClothingItems(prevItems => prevItems.filter(item => item._id !== id));
     } catch (err) {
       console.error('Error deleting item:', err);
     }
