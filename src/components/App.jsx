@@ -62,7 +62,6 @@ function App() {
   };
 
   const handleDeleteItem = async id => {
-    console.log('Attempting to delete item with ID:', id);
     try {
       await deleteClothingItem(id);
       setClothingItems(prevItems =>
@@ -148,3 +147,14 @@ function App() {
               if (deleteId) {
                 handleDeleteItem(deleteId);
                 setIsConfirmModalOpen(false);
+              }
+            }}
+            onCancel={handleCloseModal}
+          />
+        )}
+      </div>
+    </CurrentTemperatureUnitContext.Provider>
+  );
+}
+
+export default App;

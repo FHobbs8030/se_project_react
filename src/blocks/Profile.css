@@ -22,9 +22,7 @@
 }
 
 .profile-header__title {
-  width: 94;
   max-width: 100%;
-  max-height: 25;
   font-family: Cabinet Grotesk;
   font-weight: 700;
   font-size: 20px;

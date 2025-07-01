@@ -22,7 +22,7 @@ function ClothesSection({
         {filteredItems.length > 0 ? (
           filteredItems.map(item => (
             <ItemCard
-              key={item._id || item.id}
+              key={item._id}
               item={item}
               onCardClick={onCardClick}
               needsScaling={scaleItems.includes(item.name)}

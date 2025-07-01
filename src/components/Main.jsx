@@ -74,7 +74,7 @@ function Main() {
   {clothingToShow.length > 0 ? (
     clothingToShow.map(item => (
       <ItemCard
-        key={item._id || item.id}
+        key={item._id}
         item={item}
         onCardClick={onCardClick}
         needsScaling={!noScaleItems.includes(item.name)}
