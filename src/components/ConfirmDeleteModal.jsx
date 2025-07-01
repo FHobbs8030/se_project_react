@@ -1,13 +1,35 @@
-import React from "react";
-import "../blocks/ConfirmDeleteModal.css";
+import React, { useEffect, useRef } from 'react';
+import '../blocks/ConfirmDeleteModal.css';
 
 function ConfirmDeleteModal({ onConfirm, onCancel }) {
+  const modalRef = useRef(null);
+
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (e.key === 'Escape') {
+        onCancel();
+      }
+    };
+
+    document.addEventListener('keydown', handleKeyDown);
+
+    return () => {
+      document.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [onCancel]);
+
+  const handleBackdropClick = (e) => {
+    if (modalRef.current && !modalRef.current.contains(e.target)) {
+      onCancel();
+    }
+  };
+
   return (
-    <div className="confirm-modal">
-      <div className="confirm-modal__box">
+    <div className="confirm-modal" onClick={handleBackdropClick}>
+      <div className="confirm-modal__box" ref={modalRef}>
         <button
-          className="confirm-modal__close"
-          aria-label="Close modal"
+          type="button"
+          className="confirm-modal__close-button"
           onClick={onCancel}
         >
           &times;
@@ -19,11 +41,16 @@ function ConfirmDeleteModal({ onConfirm, onCancel }) {
         <div className="confirm-modal__buttons">
           <button
             className="confirm-modal__delete-button"
+            type="button"
             onClick={onConfirm}
           >
             Yes, delete item
           </button>
-          <button className="confirm-modal__cancel-button" onClick={onCancel}>
+          <button
+            className="confirm-modal__cancel"
+            type="button"
+            onClick={onCancel}
+          >
             Cancel
           </button>
         </div>

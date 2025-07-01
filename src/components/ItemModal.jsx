@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import '../blocks/ItemModal.css';
 
 function ItemModal({ item, onClose, onConfirmDelete }) {
@@ -6,9 +6,22 @@ function ItemModal({ item, onClose, onConfirmDelete }) {
     onConfirmDelete();
   };
 
+  useEffect(() => {
+    const handleEscClose = (e) => {
+      if (e.key === 'Escape') {
+        onClose();
+      }
+    };
+
+    document.addEventListener('keydown', handleEscClose);
+    return () => {
+      document.removeEventListener('keydown', handleEscClose);
+    };
+  }, [onClose]);
+
   return (
     <div className="item-modal" onClick={onClose}>
-      <div className="item-modal__content" onClick={e => e.stopPropagation()}>
+      <div className="item-modal__content" onClick={(e) => e.stopPropagation()}>
         <button className="item-modal__close" onClick={onClose}>
           &times;
         </button>

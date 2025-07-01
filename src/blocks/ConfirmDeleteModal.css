@@ -55,7 +55,7 @@
   cursor: pointer;
 }
 
-.confirm-modal__close {
+.confirm-modal__close-button {
   position: absolute;
   top: 12px;
   right: 18px;
