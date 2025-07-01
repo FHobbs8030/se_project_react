@@ -10,7 +10,8 @@
     "preview": "vite preview",
     "predeploy": "npm run build",
     "deploy": "gh-pages -d dist",
-    "server": "node server.cjs"
+    "server": "node server.cjs",
+    "test-json": "node test.js"
   },
   "dependencies": {
     "normalize.css": "^8.0.1",
