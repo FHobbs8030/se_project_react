@@ -2,7 +2,6 @@
   "name": "se_project_react",
   "private": true,
   "version": "0.0.0",
-  "type": "module",
   "homepage": "https://fhobbs8030.github.io/se_project_react",
   "scripts": {
     "dev": "vite --open",
@@ -11,7 +10,7 @@
     "preview": "vite preview",
     "predeploy": "npm run build",
     "deploy": "gh-pages -d dist",
-    "server": "node server.mjs"
+    "server": "node server.cjs"
   },
   "dependencies": {
     "normalize.css": "^8.0.1",
