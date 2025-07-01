@@ -114,6 +114,7 @@ function App() {
                 onCardClick: handleCardClick,
                 isLoadingWeather,
                 weatherError,
+                onAddClick: handleAddClick,
               }}
             />
             <Footer />
