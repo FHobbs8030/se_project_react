@@ -1,21 +1,18 @@
-import React, { useEffect, useRef } from 'react';
-import '../blocks/ConfirmDeleteModal.css';
+import React, { useEffect, useRef } from "react";
+import "../blocks/ConfirmDeleteModal.css";
 
 function ConfirmDeleteModal({ onConfirm, onCancel }) {
   const modalRef = useRef(null);
 
   useEffect(() => {
     const handleKeyDown = (e) => {
-      if (e.key === 'Escape') {
+      if (e.key === "Escape") {
         onCancel();
       }
     };
 
-    document.addEventListener('keydown', handleKeyDown);
-
-    return () => {
-      document.removeEventListener('keydown', handleKeyDown);
-    };
+    document.addEventListener("keydown", handleKeyDown);
+    return () => document.removeEventListener("keydown", handleKeyDown);
   }, [onCancel]);
 
   const handleBackdropClick = (e) => {
@@ -47,7 +44,7 @@ function ConfirmDeleteModal({ onConfirm, onCancel }) {
             Yes, delete item
           </button>
           <button
-            className="confirm-modal__cancel"
+            className="confirm-modal__cancel-btn"
             type="button"
             onClick={onCancel}
           >

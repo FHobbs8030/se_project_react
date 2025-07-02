@@ -65,7 +65,7 @@ function App() {
   const handleDeleteItem = async id => {
     try {
       await deleteClothingItem(id);
-      setClothingItems(prevItems => prevItems.filter(item => item._id !== id));
+      setClothingItems(prevItems => prevItems.filter(item => item.id !== id));
     } catch (err) {
       console.error('Error deleting item:', err);
     }
@@ -112,6 +112,10 @@ function App() {
                 weatherData,
                 clothingItems,
                 onCardClick: handleCardClick,
+                onDeleteClick: item => {
+                  setItemToDelete(item);
+                  setIsConfirmModalOpen(true);
+                },
                 isLoadingWeather,
                 weatherError,
                 onAddClick: handleAddClick,
@@ -143,7 +147,7 @@ function App() {
         {isConfirmModalOpen && (
           <ConfirmDeleteModal
             onConfirm={() => {
-              const deleteId = itemToDelete?._id;
+              const deleteId = itemToDelete?.id;
               if (deleteId) {
                 handleDeleteItem(deleteId);
                 setIsConfirmModalOpen(false);
