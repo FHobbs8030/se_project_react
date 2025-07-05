@@ -4,13 +4,9 @@ import SideBar from './SideBar';
 import ClothesSection from './ClothesSection';
 import '../blocks/Profile.css';
 
-function Profile({ onLogout, onDeleteItem }) {
-  const {
-    weatherData,
-    clothingItems,
-    onCardClick,
-    onAddClick, // ✅ destructure it here
-  } = useOutletContext();
+function Profile({ onLogout }) {
+  const { weatherData, clothingItems, onCardClick, onAddClick, onDeleteClick } =
+    useOutletContext();
 
   let weatherType = 'warm';
   const temp = weatherData?.temperature;
@@ -30,10 +26,7 @@ function Profile({ onLogout, onDeleteItem }) {
         <div className="profile-content">
           <div className="profile-header">
             <p className="profile-header__title">Your items</p>
-            <button
-              className="profile-header__add-button"
-              onClick={onAddClick}
-            >
+            <button className="profile-header__add-button" onClick={onAddClick}>
               + Add new
             </button>
           </div>
@@ -41,9 +34,10 @@ function Profile({ onLogout, onDeleteItem }) {
             clothingItems={clothingItems}
             onCardClick={onCardClick}
             onAddClick={onAddClick}
-            onDeleteItem={onDeleteItem}
+            onDeleteItem={onDeleteClick}
             weatherType={weatherType}
             showMessage={true}
+            showDelete={true}
             title={`Filtered clothing for ${weatherType} weather`}
           />
         </div>

@@ -15,31 +15,25 @@ function request(url, options) {
 }
 
 export const getClothingItems = () => {
-  return request(BASE_URL).then(items =>
-    items.map(item => ({
-      ...item,
-      id: item._id,
-    }))
-  );
+  return request(BASE_URL);
 };
 
 export const addClothingItem = item => {
   const newId = crypto.randomUUID();
-  // const newItem = {
-  //   ...item,
-  //   _id: newId,
-  //   id: newId,
-  // };
+  const newItem = {
+    ...item,
+    _id: newId,
+  };
 
   return request(BASE_URL, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(item),
+    body: JSON.stringify(newItem),
   });
 };
 
-export const deleteClothingItem = itemId => {
-  return request(`${BASE_URL}/${itemId}`, {
+export const deleteClothingItem = (_id) => {
+  return request(`${BASE_URL}/${_id}`, {
     method: 'DELETE',
   });
 };
