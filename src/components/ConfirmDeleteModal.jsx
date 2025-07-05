@@ -44,7 +44,7 @@ function ConfirmDeleteModal({ onConfirm, onCancel }) {
             Yes, delete item
           </button>
           <button
-            className="confirm-modal__cancel-btn"
+            className="confirm-modal__cancel-button"
             type="button"
             onClick={onCancel}
           >

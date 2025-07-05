@@ -29,6 +29,13 @@
       "isOwned": true
     },
     {
+      "_id": 4,
+      "name": "Dress",
+      "weather": "hot",
+      "imageUrl": "https://practicum-content.s3.us-west-1.amazonaws.com/software-engineer/wtwr-project/Dress.png?etag=1f9cd32a311ab139cab43494883720bf",
+      "isOwned": true
+    },
+    {
       "_id": 5,
       "name": "Hoodie",
       "weather": "cold",
@@ -57,6 +64,13 @@
       "isOwned": true
     },
     {
+      "_id": 9,
+      "name": "Sandals",
+      "weather": "hot",
+      "imageUrl": "https://practicum-content.s3.us-west-1.amazonaws.com/software-engineer/wtwr-project/Sandals.png?etag=9bea85a77c0306586d2b71a33b626d41",
+      "isOwned": true
+    },
+    {
       "_id": 10,
       "name": "Scarf",
       "weather": "cold",
@@ -68,6 +82,13 @@
       "name": "Shorts",
       "weather": "Hot",
       "imageUrl": "https://practicum-content.s3.us-west-1.amazonaws.com/software-engineer/wtwr-project/Shorts.png?etag=d728c496643f610de8d8fea92dd915ba",
+      "isOwned": true
+    },
+    {
+      "_id": 12,
+      "name": "Skirt",
+      "weather": "hot",
+      "imageUrl": "https://practicum-content.s3.us-west-1.amazonaws.com/software-engineer/wtwr-project/Skirt.png?etag=27a6bea7e1b63218820d615876fa31d1",
       "isOwned": true
     },
     {

@@ -4,7 +4,8 @@
   box-sizing: border-box;
 }
 
-html, body {
+html,
+body {
   overflow-x: hidden;
   max-width: 100vw;
 }
@@ -22,27 +23,18 @@ html, body {
 }
 
 .item-modal__content {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
   background: white;
   padding: 0;
   border-radius: 8px;
-  width: 90%;
-  max-width: 400px;
-  max-height: 90vh;
-  position: relative;
-  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.2);
-  overflow-y: auto;
-  overflow-x: hidden;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-}
-
-.item-modal__content img {
   width: 100%;
+  max-width: 498px;
+  max-height: 610px;
   height: auto;
-  max-width: 100%;
-  display: block;
-  object-fit: contain;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.2);
+  overflow: hidden;
 }
 
 .item-modal__close {
@@ -59,20 +51,20 @@ html, body {
 .item-modal__image {
   width: 100%;
   height: auto;
-  max-height: 300px;
-  object-fit: contain;
-  border-radius: 4px;
-  margin-bottom: 20px;
+  max-height: 498px;
+  object-fit: cover; 
   display: block;
-  margin-left: auto;
-  margin-right: auto;
+  border-top-left-radius: 8px;
+  border-top-right-radius: 8px;
 }
 
 .item-modal__footer {
+  height: 112px;         
+  max-height: none;      
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
-  margin-top: 16px;
+  margin: 0;
 }
 
 .item-modal__text-group {
@@ -81,32 +73,37 @@ html, body {
 }
 
 .item-modal__caption {
-  font-family: Cabinet Grotesk;
+  font-family: 'Cabinet Grotesk', 'Inter', sans-serif;
   font-weight: 700;
   font-size: 20px;
   line-height: 24px;
-  margin: 0;
+  margin: 20px 0px 12px 32px;
 }
 
 .item-modal__weather {
-  font-size: 14px;
-  margin: 4px 0 0;
+  font-family: 'Cabinet Grotesk', 'Inter', sans-serif;
+  font-weight: 700;
+  font-size: 20px;
+  line-height: 24px;
+  padding: 0;
+  margin: 4px 0 20px 32px; 
   color: #000;
 }
 
 .item-modal__delete-button {
-  background: none;
+  font-family: 'Cabinet Grotesk', 'Inter', sans-serif;
+  font-weight: 700;
+  font-size: 20px;
+  line-height: 24px;
   border: none;
   color: #ff4d00;
-  font-weight: bold;
-  cursor: pointer;
   padding: 0;
-  font-size: 14px;
   align-self: flex-start;
-  margin-left: auto;
+  margin: 20px 32px 0 auto; 
 }
 
 .item-modal__delete-button:hover {
+  cursor: pointer;
   text-decoration: underline;
 }
 
@@ -115,20 +112,5 @@ html, body {
     max-width: 100vw;
     padding: 16px;
     overflow-x: hidden;
-  }
-
-  .item-modal__content {
-    max-width: 100vw;
-    width: 100%;
-    padding: 16px;
-  }
-
-  .item-modal__image,
-  .item-modal__content img {
-    max-width: 100%;
-    width: 100%;
-    height: auto;
-    object-fit: contain;
-    display: block;
   }
 }
