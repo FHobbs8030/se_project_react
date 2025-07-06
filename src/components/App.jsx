@@ -45,6 +45,7 @@ function App() {
     setIsItemModalOpen(false);
     setIsConfirmModalOpen(false);
     setSelectedItem(null);
+    setItemToDelete(null);
   };
 
   const handleCardClick = item => {
@@ -65,7 +66,9 @@ function App() {
   const handleDeleteItem = async id => {
     try {
       await deleteClothingItem(id);
-      setClothingItems(prevItems => prevItems.filter(item => item.id !== id && item._id !== id));
+      setClothingItems(prevItems =>
+        prevItems.filter(item => item.id !== id && item._id !== id)
+      );
     } catch (err) {
       console.error('Error deleting item:', err);
     }
@@ -125,7 +128,7 @@ function App() {
           </div>
         </div>
 
-        {selectedItem && isItemModalOpen && (
+        {selectedItem && !isConfirmModalOpen && (
           <ItemModal
             item={selectedItem}
             onClose={handleCloseModal}
@@ -150,9 +153,11 @@ function App() {
               const deleteId = itemToDelete?._id || itemToDelete?.id;
               if (deleteId) {
                 handleDeleteItem(deleteId);
-                setIsConfirmModalOpen(false);
-                setIsItemModalOpen(false);
               }
+              setIsConfirmModalOpen(false);
+              setSelectedItem(null);
+              setIsItemModalOpen(false);
+              setItemToDelete(null);
             }}
             onCancel={handleCloseModal}
           />

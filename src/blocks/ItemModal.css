@@ -1,116 +1,100 @@
-*,
-*::before,
-*::after {
-  box-sizing: border-box;
-}
-
-html,
-body {
-  overflow-x: hidden;
-  max-width: 100vw;
-}
-
 .item-modal {
   position: fixed;
   inset: 0;
   background-color: rgba(0, 0, 0, 0.6);
   display: flex;
-  align-items: center;
   justify-content: center;
+  align-items: center;
   z-index: 1000;
   padding: 20px;
-  overflow-y: auto;
+  box-sizing: border-box;
 }
 
 .item-modal__content {
+  background-color: #ffffff;
+  border-radius: 20px;
+  width: 498px;
+  height: 610px;
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
-  background: white;
-  padding: 0;
-  border-radius: 8px;
-  width: 100%;
-  max-width: 498px;
-  max-height: 610px;
-  height: auto;
-  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.2);
+  position: relative;
   overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  padding: 24px;
+  box-sizing: border-box;
 }
 
 .item-modal__close {
   position: absolute;
   top: 16px;
-  right: 16px;
-  background: transparent;
+  right: 20px;
+  background: none;
   border: none;
   font-size: 24px;
+  font-weight: 700;
+  color: #333;
+  z-index: 1;
   cursor: pointer;
-  color: rgba(0, 0, 0, 0.7);
+  transition: color 0.2s ease, transform 0.2s ease;
+}
+
+.item-modal__close:hover {
+  color: #000;
+  transform: scale(1.1);
 }
 
 .item-modal__image {
   width: 100%;
   height: auto;
-  max-height: 498px;
-  object-fit: cover; 
   display: block;
-  border-top-left-radius: 8px;
-  border-top-right-radius: 8px;
+  object-fit: contain;
+  margin-top: 32px;
 }
 
 .item-modal__footer {
-  height: 112px;         
-  max-height: none;      
   display: flex;
   justify-content: space-between;
-  align-items: flex-start;
-  margin: 0;
+  align-items: center;
+  padding: 24px 32px;
+  margin-top: auto;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .item-modal__text-group {
   display: flex;
   flex-direction: column;
+  gap: 8px;
 }
 
 .item-modal__caption {
   font-family: 'Cabinet Grotesk', 'Inter', sans-serif;
+  font-size: 16px;
   font-weight: 700;
-  font-size: 20px;
-  line-height: 24px;
-  margin: 20px 0px 12px 32px;
+  color: #000;
+  margin: 0;
 }
 
 .item-modal__weather {
   font-family: 'Cabinet Grotesk', 'Inter', sans-serif;
-  font-weight: 700;
-  font-size: 20px;
-  line-height: 24px;
-  padding: 0;
-  margin: 4px 0 20px 32px; 
+  font-size: 14px;
   color: #000;
+  margin: 0;
 }
 
 .item-modal__delete-button {
   font-family: 'Cabinet Grotesk', 'Inter', sans-serif;
+  font-size: 16px;
   font-weight: 700;
-  font-size: 20px;
-  line-height: 24px;
+  color: #ff3b30;
+  background: none;
   border: none;
-  color: #ff4d00;
-  padding: 0;
-  align-self: flex-start;
-  margin: 20px 32px 0 auto; 
+  cursor: pointer;
+  padding: 8px;
 }
 
 .item-modal__delete-button:hover {
-  cursor: pointer;
+  color: #d60000;
   text-decoration: underline;
-}
-
-@media (max-width: 480px) {
-  .app__content {
-    max-width: 100vw;
-    padding: 16px;
-    overflow-x: hidden;
-  }
 }

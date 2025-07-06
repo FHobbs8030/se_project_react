@@ -24,7 +24,7 @@ function ClothesSection({
         <p className="clothes-section__title">{title}</p>
       )}
       <div className="main__cards">
-        {filteredItems.length > 0 ? (
+        {filteredItems.length > 0 &&
           filteredItems.map(item => (
             <ItemCard
               key={item._id}
@@ -34,12 +34,7 @@ function ClothesSection({
               needsScaling={scaleItems.includes(item.name)}
               showDelete={showDelete}
             />
-          ))
-        ) : (
-          <p className="clothes-section__text">
-            No matching clothes for this weather.
-          </p>
-        )}
+          ))}
       </div>
     </section>
   );

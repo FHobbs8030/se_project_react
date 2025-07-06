@@ -28,14 +28,15 @@ function ConfirmDeleteModal({ onConfirm, onCancel }) {
           type="button"
           className="confirm-modal__close-button"
           onClick={onCancel}
+          aria-label="Close"
         >
           &times;
         </button>
-        <h3 className="confirm-modal__title">
-          Are you sure you want to delete this item?
-        </h3>
-        <p className="confirm-modal__text">This action is irreversible.</p>
-        <div className="confirm-modal__buttons">
+        <div className="confirm-modal__content">
+          <p className="confirm-modal__title">
+            Are you sure you want to delete this item?
+          </p>
+          <p className="confirm-modal__text">This action is irreversible.</p>
           <button
             className="confirm-modal__delete-button"
             type="button"

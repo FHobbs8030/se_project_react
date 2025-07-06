@@ -5,11 +5,16 @@ import ClothesSection from './ClothesSection';
 import '../blocks/Profile.css';
 
 function Profile({ onLogout }) {
-  const { weatherData, clothingItems, onCardClick, onAddClick, onDeleteClick } =
-    useOutletContext();
+  const {
+    weatherData,
+    clothingItems,
+    onCardClick,
+    onAddClick,
+    onDeleteClick,
+  } = useOutletContext();
 
-  let weatherType = 'warm';
   const temp = weatherData?.temperature;
+  let weatherType = 'warm';
 
   if (temp < 60) {
     weatherType = 'cold';
@@ -26,7 +31,10 @@ function Profile({ onLogout }) {
         <div className="profile-content">
           <div className="profile-header">
             <p className="profile-header__title">Your items</p>
-            <button className="profile-header__add-button" onClick={onAddClick}>
+            <button
+              className="profile-header__add-button"
+              onClick={onAddClick}
+            >
               + Add new
             </button>
           </div>
@@ -36,9 +44,7 @@ function Profile({ onLogout }) {
             onAddClick={onAddClick}
             onDeleteItem={onDeleteClick}
             weatherType={weatherType}
-            showMessage={true}
             showDelete={true}
-            title={`Filtered clothing for ${weatherType} weather`}
           />
         </div>
       </div>

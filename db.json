@@ -29,13 +29,6 @@
       "isOwned": true
     },
     {
-      "_id": 4,
-      "name": "Dress",
-      "weather": "hot",
-      "imageUrl": "https://practicum-content.s3.us-west-1.amazonaws.com/software-engineer/wtwr-project/Dress.png?etag=1f9cd32a311ab139cab43494883720bf",
-      "isOwned": true
-    },
-    {
       "_id": 5,
       "name": "Hoodie",
       "weather": "cold",
