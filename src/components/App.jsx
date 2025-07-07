@@ -5,6 +5,8 @@ import Footer from './Footer.jsx';
 import ItemModal from './ItemModal.jsx';
 import AddItemModal from './AddItemModal.jsx';
 import ConfirmDeleteModal from './ConfirmDeleteModal.jsx';
+import Main from './Main.jsx';
+import Profile from './Profile.jsx';
 import '../blocks/App.css';
 import { fetchWeatherData } from '../utils/weatherApi';
 import {
