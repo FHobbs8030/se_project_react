@@ -78,13 +78,6 @@
       "isOwned": true
     },
     {
-      "_id": 12,
-      "name": "Skirt",
-      "weather": "hot",
-      "imageUrl": "https://practicum-content.s3.us-west-1.amazonaws.com/software-engineer/wtwr-project/Skirt.png?etag=27a6bea7e1b63218820d615876fa31d1",
-      "isOwned": true
-    },
-    {
       "_id": 13,
       "name": "Sneakers",
       "weather": "warm",

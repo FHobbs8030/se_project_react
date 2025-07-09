@@ -9,13 +9,36 @@
 }
 
 .modal__container {
-  background: white;
-  padding: 24px;
-  border-radius: 8px;
   position: relative;
+  background: #fff;
+  padding: 28px 32px;
+  border-radius: 8px;
+  display: block;
+  overflow: visible;
   width: 90%;
   max-width: 500px;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+}
+
+.modal__title {
+  width: 100%;
+  max-width: 95px;
+  font-family: 'Cabinet Grotesk', 'Inter', sans-serif;
+  color: #000;
+  font-weight: 700;
+  font-size: 16px;
+  line-height: 20px;
+  margin: 0 0 24px 0;
+}
+
+
+
+label.modal__label {
+  max-width: 75px;
+}
+
+legend.modal__label {
+  max-width: 100%;
 }
 
 .modal__close {

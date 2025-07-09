@@ -126,6 +126,8 @@ function App() {
                 onAddClick: handleAddClick,
               }}
             />
+            {false && <Main />}
+            {false && <Profile onLogout={() => {}} />}
             <Footer />
           </div>
         </div>

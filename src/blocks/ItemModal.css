@@ -21,7 +21,7 @@
   position: relative;
   overflow: hidden;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-  padding: 24px;
+  padding: 0;
   box-sizing: border-box;
 }
 
@@ -49,15 +49,16 @@
   height: auto;
   display: block;
   object-fit: contain;
-  margin-top: 32px;
+  margin: 0;
 }
 
 .item-modal__footer {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 24px 32px;
+  padding: 20px 32px;
   margin-top: auto;
+  margin: 0;
   width: 100%;
   box-sizing: border-box;
 }
@@ -65,33 +66,41 @@
 .item-modal__text-group {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  justify-content: center;
+  line-height: 1.2;
+  gap: 4px;
 }
 
 .item-modal__caption {
   font-family: 'Cabinet Grotesk', 'Inter', sans-serif;
-  font-size: 16px;
   font-weight: 700;
+  font-size: 20px;
+  line-height: 24px;
   color: #000;
   margin: 0;
 }
 
 .item-modal__weather {
   font-family: 'Cabinet Grotesk', 'Inter', sans-serif;
-  font-size: 14px;
+  font-weight: 700;
+  font-size: 20px;
+  line-height: 24px;
   color: #000;
   margin: 0;
 }
 
 .item-modal__delete-button {
   font-family: 'Cabinet Grotesk', 'Inter', sans-serif;
-  font-size: 16px;
+  align-self: start;
   font-weight: 700;
+  font-size: 20px;
+  line-height: 24px;
   color: #ff3b30;
   background: none;
   border: none;
   cursor: pointer;
-  padding: 8px;
+  margin: 0;
+  padding: 0 0 8px 16px;
 }
 
 .item-modal__delete-button:hover {
