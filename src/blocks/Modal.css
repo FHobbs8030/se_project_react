@@ -12,11 +12,12 @@
   position: relative;
   background: #fff;
   padding: 28px 32px;
+  margin: 0;
   border-radius: 8px;
   display: block;
   overflow: visible;
-  width: 90%;
-  max-width: 500px;
+  width: 100%;
+  max-width: 30vw;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
 }
 
@@ -30,8 +31,6 @@
   line-height: 20px;
   margin: 0 0 24px 0;
 }
-
-
 
 label.modal__label {
   max-width: 75px;

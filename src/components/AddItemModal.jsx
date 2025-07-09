@@ -6,39 +6,29 @@ function AddItemModal({ isOpen, onAddItem, onCloseModal }) {
   const [imageUrl, setImageUrl] = useState('');
   const [weather, setWeather] = useState('');
   const [isFormValid, setIsFormValid] = useState(false);
-  const [formErrors, setFormErrors] = useState({});
 
   useEffect(() => {
     if (isOpen) {
       setName('');
       setImageUrl('');
       setWeather('');
-      setFormErrors({});
       setIsFormValid(false);
     }
   }, [isOpen]);
 
-  const validateForm = () => {
-    const errors = {};
-    if (!name.trim()) errors.name = 'Name is required';
-    if (!imageUrl.trim()) errors.imageUrl = 'Image URL is required';
-    if (!weather) errors.weather = 'Weather type is required';
-    setFormErrors(errors);
-    setIsFormValid(Object.keys(errors).length === 0);
-  };
-
   useEffect(() => {
-    validateForm();
+    const isValid = name.trim() && imageUrl.trim() && weather;
+    setIsFormValid(Boolean(isValid));
   }, [name, imageUrl, weather]);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = e => {
     e.preventDefault();
     if (isFormValid) {
       onAddItem({ name, imageUrl, weather });
     }
   };
 
-  const handleChange = (e) => {
+  const handleChange = e => {
     setWeather(e.target.value);
   };
 
@@ -52,32 +42,26 @@ function AddItemModal({ isOpen, onAddItem, onCloseModal }) {
       onSubmit={handleSubmit}
       isSubmitDisabled={!isFormValid}
     >
-      <label className="modal__label">Name</label>
       <input
         type="text"
         className="modal__input"
+        placeholder="Name"
         value={name}
-        onChange={(e) => setName(e.target.value)}
+        onChange={e => setName(e.target.value)}
       />
-      <span className={formErrors.name ? 'modal__error' : 'modal__error_hidden'}>
-        {formErrors.name}
-      </span>
 
-      <label className="modal__label">Image URL</label>
       <input
         type="text"
         className="modal__input"
+        placeholder="Image URL"
         value={imageUrl}
-        onChange={(e) => setImageUrl(e.target.value)}
+        onChange={e => setImageUrl(e.target.value)}
       />
-      <span className={formErrors.imageUrl ? 'modal__error' : 'modal__error_hidden'}>
-        {formErrors.imageUrl}
-      </span>
 
       <fieldset className="modal__fieldset">
         <legend className="modal__label">Select weather type</legend>
         <div className="modal__radio-group">
-          {['hot', 'warm', 'cold'].map((type) => (
+          {['hot', 'warm', 'cold'].map(type => (
             <label key={type} className="modal__radio-label">
               <input
                 type="radio"
@@ -90,9 +74,6 @@ function AddItemModal({ isOpen, onAddItem, onCloseModal }) {
             </label>
           ))}
         </div>
-        <span className={formErrors.weather ? 'modal__error' : 'modal__error_hidden'}>
-          {formErrors.weather}
-        </span>
       </fieldset>
     </ModalWithForm>
   );
