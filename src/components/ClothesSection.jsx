@@ -14,9 +14,11 @@ function ClothesSection({
 }) {
   const scaleItems = ['Polo Shirt', 'Pants', 'Shoes', 'Ball Caps'];
 
-  const filteredItems = clothingItems.filter(
-    item => item.weather?.toLowerCase() === weatherType?.toLowerCase()
-  );
+  const filteredItems = weatherType
+    ? clothingItems.filter(
+        item => item.weather?.toLowerCase() === weatherType.toLowerCase()
+      )
+    : clothingItems; // No filtering if weatherType not provided
 
   return (
     <section className="clothes-section">

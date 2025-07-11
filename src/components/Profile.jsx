@@ -13,16 +13,8 @@ function Profile({ onLogout }) {
     onDeleteClick,
   } = useOutletContext();
 
-  const temp = weatherData?.temperature;
-  let weatherType = 'warm';
+  console.log("Clothing Items in Profile:", clothingItems);
 
-  if (temp < 60) {
-    weatherType = 'cold';
-  } else if (temp >= 60 && temp <= 75) {
-    weatherType = 'warm';
-  } else {
-    weatherType = 'hot';
-  }
 
   return (
     <div className="profile">
@@ -38,12 +30,12 @@ function Profile({ onLogout }) {
               + Add new
             </button>
           </div>
+
           <ClothesSection
             clothingItems={clothingItems}
             onCardClick={onCardClick}
             onAddClick={onAddClick}
             onDeleteItem={onDeleteClick}
-            weatherType={weatherType}
             showDelete={true}
           />
         </div>
