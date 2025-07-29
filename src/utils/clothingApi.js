@@ -1,7 +1,7 @@
 const isLocal = window.location.hostname === 'localhost';
 const BASE_URL = isLocal
   ? 'http://localhost:3001/items'
-  : 'https://your-production-api.com/clothingItems';
+  : 'https://your-production-api.com/items'; // update for production
 
 function checkResponse(res) {
   if (!res.ok) {
@@ -18,17 +18,11 @@ export const getClothingItems = () => {
   return request(BASE_URL);
 };
 
-export const addClothingItem = item => {
-  const newId = crypto.randomUUID();
-  const newItem = {
-    ...item,
-    _id: newId,
-  };
-
+export const addClothingItem = (item) => {
   return request(BASE_URL, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(newItem),
+    body: JSON.stringify(item),
   });
 };
 
