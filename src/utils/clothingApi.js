@@ -1,7 +1,8 @@
 const isLocal = window.location.hostname === 'localhost';
+
 const BASE_URL = isLocal
-  ? 'http://localhost:3001/clothes'
-  : 'https://your-production-api.com/clothes'; 
+  ? 'http://localhost:3001'
+  : 'https://your-production-api.com';
 
 function checkResponse(res) {
   if (!res.ok) {
@@ -10,16 +11,17 @@ function checkResponse(res) {
   return res.json();
 }
 
-function request(url, options) {
-  return fetch(url, options).then(checkResponse);
+function request(path, options) {
+  return fetch(`${BASE_URL}${path}`, options).then(checkResponse);
 }
 
+// API methods
 export const getClothingItems = () => {
-  return request(BASE_URL);
+  return request('/clothes');
 };
 
 export const addClothingItem = (item) => {
-  return request(BASE_URL, {
+  return request('/clothes', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(item),
@@ -27,7 +29,7 @@ export const addClothingItem = (item) => {
 };
 
 export const deleteClothingItem = (_id) => {
-  return request(`${BASE_URL}/${_id}`, {
+  return request(`/clothes/${_id}`, {
     method: 'DELETE',
   });
 };
