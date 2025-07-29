@@ -1,7 +1,7 @@
 const isLocal = window.location.hostname === 'localhost';
 const BASE_URL = isLocal
-  ? 'http://localhost:3001/items'
-  : 'https://your-production-api.com/items'; // update for production
+  ? 'http://localhost:3001/clothes'
+  : 'https://your-production-api.com/clothes'; 
 
 function checkResponse(res) {
   if (!res.ok) {
