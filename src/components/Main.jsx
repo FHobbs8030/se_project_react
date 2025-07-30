@@ -1,5 +1,6 @@
 import React, { useContext } from 'react';
 import { useOutletContext } from 'react-router-dom';
+import ClothesSection from '../components/ClothesSection'; 
 import ItemCard from './ItemCard';
 import WeatherCard from './WeatherCard';
 import { CurrentTemperatureUnitContext } from '../contextStore/CurrentTemperatureUnitContext';
@@ -44,10 +45,19 @@ function Main() {
         )
       : '--';
 
-  const clothingToShow =
-    clothingItems?.filter(
+  console.log('Computed weatherType:', weatherType);
+  console.log('All items:', clothingItems);
+  console.log(
+    'Filtered items for weather:',
+    clothingItems.filter(
       item => item.weather.toLowerCase() === weatherType.toLowerCase()
-    ) || [];
+    )
+  );
+
+  const clothingToShow =
+    clothingItems
+      ?.filter(item => item.weather.toLowerCase() === weatherType.toLowerCase())
+      .slice(0, 4) || [];
 
   const noScaleItems = ['Sneakers', 'Vintage Cap'];
 
@@ -70,20 +80,12 @@ function Main() {
         </p>
       </section>
 
-     <ul className="main__clothing-items">
-  {clothingToShow.length > 0 ? (
-    clothingToShow.map(item => (
-      <ItemCard
-        key={item._id}
-        item={item}
-        onCardClick={onCardClick}
-        needsScaling={!noScaleItems.includes(item.name)}
-      />
-    ))
-  ) : (
-    <li className="main__message">No matching clothes for this weather.</li>
-  )}
-</ul>
+     <ClothesSection
+  clothingItems={clothingToShow}
+  onCardClick={onCardClick}
+  weatherType={weatherType}
+  showMessage={false}
+/>
 
     </main>
   );

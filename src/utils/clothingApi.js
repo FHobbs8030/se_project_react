@@ -17,11 +17,11 @@ function request(path, options) {
 
 // API methods
 export const getClothingItems = () => {
-  return request('/clothes');
+  return request('/items');   // correct endpoint
 };
 
 export const addClothingItem = (item) => {
-  return request('/clothes', {
+  return request('/items', {  // correct endpoint
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(item),
@@ -29,7 +29,7 @@ export const addClothingItem = (item) => {
 };
 
 export const deleteClothingItem = (_id) => {
-  return request(`/clothes/${_id}`, {
+  return request(`/items/${_id}`, {  // correct endpoint
     method: 'DELETE',
   });
 };

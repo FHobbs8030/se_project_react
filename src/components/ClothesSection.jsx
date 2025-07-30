@@ -7,36 +7,28 @@ function ClothesSection({
   clothingItems = [],
   onCardClick,
   onDeleteItem,
-  weatherType,
   title,
   showMessage = true,
   showDelete = false,
 }) {
-  const scaleItems = ['Polo Shirt', 'Pants', 'Shoes', 'Ball Caps'];
-
-  const filteredItems = weatherType
-    ? clothingItems.filter(
-        item => item.weather?.toLowerCase() === weatherType.toLowerCase()
-      )
-    : clothingItems; // No filtering if weatherType not provided
-
   return (
     <section className="clothes-section">
-      {showMessage && (
-        <p className="clothes-section__title">{title}</p>
-      )}
+      {showMessage && <p className="clothes-section__title">{title}</p>}
       <div className="main__cards">
-        {filteredItems.length > 0 &&
-          filteredItems.map(item => (
+        {clothingItems.length > 0 ? (
+          clothingItems.map(item => (
             <ItemCard
               key={item._id}
               item={item}
               onCardClick={onCardClick}
               onDeleteClick={onDeleteItem}
-              needsScaling={scaleItems.includes(item.name)}
               showDelete={showDelete}
+              needsScaling={false}
             />
-          ))}
+          ))
+        ) : (
+          <p>No items to show.</p>
+        )}
       </div>
     </section>
   );

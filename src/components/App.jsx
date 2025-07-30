@@ -96,7 +96,11 @@ function App() {
     const fetchItems = async () => {
       try {
         const items = await getClothingItems();
-        setClothingItems(items);
+        const normalizedItems = items.map(item => ({
+          ...item,
+          weather: item.weather.toLowerCase(),
+        }));
+        setClothingItems(normalizedItems);
       } catch (err) {
         console.error('Error loading clothing items:', err);
       }
@@ -112,6 +116,8 @@ function App() {
         <div className="app">
           <div className="app__content">
             <Header onAddClick={handleAddClick} />
+
+            {/* Outlet renders nested routes */}
             <Outlet
               context={{
                 weatherData,
@@ -126,8 +132,7 @@ function App() {
                 onAddClick: handleAddClick,
               }}
             />
-            {false && <Main />}
-            {false && <Profile onLogout={() => {}} />}
+
             <Footer />
           </div>
         </div>
