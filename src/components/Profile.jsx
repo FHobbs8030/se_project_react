@@ -15,6 +15,11 @@ function Profile({ onLogout }) {
 
   console.log("Clothing Items in Profile:", clothingItems);
 
+  // Optional: log inside ClothesSection via callback prop to track rendering
+  const logItems = (items) => {
+    console.log('ClothesSection will render these items:', items);
+    return null;
+  };
 
   return (
     <div className="profile">
@@ -38,6 +43,8 @@ function Profile({ onLogout }) {
             onDeleteItem={onDeleteClick}
             showDelete={true}
           />
+          {/* This is just for debugging and won't render anything visible */}
+          {logItems(clothingItems)}
         </div>
       </div>
     </div>

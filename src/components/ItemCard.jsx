@@ -4,7 +4,7 @@ import '../blocks/ItemCard.css';
 function ItemCard({ item, onCardClick, needsScaling }) {
   const imageClassName = `card__image${needsScaling ? ' card__image--scaled' : ''}`;
 
-  console.log("Item image:", item.imageUrl);
+  console.log("🖼️ ItemCard image URL:", item.imageUrl);
 
   return (
     <li className="card">

@@ -14,7 +14,7 @@ import "./index.css";
 const router = createBrowserRouter(
   [
     {
-      path: "/*",
+      path: "/",
       element: <App />,
       children: [
         { index: true, element: <Main /> },

@@ -11,6 +11,8 @@ function ClothesSection({
   showMessage = true,
   showDelete = false,
 }) {
+  console.log('🧥 ClothesSection received clothingItems:', clothingItems);
+
   return (
     <section className="clothes-section">
       {showMessage && <p className="clothes-section__title">{title}</p>}
