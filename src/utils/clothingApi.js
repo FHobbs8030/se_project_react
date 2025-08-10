@@ -1,5 +1,12 @@
-const isLocal = window.location.hostname === 'localhost';
-const BASE_URL = isLocal ? 'http://localhost:3001' : 'https://your-production-api.com';
+const localHosts = ['localhost', '127.0.0.1', '::1'];
+const isLocal = localHosts.includes(window.location.hostname);
+
+const BASE_URL = isLocal
+  ? 'http://127.0.0.1:3001'
+  : 'https://<YOUR_REAL_BACKEND_DOMAIN>';
+
+console.log('hostname:', window.location.hostname);
+console.log('BASE_URL:', BASE_URL);
 
 function checkResponse(res) {
   if (!res.ok) {
