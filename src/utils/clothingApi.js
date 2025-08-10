@@ -1,39 +1,39 @@
-// src/utils/clothingApi.js
-
 const isLocal = window.location.hostname === 'localhost';
+const BASE_URL = isLocal ? 'http://localhost:3001' : 'https://your-production-api.com';
 
-const BASE_URL = isLocal
-  ? 'http://localhost:3001'
-  : 'https://your-production-api.com';
-
-// Utility to handle server response
 function checkResponse(res) {
   if (!res.ok) {
-    throw new Error(`Server error: ${res.status}`);
+    return res.json().then((data) => {
+      const message = data && data.message ? data.message : `Server error: ${res.status}`;
+      throw new Error(message);
+    });
   }
   return res.json();
 }
 
-// Generic request wrapper
 function request(path, options = {}) {
-  return fetch(`${BASE_URL}${path}`, options).then(checkResponse);
+  const token = localStorage.getItem('jwt');
+  const headers = {
+    'Content-Type': 'application/json',
+    ...options.headers,
+    ...(token ? { Authorization: `Bearer ${token}` } : {}),
+  };
+  return fetch(`${BASE_URL}${path}`, {
+    credentials: 'include',
+    ...options,
+    headers,
+  }).then(checkResponse);
 }
 
-// API methods
-export const getClothingItems = () => {
-  return request('/items');
-};
+export const getClothingItems = () => request('/items');
 
-export const addClothingItem = (item) => {
-  return request('/items', {
+export const addClothingItem = (item) =>
+  request('/items', {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(item),
   });
-};
 
-export const deleteClothingItem = (_id) => {
-  return request(`/items/${_id}`, {
+export const deleteClothingItem = (_id) =>
+  request(`/items/${_id}`, {
     method: 'DELETE',
   });
-};
