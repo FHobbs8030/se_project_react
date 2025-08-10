@@ -95,12 +95,13 @@
   font-weight: 700;
   font-size: 20px;
   line-height: 24px;
+  align-self: flex-start;
   color: #ff3b30;
   background: none;
   border: none;
   cursor: pointer;
-  margin: 0;
-  padding: 0 0 8px 16px;
+  margin-left: auto;
+  padding: 0 16px 8px 0;
 }
 
 .item-modal__delete-button:hover {

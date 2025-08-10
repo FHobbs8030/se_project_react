@@ -59,23 +59,6 @@
   color: #444;
 }
 
-.card__delete-btn {
-  position: absolute;
-  top: 8px;
-  right: 8px;
-  border: none;
-  background: rgba(0, 0, 0, 0.6);
-  color: #fff;
-  width: 28px;
-  height: 28px;
-  border-radius: 50%;
-  cursor: pointer;
-}
-
-.card__delete-btn:hover {
-  background: rgba(0, 0, 0, 0.8);
-}
-
 @media screen and (max-width: 360px) {
   .card__name {
     font-size: 13px;

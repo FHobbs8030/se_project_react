@@ -6,20 +6,13 @@ import ItemModal from './ItemModal.jsx';
 import AddItemModal from './AddItemModal.jsx';
 import ConfirmDeleteModal from './ConfirmDeleteModal.jsx';
 import '../blocks/App.css';
-
 import { fetchWeatherData } from '../utils/weatherApi';
-import {
-  getClothingItems,
-  addClothingItem,
-  deleteClothingItem,
-} from '../utils/clothingApi';
-
+import { getClothingItems, addClothingItem, deleteClothingItem } from '../utils/clothingApi';
 import { CurrentTemperatureUnitContext } from '../contextStore/CurrentTemperatureUnitContext';
 
 function App() {
   const navigate = useNavigate();
 
-  // State
   const [weatherData, setWeatherData] = useState(null);
   const [clothingItems, setClothingItems] = useState([]);
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
@@ -40,7 +33,7 @@ function App() {
   };
 
   const handleToggleSwitchChange = () =>
-    setCurrentTemperatureUnit(prev => (prev === 'F' ? 'C' : 'F'));
+    setCurrentTemperatureUnit((prev) => (prev === 'F' ? 'C' : 'F'));
 
   const handleAddClick = () => setIsAddModalOpen(true);
 
@@ -52,27 +45,25 @@ function App() {
     setItemToDelete(null);
   };
 
-  const handleCardClick = item => {
+  const handleCardClick = (item) => {
     setSelectedItem(item);
     setIsItemModalOpen(true);
   };
 
-  const handleAddGarmentSubmit = async newItem => {
+  const handleAddGarmentSubmit = async (newItem) => {
     try {
       const savedItem = await addClothingItem(newItem);
-      setClothingItems([savedItem, ...clothingItems]);
+      setClothingItems((prev) => [savedItem, ...prev]);
       handleCloseModal();
     } catch (err) {
       console.error('❌ Error adding item:', err);
     }
   };
 
-  const handleDeleteItem = async id => {
+  const handleDeleteItem = async (id) => {
     try {
       await deleteClothingItem(id);
-      setClothingItems(prev =>
-        prev.filter(item => item._id !== id && item.id !== id)
-      );
+      setClothingItems((prev) => prev.filter((item) => item._id !== id && item.id !== id));
     } catch (err) {
       console.error('❌ Error deleting item:', err);
     }
@@ -80,11 +71,10 @@ function App() {
 
   const handleLogout = () => navigate('/');
 
-  // Fetch weather on mount
   useEffect(() => {
     setIsLoadingWeather(true);
     fetchWeatherData()
-      .then(data => {
+      .then((data) => {
         setWeatherData(data);
         setWeatherError(null);
       })
@@ -95,12 +85,11 @@ function App() {
       .finally(() => setIsLoadingWeather(false));
   }, []);
 
-  // Fetch clothing items on mount
   useEffect(() => {
     const fetchItems = async () => {
       try {
         const items = await getClothingItems();
-        const normalizedItems = items.map(item => ({
+        const normalizedItems = items.map((item) => ({
           ...item,
           weather: item.weather.toLowerCase(),
         }));
@@ -126,7 +115,7 @@ function App() {
                 weatherData,
                 clothingItems,
                 onCardClick: handleCardClick,
-                onDeleteClick: item => {
+                onDeleteClick: (item) => {
                   setItemToDelete(item);
                   setIsConfirmModalOpen(true);
                 },
@@ -140,7 +129,6 @@ function App() {
           </div>
         </div>
 
-        {/* Modals */}
         {selectedItem && !isConfirmModalOpen && (
           <ItemModal
             item={selectedItem}
