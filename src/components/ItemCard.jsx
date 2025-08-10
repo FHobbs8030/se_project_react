@@ -3,10 +3,10 @@ import '../blocks/ItemCard.css';
 
 function ItemCard({ item, onCardClick, needsScaling }) {
   const imageClassName = `card__image${needsScaling ? ' card__image--scaled' : ''}`;
-
   const src = item?.imageUrl || '/placeholder.png';
 
   const handleError = (e) => {
+    console.warn('Image failed to load:', e.currentTarget.src);
     if (!e.currentTarget.dataset.fallback) {
       e.currentTarget.dataset.fallback = '1';
       e.currentTarget.src = '/placeholder.png';
@@ -15,9 +15,6 @@ function ItemCard({ item, onCardClick, needsScaling }) {
 
   return (
     <li className="card">
-      <div className="card__name-wrapper">
-        <p className="card__name">{item?.name ?? 'Clothing item'}</p>
-      </div>
       <div className="card__image-container">
         <img
           className={imageClassName}
