@@ -7,7 +7,11 @@ import AddItemModal from './AddItemModal.jsx';
 import ConfirmDeleteModal from './ConfirmDeleteModal.jsx';
 import '../blocks/App.css';
 import { fetchWeatherData } from '../utils/weatherApi';
-import { getClothingItems, addClothingItem, deleteClothingItem } from '../utils/clothingApi';
+import {
+  getClothingItems,
+  addClothingItem,
+  deleteClothingItem,
+} from '../utils/clothingApi';
 import { CurrentTemperatureUnitContext } from '../contextStore/CurrentTemperatureUnitContext';
 
 function App() {
@@ -60,12 +64,25 @@ function App() {
     }
   };
 
-  const handleDeleteItem = async (id) => {
+  const requestDeleteItem = (item) => {
+    setItemToDelete(item);
+    setIsConfirmModalOpen(true);
+  };
+
+  const handleConfirmDelete = async () => {
     try {
-      await deleteClothingItem(id);
-      setClothingItems((prev) => prev.filter((item) => item._id !== id && item.id !== id));
+      const id = itemToDelete?._id || itemToDelete?.id;
+      if (id) {
+        await deleteClothingItem(id);
+        setClothingItems((prev) => prev.filter((ci) => ci._id !== id && ci.id !== id));
+      }
     } catch (err) {
       console.error('❌ Error deleting item:', err);
+    } finally {
+      setIsConfirmModalOpen(false);
+      setIsItemModalOpen(false);
+      setSelectedItem(null);
+      setItemToDelete(null);
     }
   };
 
@@ -91,7 +108,7 @@ function App() {
         const items = await getClothingItems();
         const normalizedItems = items.map((item) => ({
           ...item,
-          weather: item.weather.toLowerCase(),
+          weather: typeof item.weather === 'string' ? item.weather.toLowerCase() : item.weather,
         }));
         setClothingItems(normalizedItems);
       } catch (err) {
@@ -108,17 +125,14 @@ function App() {
       <div className="page">
         <div className="app">
           <div className="app__content">
-            <Header onAddClick={handleAddClick} />
+            <Header onAddClick={handleAddClick} onLogout={handleLogout} />
 
             <Outlet
               context={{
                 weatherData,
                 clothingItems,
                 onCardClick: handleCardClick,
-                onDeleteClick: (item) => {
-                  setItemToDelete(item);
-                  setIsConfirmModalOpen(true);
-                },
+                onDeleteClick: requestDeleteItem,
                 isLoadingWeather,
                 weatherError,
                 onAddClick: handleAddClick,
@@ -129,14 +143,11 @@ function App() {
           </div>
         </div>
 
-        {selectedItem && !isConfirmModalOpen && (
+        {isItemModalOpen && selectedItem && !isConfirmModalOpen && (
           <ItemModal
             item={selectedItem}
             onClose={handleCloseModal}
-            onConfirmDelete={() => {
-              setItemToDelete(selectedItem);
-              setIsConfirmModalOpen(true);
-            }}
+            onConfirmDelete={(itm) => requestDeleteItem(itm)}
           />
         )}
 
@@ -150,17 +161,10 @@ function App() {
 
         {isConfirmModalOpen && (
           <ConfirmDeleteModal
-            onConfirm={() => {
-              const deleteId = itemToDelete?._id || itemToDelete?.id;
-              if (deleteId) {
-                handleDeleteItem(deleteId);
-              }
-              setIsConfirmModalOpen(false);
-              setSelectedItem(null);
-              setIsItemModalOpen(false);
-              setItemToDelete(null);
-            }}
+            isOpen={isConfirmModalOpen}
+            onClose={handleCloseModal}
             onCancel={handleCloseModal}
+            onConfirm={handleConfirmDelete}
           />
         )}
       </div>

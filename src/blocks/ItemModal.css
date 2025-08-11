@@ -10,14 +10,21 @@
   box-sizing: border-box;
 }
 
+.item-modal__container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  width: 100%;
+}
+
 .item-modal__content {
+  --modal-size: 498px;
   background-color: #ffffff;
   border-radius: 20px;
-  width: 498px;
-  height: 610px;
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-start;
+  width: var(--modal-size);
+  display: grid;
+  grid-template-rows: var(--modal-size) auto;
   position: relative;
   overflow: hidden;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
@@ -34,7 +41,7 @@
   font-size: 24px;
   font-weight: 700;
   color: #333;
-  z-index: 1;
+  z-index: 2;
   cursor: pointer;
   transition: color 0.2s ease, transform 0.2s ease;
 }
@@ -45,30 +52,31 @@
 }
 
 .item-modal__image {
-  width: 100%;
-  height: auto;
+  width: var(--modal-size);
+  height: var(--modal-size);
   display: block;
-  object-fit: contain;
-  margin: 0;
+  object-fit: cover;
 }
 
 .item-modal__footer {
+  background: #fff;
   display: flex;
-  justify-content: space-between;
   align-items: center;
-  padding: 20px 32px;
-  margin-top: auto;
+  padding: 12px 32px 24px 32px;
   margin: 0;
   width: 100%;
   box-sizing: border-box;
+  gap: 16px;
+  border-top: 1px solid #eee;
 }
 
 .item-modal__text-group {
   display: flex;
   flex-direction: column;
-  justify-content: center;
   line-height: 1.2;
   gap: 4px;
+  flex: 1 1 auto;
+  min-width: 0;
 }
 
 .item-modal__caption {
@@ -91,20 +99,24 @@
 
 .item-modal__delete-button {
   font-family: 'Cabinet Grotesk', 'Inter', sans-serif;
-  align-self: start;
   font-weight: 700;
   font-size: 20px;
   line-height: 24px;
-  align-self: flex-start;
   color: #ff3b30;
   background: none;
   border: none;
   cursor: pointer;
   margin-left: auto;
-  padding: 0 16px 8px 0;
+  padding: 0 0 8px 0;
 }
 
 .item-modal__delete-button:hover {
   color: #d60000;
   text-decoration: underline;
+}
+
+@media (max-width: 540px) {
+  .item-modal__content {
+    --modal-size: min(498px, calc(100vw - 32px));
+  }
 }
