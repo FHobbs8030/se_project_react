@@ -5,28 +5,28 @@ const BASE_URL = isLocal
   ? 'http://127.0.0.1:3001'
   : 'https://<YOUR_REAL_BACKEND_DOMAIN>';
 
-console.log('hostname:', window.location.hostname);
-console.log('BASE_URL:', BASE_URL);
+function parseJSONSafe(res) {
+  const ct = res.headers.get('content-type') || '';
+  if (ct.includes('application/json')) return res.json();
+  return Promise.resolve(null);
+}
 
-function checkResponse(res) {
-  if (!res.ok) {
-    return res.json().then((data) => {
-      const message = data && data.message ? data.message : `Server error: ${res.status}`;
-      throw new Error(message);
-    });
-  }
-  return res.json();
+async function checkResponse(res) {
+  if (res.ok) return parseJSONSafe(res);
+  let data = null;
+  try { data = await parseJSONSafe(res); } catch {}
+  const message = data && data.message ? data.message : `Server error: ${res.status}`;
+  throw new Error(message);
 }
 
 function request(path, options = {}) {
   const token = localStorage.getItem('jwt');
   const headers = {
-    'Content-Type': 'application/json',
-    ...options.headers,
+    ...(options.body ? { 'Content-Type': 'application/json' } : {}),
+    ...(options.headers || {}),
     ...(token ? { Authorization: `Bearer ${token}` } : {}),
   };
   return fetch(`${BASE_URL}${path}`, {
-    credentials: 'include',
     ...options,
     headers,
   }).then(checkResponse);
@@ -40,7 +40,5 @@ export const addClothingItem = (item) =>
     body: JSON.stringify(item),
   });
 
-export const deleteClothingItem = (_id) =>
-  request(`/items/${_id}`, {
-    method: 'DELETE',
-  });
+export const deleteClothingItem = (id) =>
+  request(`/items/${id}`, { method: 'DELETE' });
