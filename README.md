@@ -1,36 +1,103 @@
-# 👗 What to Wear (WTWR)
+# 👗 WTWR — Frontend (React + Vite)
 
-## 📖 Description
+What to Wear (WTWR) is a weather‑aware clothing suggestions app. The frontend fetches live weather and displays recommended items from your API.
 
-What to Wear (WTWR) is a sleek, weather-based clothing recommendation app that removes the guesswork from your daily outfit decisions. It fetches real-time weather data for your selected location and provides smart temperature-based clothing suggestions. Whether it's a hot day that calls for a t-shirt or a chilly evening that demands a jacket, WTWR helps you make the right call.
+## ✨ Features
+- Real‑time weather by city/coords
+- Temperature‑based clothing recommendations
+- Interactive item cards + modals
+- Clean, responsive UI
 
-## ✨ Key Features
+## 🧰 Tech Stack
+- **React 18** + **Vite**
+- **React Router DOM**
+- **normalize.css**
+- Deployment via **gh-pages**
 
-* 🌤️ Real-time weather updates for your city
+---
 
-* 🧥 Smart clothing recommendations based on temperature
+## 📦 Project Structure
+```
+se_project_react/
+├─ public/                      # Static assets
+├─ src/
+│  ├─ components/               # Reusable UI
+│  ├─ pages/                    # Route-level views
+│  ├─ contextStore/             # React context
+│  ├─ blocks/                   # CSS (BEM)
+│  ├─ utils/
+│  │  ├─ weatherApi.js          # OpenWeather calls
+│  │  └─ clothingApi.js         # Backend item calls
+│  ├─ App.jsx
+│  └─ main.jsx
+├─ .env.example                 # Example env vars
+├─ index.html
+├─ package.json
+├─ vite.config.js
+└─ README.md
+```
 
-* 🃏 Interactive clothing item cards
+## 🔐 Environment Variables
+Create a `.env` in the project root:
 
-* 🔍 Modal popups for detailed item views
+```
+# Required
+VITE_APP_WEATHER_API_KEY=your_openweather_api_key
 
-* 🧭 Clean, responsive UI for an intuitive experience
+# Optional override for backend; defaults to http://127.0.0.1:3001 on localhost
+VITE_API_BASE_URL=https://your-backend.example.com
+```
 
-## 🛠️ Technologies Used
+> The app auto‑detects localhost and uses `http://127.0.0.1:3001` for the API unless you set `VITE_API_BASE_URL`.
 
-## 💻 Frontend
+---
 
-* React (v18.2.0) – Library for building modern, component-based user interfaces
+## 🚀 Getting Started
 
-* Vite (v6.3.5) – Blazing-fast development server and build tool
+```bash
+# 1) Install
+npm install
 
-* normalize.css (v8.0.1) – CSS reset to ensure visual consistency across browsers
+# 2) Run JSON server (only if you use the mock)
+npm run server
 
-## 🧰 Development Tools
+# 3) Start the dev server
+npm run dev
+```
 
-* gh-pages (v6.1.1) – Simplifies deployment to GitHub Pages
+- Frontend: **http://localhost:5173**
+- JSON Server (mock): **http://localhost:3001**
 
-* @vitejs/plugin-react (v4.1.0) – Enables React Fast Refresh and JSX support for Vite
+### Using the Express backend (recommended for Sprint‑12)
+- Start your backend on **http://127.0.0.1:3001**
+- Ensure CORS allows `http://localhost:5173` (or set `VITE_API_BASE_URL` to your deployed API)
+
+---
+
+## 📜 NPM Scripts
+| Script            | What it does                                   |
+|-------------------|-------------------------------------------------|
+| `npm run dev`     | Start Vite dev server with HMR                  |
+| `npm run build`   | Build production assets                         |
+| `npm run preview` | Preview the production build locally            |
+| `npm run lint`    | Lint with ESLint                                |
+| `npm run server`  | Start JSON Server mock API on port 3001         |
+| `npm run deploy`  | Deploy to GitHub Pages                          |
+
+---
+
+## 🌐 APIs Used
+- **OpenWeatherMap** — current weather data
+- **WTWR Backend API** — clothing items CRUD (local or deployed)
+
+---
+
+## 🔎 Troubleshooting
+- **CORS errors**: If requests include cookies, the backend must not send `*` for `Access-Control-Allow-Origin`. Use explicit origins.
+- **Unexpected end of JSON input** on GET: Don’t send a JSON body with GET requests in Postman.
+- **Weather not loading**: Verify `VITE_APP_WEATHER_API_KEY` and check browser console.
+
+---
 
 * 🌐 APIs
 
@@ -75,3 +142,6 @@ To get started with the project locally:
 * Replace the placeholder value with your OpenWeatherMap API key
 
 * Ensure .env is listed in your .gitignore file to keep your key safe
+
+## 📄 License
+MIT
