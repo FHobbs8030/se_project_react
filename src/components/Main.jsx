@@ -16,6 +16,39 @@ function Main() {
 
   const { currentTemperatureUnit } = useContext(CurrentTemperatureUnitContext);
 
+  const { displayTemp, weatherType, recommended, listToShow } = useMemo(() => {
+    const rawTemp =
+      typeof weatherData?.temperature === 'number' ? weatherData.temperature : null;
+    const condition = (weatherData?.condition || '').toLowerCase();
+
+    let type = 'warm';
+    if (condition === 'snow' || (rawTemp != null && rawTemp < 50)) type = 'cold';
+    else if (condition === 'rain' || (rawTemp != null && rawTemp > 75)) type = 'hot';
+
+    const tempOut =
+      rawTemp == null
+        ? '--'
+        : Math.round(
+            currentTemperatureUnit === 'F' ? rawTemp : ((rawTemp - 32) * 5) / 9
+          );
+
+    const wanted = type.toLowerCase();
+    const rec = Array.isArray(clothingItems)
+      ? clothingItems.filter(
+          (item) => (item?.weather ?? '').toString().toLowerCase() === wanted
+        )
+      : [];
+
+    const list = (rec.length ? rec : clothingItems).slice(0, 4);
+
+    return {
+      displayTemp: tempOut,
+      weatherType: type,
+      recommended: rec,
+      listToShow: list,
+    };
+  }, [weatherData, clothingItems, currentTemperatureUnit]);
+
   if (isLoadingWeather) {
     return <p className="main__message">Loading weather data...</p>;
   }
@@ -25,28 +58,6 @@ function Main() {
   if (!weatherData || typeof weatherData !== 'object') {
     return <p className="main__message">Weather data is unavailable.</p>;
   }
-
-  const rawTemp = weatherData.temperature;
-  let weatherType = 'warm';
-  if (weatherData.condition === 'snow' || rawTemp < 50) {
-    weatherType = 'cold';
-  } else if (weatherData.condition === 'rain' || rawTemp > 75) {
-    weatherType = 'hot';
-  }
-
-  const displayTemp =
-    rawTemp !== undefined && rawTemp !== null
-      ? Math.round(currentTemperatureUnit === 'F' ? rawTemp : ((rawTemp - 32) * 5) / 9)
-      : '--';
-
-  const recommended = useMemo(() => {
-    const wanted = weatherType.toLowerCase();
-    return clothingItems.filter(
-      (item) => (item?.weather ?? '').toString().toLowerCase() === wanted
-    );
-  }, [clothingItems, weatherType]);
-
-  const listToShow = (recommended.length ? recommended : clothingItems).slice(0, 4);
 
   return (
     <main className="main">
