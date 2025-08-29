@@ -1,23 +1,44 @@
-import React from "react";
-import "../blocks/WeatherCard.css";
+import PropTypes from "prop-types";
+import "../blocks/WeatherCard.css"; 
 
-function WeatherCard({ day, type, temperature, unit }) {
-  const imageSrc = `/images/icons/${day}/${type.toLowerCase()}.svg`;
+export default function WeatherCard({
+  temperature,
+  unit = "F",
+  isDay,               
+  icon,                
+  timestamp, sunrise, sunset, 
+}) {
+  const tempNum = typeof temperature === "number" ? temperature : Number(temperature);
+
+  let dayFlag = isDay;
+  if (typeof dayFlag !== "boolean" && sunrise && sunset && timestamp) {
+    dayFlag = timestamp > sunrise && timestamp < sunset;
+  }
+
+  if (!Number.isFinite(tempNum)) {
+    return (
+      <section className="weather-card weather-card--empty" aria-live="polite">
+        <p>Weather data is unavailable.</p>
+      </section>
+    );
+  }
 
   return (
-    <div className="weather-card">
-      <div className={`weather-card__overlay ${day}`}>
-        <span className="weather-card__temp">
-          {temperature}°{unit}
-        </span>
-        <img
-          className="weather-card__icon"
-          src={imageSrc}
-          alt={`Weather icon: ${type}`}
-        />
+    <section className="weather-card">{/* or: style={{ backgroundImage: `url(${bg})` }} */}
+      <div className={`weather-card__overlay ${dayFlag ? "day" : "night"}`}>
+        <div className="weather-card__temp">{Math.round(tempNum)}°{unit}</div>
+        {icon && <img className="weather-card__icon" src={icon} alt="" aria-hidden="true" />}
       </div>
-    </div>
+    </section>
   );
 }
 
-export default WeatherCard;
+WeatherCard.propTypes = {
+  temperature: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
+  unit: PropTypes.string,
+  isDay: PropTypes.bool,
+  icon: PropTypes.string,
+  timestamp: PropTypes.number,
+  sunrise: PropTypes.number,
+  sunset: PropTypes.number,
+};

@@ -1,49 +1,70 @@
-const APIkey = import.meta.env.VITE_WEATHER_API_KEY;
-const latitude = 39.1638;
-const longitude = -119.7674;
+const WEATHER_KEY = (import.meta.env.VITE_APP_WEATHER_API_KEY ?? '').trim();
+const [DEFAULT_LAT, DEFAULT_LON] = (import.meta.env.VITE_DEFAULT_COORDS ?? '39.1638,-119.7674')
+  .split(',')
+  .map((n) => Number(n));
 
-const getWeatherType = (weatherCode) => {
-  if (weatherCode >= 200 && weatherCode < 600) return "rainy";
-  if (weatherCode >= 600 && weatherCode < 700) return "snow";
-  if (weatherCode >= 700 && weatherCode < 800) return "cloudy";
-  if (weatherCode === 800) return "clear";
-  if (weatherCode > 800) return "cloudy";
-  return "clear";
-};
+export async function fetchWeather(lat = DEFAULT_LAT, lon = DEFAULT_LON) {
+  if (!WEATHER_KEY) {
+    throw new Error('Missing VITE_APP_WEATHER_API_KEY');
+  }
 
-const isDaytime = (currentTime, sunrise, sunset) => {
-  return currentTime >= sunrise && currentTime < sunset;
-};
+  const url = new URL('https://api.openweathermap.org/data/2.5/weather');
+  url.search = new URLSearchParams({
+    lat: String(lat),
+    lon: String(lon),
+    units: 'imperial',
+    appid: WEATHER_KEY,
+  });
 
-export const fetchWeatherData = () => {
-  const url = `https://api.openweathermap.org/data/2.5/weather?lat=${latitude}&lon=${longitude}&appid=${APIkey}&units=imperial`;
-  console.log("🌐 Final weather API URL:", url);
+  const res = await fetch(url.toString());
+  if (!res.ok) {
+    let details = '';
+    try { details = await res.text(); } catch {}
+    throw new Error(`Weather API ${res.status}${details ? `: ${details}` : ''}`);
+  }
+  return res.json();
+}
 
-  return fetch(url)
-    .then((res) => {
-      if (!res.ok) {
-        throw new Error("Weather API request failed");
-      }
-      return res.json();
-    })
-    .then((data) => {
-      const weatherCode = data.weather[0].id;
-      const weatherType = getWeatherType(weatherCode);
+export function normalizeWeather(raw) {
+  if (!raw || typeof raw !== 'object') {
+    return {
+      temperature: null,
+      condition: 'Clear',
+      isDay: true,
+      timestamp: null,
+      sunrise: null,
+      sunset: null,
+      city: '',
+    };
+  }
 
-      const currentTime = data.dt;
-      const sunrise = data.sys.sunrise;
-      const sunset = data.sys.sunset;
-      const isDay = isDaytime(currentTime, sunrise, sunset);
+  const temperature = typeof raw?.main?.temp === 'number' ? raw.main.temp : null;
+  const condition = raw?.weather?.[0]?.main ?? 'Clear';
+  const timestamp = typeof raw?.dt === 'number' ? raw.dt : null;
+  const sunrise = typeof raw?.sys?.sunrise === 'number' ? raw.sys.sunrise : null;
+  const sunset = typeof raw?.sys?.sunset === 'number' ? raw.sys.sunset : null;
 
-      return {
-        temperature: data.main.temp,
-        condition: weatherType,
-        type: weatherType,
-        isDay: isDay,
-      };
-    })
-    .catch((err) => {
-      console.error("Error fetching weather data:", err);
-      return null;
-    });
-};
+  const isDay =
+    timestamp != null && sunrise != null && sunset != null
+      ? timestamp > sunrise && timestamp < sunset
+      : true;
+
+  return {
+    temperature,
+    condition,
+    isDay,
+    timestamp,
+    sunrise,
+    sunset,
+    city: raw?.name ?? '',
+  };
+}
+
+export async function getWeather(lat = DEFAULT_LAT, lon = DEFAULT_LON) {
+  const raw = await fetchWeather(lat, lon);
+  return normalizeWeather(raw);
+}
+
+// Back-compat aliases/exports
+export { fetchWeather as fetchWeatherData };
+export default fetchWeather;

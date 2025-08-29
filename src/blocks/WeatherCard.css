@@ -1,66 +1,54 @@
-.weather-card {
+:root { --wx-card-h: 80px; --wx-card-radius: 10px; }
+
+.weather-card,
+.weather-card--empty {
   position: relative;
   display: flex;
   align-items: center;
-  justify-content: space-between;
   max-width: 1360px;
-  height: 80px;
+  height: var(--wx-card-h);
+  min-height: var(--wx-card-h);
   margin: 0 auto;
-  border-radius: 10px;
-  overflow: hidden;
+  border-radius: var(--wx-card-radius);
+  overflow: hidden;                  /* clip the corner icon to the rounded corner */
 }
 
 .weather-card__overlay {
+  position: relative;                /* stacking context for z-index */
   display: flex;
   align-items: center;
   justify-content: space-between;
   width: 100%;
-  padding: 0 16px;
   height: 100%;
+  padding: 0 16px;
+  box-sizing: border-box;
 }
+
+.weather-card__overlay.day   { background-color: #00a3ff; }
+.weather-card__overlay.night { background-color: #2d6b91; }
 
 .weather-card__temp {
+  position: relative;
+  z-index: 3;                        /* always above the corner art */
   font-size: 32px;
-  font-weight: bold;
-  color: #ffffff;
+  font-weight: 700;
+  color: #fff;
+  line-height: 1;
 }
 
+/* Sun/cloud corner art */
 .weather-card__icon {
   position: absolute;
-  top: -2px;
-  right: -1px;
-  border-top-right-radius: 10px;
+  right: 0;
+  top: -8px;                         /* lift the sun a bit */
+  height: calc(var(--wx-card-h) + 16px); /* lets the cloud dip into the bar */
+  width: auto;
   object-fit: contain;
-  z-index: 2;
+  pointer-events: none;
+  z-index: 2;                        /* below temp */
 }
 
-.weather-card__overlay.day {
-  background-color: #00a3ff;
-}
-
-.weather-card__overlay.night {
-  background-color: #2d6b91;
-}
-
-@media screen and (max-width: 868px) {
-  .weather-card__icon {
-    top: -2px;
-    right: 0px;
-  }
-}
-
-@media screen and (max-width: 600px) {
-  .weather-card__temp {
-    font-size: 24px;
-  }
-
-  .weather-card__icon {
-    right: 0;
-  }
-}
-
-@media screen and (max-width: 460px) {
-  .weather-card__icon {
-   top: -1px;
-  }
+@media (max-width: 600px) {
+  :root { --wx-card-h: 64px; }
+  .weather-card__temp { font-size: 24px; }
 }

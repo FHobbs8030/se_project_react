@@ -1,9 +1,6 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
-import {
-  createBrowserRouter,
-  RouterProvider,
-} from "react-router-dom";
+import { createBrowserRouter, RouterProvider } from "react-router-dom";
 
 import App from "./components/App.jsx";
 import Main from "./components/Main.jsx";
@@ -24,15 +21,13 @@ const router = createBrowserRouter(
     },
   ],
   {
-    future: {
-      v7_startTransition: true,
-    },
     basename: import.meta.env.DEV ? "/" : "/se_project_react",
+    future: { v7_startTransition: true },
   }
 );
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
-    <RouterProvider router={router} />
+    <RouterProvider router={router} future={{ v7_startTransition: true }} />
   </React.StrictMode>
 );

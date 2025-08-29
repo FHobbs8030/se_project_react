@@ -1,26 +1,34 @@
-import React from 'react';
+// src/components/ClothesSection.jsx
+import React, { memo } from 'react';
+import PropTypes from 'prop-types';
 import ItemCard from './ItemCard';
 import '../blocks/Cards.css';
 import '../blocks/ClothesSection.css';
 
-function ClothesSection({
+const ClothesSection = memo(function ClothesSection({
   clothingItems = [],
   onCardClick,
   onDeleteItem,
-  title,
+  title = 'Recommended items',
   showMessage = true,
   showDelete = false,
 }) {
-  console.log('🧥 ClothesSection received clothingItems:', clothingItems);
+  // DEV-only logging (disabled). Set to true to debug without committing noisy logs.
+  if (import.meta?.env?.DEV && false) {
+    // console.log('🧥 ClothesSection received clothingItems:', clothingItems);
+  }
+
+  const hasItems = Array.isArray(clothingItems) && clothingItems.length > 0;
 
   return (
-    <section className="clothes-section">
+    <section className="clothes-section" aria-label="Clothing suggestions">
       {showMessage && <p className="clothes-section__title">{title}</p>}
+
       <div className="main__cards">
-        {clothingItems.length > 0 ? (
-          clothingItems.map(item => (
+        {hasItems ? (
+          clothingItems.map((item) => (
             <ItemCard
-              key={item._id}
+              key={item._id || item.id || item.name || JSON.stringify(item)}
               item={item}
               onCardClick={onCardClick}
               onDeleteClick={onDeleteItem}
@@ -29,11 +37,20 @@ function ClothesSection({
             />
           ))
         ) : (
-          <p>No items to show.</p>
+          <p className="clothes-section__empty">No items to show.</p>
         )}
       </div>
     </section>
   );
-}
+});
+
+ClothesSection.propTypes = {
+  clothingItems: PropTypes.arrayOf(PropTypes.object),
+  onCardClick: PropTypes.func,
+  onDeleteItem: PropTypes.func,
+  title: PropTypes.string,
+  showMessage: PropTypes.bool,
+  showDelete: PropTypes.bool,
+};
 
 export default ClothesSection;

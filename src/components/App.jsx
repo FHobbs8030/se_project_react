@@ -1,41 +1,62 @@
+// src/components/App.jsx
 import React, { useState, useEffect } from 'react';
 import { Outlet, useNavigate } from 'react-router-dom';
+
 import Header from './Header.jsx';
 import Footer from './Footer.jsx';
 import ItemModal from './ItemModal.jsx';
 import AddItemModal from './AddItemModal.jsx';
 import ConfirmDeleteModal from './ConfirmDeleteModal.jsx';
+
 import '../blocks/App.css';
-import { fetchWeatherData } from '../utils/weatherApi';
+
+import { getWeather } from '../utils/weatherApi';
 import {
   getClothingItems,
   addClothingItem,
   deleteClothingItem,
 } from '../utils/clothingApi';
 import { CurrentTemperatureUnitContext } from '../contextStore/CurrentTemperatureUnitContext';
+import { CurrentUserContext } from '../contextStore/CurrentUserContext';
+
+const API_BASE = import.meta.env.VITE_API_BASE_URL;
 
 function App() {
   const navigate = useNavigate();
 
+  // ---- User ----
+  const [currentUser, setCurrentUser] = useState(null);
+
+  // ---- Weather ----
   const [weatherData, setWeatherData] = useState(null);
+  const [isLoadingWeather, setIsLoadingWeather] = useState(true);
+  const [weatherError, setWeatherError] = useState(null);
+
+  // ---- Clothes ----
   const [clothingItems, setClothingItems] = useState([]);
+
+  // ---- Modals ----
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [selectedItem, setSelectedItem] = useState(null);
   const [isItemModalOpen, setIsItemModalOpen] = useState(false);
   const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
   const [itemToDelete, setItemToDelete] = useState(null);
-  const [currentTemperatureUnit, setCurrentTemperatureUnit] = useState('F');
-  const [isLoadingWeather, setIsLoadingWeather] = useState(true);
-  const [weatherError, setWeatherError] = useState(null);
 
+  // ---- UI ----
+  const [currentTemperatureUnit, setCurrentTemperatureUnit] = useState('F');
+
+  // Fallback if weather fails
   const fallbackWeatherData = {
     temperature: 72,
-    type: 'warm',
+    condition: 'Clear',
     isDay: true,
-    condition: 'clear',
-    location: 'Carson City',
+    timestamp: null,
+    sunrise: null,
+    sunset: null,
+    city: 'Carson City',
   };
 
+  // Toggle F/C
   const handleToggleSwitchChange = () =>
     setCurrentTemperatureUnit((prev) => (prev === 'F' ? 'C' : 'F'));
 
@@ -88,60 +109,95 @@ function App() {
 
   const handleLogout = () => navigate('/');
 
+  // ---- Effects ----
+
+  // Load current user (for ownership checks in ItemModal/Profile)
   useEffect(() => {
-    setIsLoadingWeather(true);
-    fetchWeatherData()
-      .then((data) => {
-        setWeatherData(data);
-        setWeatherError(null);
-      })
-      .catch(() => {
-        setWeatherData(fallbackWeatherData);
-        setWeatherError('Unable to load weather');
-      })
-      .finally(() => setIsLoadingWeather(false));
+    const token = localStorage.getItem('jwt');
+    if (!token || !API_BASE) return;
+
+    fetch(`${API_BASE}/users/me`, {
+      headers: { Authorization: `Bearer ${token}` },
+    })
+      .then((r) => (r.ok ? r.json() : Promise.reject(r)))
+      .then(setCurrentUser)
+      .catch((err) => {
+        console.error('❌ Failed to load current user:', err);
+      });
   }, []);
 
+  // Load weather (already normalized by getWeather)
   useEffect(() => {
-    const fetchItems = async () => {
+    let cancelled = false;
+    (async () => {
+      setIsLoadingWeather(true);
+      try {
+        const normalized = await getWeather();
+        if (!cancelled) {
+          setWeatherData(normalized);
+          setWeatherError(null);
+        }
+      } catch (err) {
+        if (!cancelled) {
+          console.error('❌ Weather fetch failed:', err);
+          setWeatherData(fallbackWeatherData);
+          setWeatherError('Unable to load weather');
+        }
+      } finally {
+        if (!cancelled) setIsLoadingWeather(false);
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  // Load clothing items
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
       try {
         const items = await getClothingItems();
         const normalizedItems = items.map((item) => ({
           ...item,
           weather: typeof item.weather === 'string' ? item.weather.toLowerCase() : item.weather,
         }));
-        setClothingItems(normalizedItems);
+        if (!cancelled) setClothingItems(normalizedItems);
       } catch (err) {
         console.error('❌ Error loading clothing items:', err);
       }
+    })();
+    return () => {
+      cancelled = true;
     };
-    fetchItems();
   }, []);
 
+  // ---- Render ----
   return (
-    <CurrentTemperatureUnitContext.Provider
-      value={{ currentTemperatureUnit, handleToggleSwitchChange }}
-    >
-      <div className="page">
-        <div className="app">
-          <div className="app__content">
-            <Header onAddClick={handleAddClick} onLogout={handleLogout} />
+    <CurrentUserContext.Provider value={currentUser}>
+      <CurrentTemperatureUnitContext.Provider
+        value={{ currentTemperatureUnit, handleToggleSwitchChange }}
+      >
+        <div className="page">
+          <div className="app">
+            <div className="app__content">
+              <Header onAddClick={handleAddClick} onLogout={handleLogout} />
 
-            <Outlet
-              context={{
-                weatherData,
-                clothingItems,
-                onCardClick: handleCardClick,
-                onDeleteClick: requestDeleteItem,
-                isLoadingWeather,
-                weatherError,
-                onAddClick: handleAddClick,
-              }}
-            />
+              <Outlet
+                context={{
+                  weatherData,
+                  clothingItems,
+                  onCardClick: handleCardClick,
+                  onDeleteClick: requestDeleteItem,
+                  isLoadingWeather,
+                  weatherError,
+                  onAddClick: handleAddClick,
+                }}
+              />
 
-            <Footer />
+              <Footer />
+            </div>
           </div>
-        </div>
 
         {isItemModalOpen && selectedItem && !isConfirmModalOpen && (
           <ItemModal
@@ -167,8 +223,9 @@ function App() {
             onConfirm={handleConfirmDelete}
           />
         )}
-      </div>
-    </CurrentTemperatureUnitContext.Provider>
+        </div>
+      </CurrentTemperatureUnitContext.Provider>
+    </CurrentUserContext.Provider>
   );
 }
 
