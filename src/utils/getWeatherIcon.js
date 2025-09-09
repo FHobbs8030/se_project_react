@@ -17,3 +17,5 @@ export default function getWeatherIcon(rawCondition = '', isDay = true) {
   const dn = isDay ? 'day' : 'night';
   return `${BASE}images/cards/${key}-${dn}.svg`;
 }
+
+

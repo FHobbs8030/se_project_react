@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { getClothingItems, addClothingItem, deleteClothingItem } from '../utils/clothingApi';
 
 const ClothingList = () => {
@@ -46,3 +46,5 @@ const ClothingList = () => {
 };
 
 export default ClothingList;
+
+

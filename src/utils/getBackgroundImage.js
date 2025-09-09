@@ -19,3 +19,5 @@ export default function getBackgroundImage(condition = '', timestamp, sunrise, s
   const entry = map[condition] || map.Clear;
   return entry[isDay ? 'day' : 'night'];
 }
+
+

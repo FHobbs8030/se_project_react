@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import ModalWithForm from './ModalWithForm';
 
 function AddItemModal({ isOpen, onAddItem, onCloseModal }) {
@@ -80,3 +80,5 @@ function AddItemModal({ isOpen, onAddItem, onCloseModal }) {
 }
 
 export default AddItemModal;
+
+

@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import { useContext } from "react";
 import { CurrentTemperatureUnitContext } from "../contextStore/CurrentTemperatureUnitContext";
 import "../blocks/ToggleSwitch.css";
 
@@ -22,3 +22,5 @@ function ToggleSwitch() {
 }
 
 export default ToggleSwitch;
+
+

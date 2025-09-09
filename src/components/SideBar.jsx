@@ -1,4 +1,3 @@
-import React from 'react';
 import '../blocks/SideBar.css';
 
 function SideBar() {
@@ -13,3 +12,5 @@ function SideBar() {
 }
 
 export default SideBar;
+
+

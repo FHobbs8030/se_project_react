@@ -1,19 +1,19 @@
-import React, { useContext, useEffect } from 'react';
+import { useContext, useEffect } from 'react';
 import { CurrentUserContext } from '../contextStore/CurrentUserContext';
 import '../blocks/ItemModal.css';
 
 function ItemModal({ item, onClose, onConfirmDelete }) {
   const currentUser = useContext(CurrentUserContext);
-  if (!item) return null;
 
-  // Close on ESC
   useEffect(() => {
+    if (!item) return;
     const onKey = (e) => e.key === 'Escape' && onClose();
     document.addEventListener('keydown', onKey);
     return () => document.removeEventListener('keydown', onKey);
-  }, [onClose]);
+  }, [onClose, item]);
 
-  // Robust IDs (different shapes from API/seed data)
+  if (!item) return null;
+
   const userId =
     currentUser?.data?._id || currentUser?._id || currentUser?.id || null;
 
@@ -24,10 +24,8 @@ function ItemModal({ item, onClose, onConfirmDelete }) {
 
   const canDelete = !!(userId && ownerId && String(ownerId) === String(userId));
 
-  // Helpful debug log (watch DevTools console)
   console.log('[ItemModal]', { userId, ownerId, canDelete, item });
 
-  // Fallbacks for images/names
   const imgSrc = item.imageUrl || item.link || item.image || '';
   const name = item.name || 'Clothing item';
 
@@ -61,12 +59,12 @@ function ItemModal({ item, onClose, onConfirmDelete }) {
             className="item-modal__delete-button"
             title={canDelete ? 'Delete this item' : 'Only the owner can delete this item'}
             onClick={(e) => {
-              e.stopPropagation(); // don't close the modal
+              e.stopPropagation();
               if (!canDelete) {
                 alert('Only the owner can delete this item.');
                 return;
               }
-              onConfirmDelete(item); // -> opens ConfirmDeleteModal in App.jsx
+              onConfirmDelete(item);
             }}
           >
             Delete item

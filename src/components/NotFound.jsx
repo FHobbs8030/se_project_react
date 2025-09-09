@@ -1,5 +1,3 @@
-import React from 'react';
-
 function NotFound() {
   return (
     <div style={{ textAlign: 'center', marginTop: '5rem' }}>
@@ -11,3 +9,5 @@ function NotFound() {
 }
 
 export default NotFound;
+
+

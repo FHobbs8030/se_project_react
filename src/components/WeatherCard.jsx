@@ -42,3 +42,5 @@ WeatherCard.propTypes = {
   sunrise: PropTypes.number,
   sunset: PropTypes.number,
 };
+
+

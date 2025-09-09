@@ -1,4 +1,3 @@
-import React from 'react';
 import { Link } from 'react-router-dom';
 import ToggleSwitch from './ToggleSwitch.jsx';
 import '../blocks/Header.css';
@@ -32,3 +31,5 @@ function Header({ onAddClick }) {
 }
 
 export default Header;
+
+

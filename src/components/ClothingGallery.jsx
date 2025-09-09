@@ -1,15 +1,17 @@
-import React from 'react';
 import { useOutletContext } from 'react-router-dom';
+import ClothesSection from './ClothesSection';
 
-const ClothingGallery = () => {
-  console.log('Rendering ClothingGallery');
+export default function ClothingGallery() {
   const { clothingItems = [], onCardClick, onDeleteClick } = useOutletContext();
 
-  if (clothingItems.length === 0) {
-    console.log('No clothing items to show');
-  }
-
-  return null;
-};
-
-export default ClothingGallery;
+  return (
+    <ClothesSection
+      clothingItems={clothingItems}
+      onCardClick={onCardClick}
+      onDeleteItem={onDeleteClick}
+      title="Recommended items"
+      showMessage
+      showDelete={false}
+    />
+  );
+}

@@ -1,44 +1,59 @@
-const localHosts = ['localhost', '127.0.0.1', '::1'];
-const isLocal = localHosts.includes(window.location.hostname);
+const BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3001';
 
-const BASE_URL = isLocal
-  ? 'http://127.0.0.1:3001'
-  : 'https://<YOUR_REAL_BACKEND_DOMAIN>';
+const handleJSON = async (res) => {
+  const text = await res.text();
+  const data = text ? JSON.parse(text) : null;
+  if (!res.ok) {
+    const msg =
+      (data && (data.message || data.error)) ||
+      `${res.status} ${res.statusText}`;
+    throw new Error(msg);
+  }
+  return data;
+};
 
-function parseJSONSafe(res) {
-  const ct = res.headers.get('content-type') || '';
-  if (ct.includes('application/json')) return res.json();
-  return Promise.resolve(null);
-}
-
-async function checkResponse(res) {
-  if (res.ok) return parseJSONSafe(res);
-  let data = null;
-  try { data = await parseJSONSafe(res); } catch {}
-  const message = data && data.message ? data.message : `Server error: ${res.status}`;
-  throw new Error(message);
-}
-
-function request(path, options = {}) {
+const authHeaders = () => {
+  const headers = { 'Content-Type': 'application/json' };
   const token = localStorage.getItem('jwt');
-  const headers = {
-    ...(options.body ? { 'Content-Type': 'application/json' } : {}),
-    ...(options.headers || {}),
-    ...(token ? { Authorization: `Bearer ${token}` } : {}),
-  };
-  return fetch(`${BASE_URL}${path}`, {
-    ...options,
-    headers,
-  }).then(checkResponse);
+  if (token) headers.Authorization = `Bearer ${token}`;
+  return headers;
+};
+
+export async function getClothingItems() {
+  const res = await fetch(`${BASE_URL}/items`, {
+    method: 'GET',
+    headers: authHeaders(),
+    credentials: 'include',
+  });
+  return handleJSON(res);
 }
 
-export const getClothingItems = () => request('/items');
-
-export const addClothingItem = (item) =>
-  request('/items', {
+export async function addClothingItem({ name, weather, imageUrl, link, image }) {
+  const body = {
+    name,
+    weather,
+    imageUrl: imageUrl ?? link ?? image ?? '',
+  };
+  const res = await fetch(`${BASE_URL}/items`, {
     method: 'POST',
-    body: JSON.stringify(item),
+    headers: authHeaders(),
+    body: JSON.stringify(body),
+    credentials: 'include',
   });
+  return handleJSON(res);
+}
 
-export const deleteClothingItem = (id) =>
-  request(`/items/${id}`, { method: 'DELETE' });
+export async function deleteClothingItem(id) {
+  const res = await fetch(`${BASE_URL}/items/${id}`, {
+    method: 'DELETE',
+    headers: authHeaders(),
+    credentials: 'include',
+  });
+  return handleJSON(res);
+}
+
+export default {
+  getClothingItems,
+  addClothingItem,
+  deleteClothingItem,
+};

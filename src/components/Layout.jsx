@@ -1,6 +1,5 @@
-import React from "react";
 import { Outlet } from "react-router-dom";
-import Header from "./Header"; // optional
+import Header from "./Header"; 
 
 const Layout = ({ weatherData, clothingItems }) => {
   return (
@@ -14,3 +13,5 @@ const Layout = ({ weatherData, clothingItems }) => {
 };
 
 export default Layout;
+
+

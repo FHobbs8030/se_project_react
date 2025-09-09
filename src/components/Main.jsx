@@ -1,5 +1,5 @@
 // src/components/Main.jsx
-import React, { useContext, useEffect, useMemo, useState } from 'react';
+import { useContext, useEffect, useMemo, useState } from 'react';
 import { useOutletContext } from 'react-router-dom';
 import ClothesSection from './ClothesSection';
 import WeatherCard from './WeatherCard';
@@ -99,3 +99,5 @@ function Main() {
 }
 
 export default Main;
+
+

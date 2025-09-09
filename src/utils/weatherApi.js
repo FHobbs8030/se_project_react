@@ -1,28 +1,50 @@
-const WEATHER_KEY = (import.meta.env.VITE_APP_WEATHER_API_KEY ?? '').trim();
+const WEATHER_API_URL =
+  (import.meta.env.VITE_WEATHER_API_URL ?? 'https://api.openweathermap.org/data/2.5/weather').trim();
+
+const WEATHER_KEY =
+  (import.meta.env.VITE_WEATHER_API_KEY ??
+    import.meta.env.VITE_APP_WEATHER_API_KEY ??
+    '').trim();
+
 const [DEFAULT_LAT, DEFAULT_LON] = (import.meta.env.VITE_DEFAULT_COORDS ?? '39.1638,-119.7674')
   .split(',')
   .map((n) => Number(n));
 
-export async function fetchWeather(lat = DEFAULT_LAT, lon = DEFAULT_LON) {
-  if (!WEATHER_KEY) {
-    throw new Error('Missing VITE_APP_WEATHER_API_KEY');
+const handleJSON = async (res) => {
+  const text = await res.text();
+  const data = text ? JSON.parse(text) : null;
+  if (!res.ok) {
+    const msg = (data && (data.message || data.error)) || `${res.status} ${res.statusText}`;
+    throw new Error(msg);
   }
+  return data;
+};
 
-  const url = new URL('https://api.openweathermap.org/data/2.5/weather');
+const buildUrl = (lat, lon, units = 'imperial') => {
+  const url = new URL(WEATHER_API_URL);
   url.search = new URLSearchParams({
     lat: String(lat),
     lon: String(lon),
-    units: 'imperial',
+    units: units,
     appid: WEATHER_KEY,
   });
+  return url.toString();
+};
 
-  const res = await fetch(url.toString());
-  if (!res.ok) {
-    let details = '';
-    try { details = await res.text(); } catch {}
-    throw new Error(`Weather API ${res.status}${details ? `: ${details}` : ''}`);
+export async function fetchWeather(arg1 = DEFAULT_LAT, arg2 = DEFAULT_LON, arg3) {
+  if (!WEATHER_KEY) throw new Error('Missing weather API key');
+  let lat, lon, units;
+  if (typeof arg1 === 'object') {
+    lat = arg1.latitude ?? arg1.lat ?? DEFAULT_LAT;
+    lon = arg1.longitude ?? arg1.lon ?? DEFAULT_LON;
+    units = arg1.units ?? 'imperial';
+  } else {
+    lat = arg1 ?? DEFAULT_LAT;
+    lon = arg2 ?? DEFAULT_LON;
+    units = arg3 ?? 'imperial';
   }
-  return res.json();
+  const res = await fetch(buildUrl(lat, lon, units), { method: 'GET' });
+  return handleJSON(res);
 }
 
 export function normalizeWeather(raw) {
@@ -37,18 +59,15 @@ export function normalizeWeather(raw) {
       city: '',
     };
   }
-
   const temperature = typeof raw?.main?.temp === 'number' ? raw.main.temp : null;
   const condition = raw?.weather?.[0]?.main ?? 'Clear';
   const timestamp = typeof raw?.dt === 'number' ? raw.dt : null;
   const sunrise = typeof raw?.sys?.sunrise === 'number' ? raw.sys.sunrise : null;
   const sunset = typeof raw?.sys?.sunset === 'number' ? raw.sys.sunset : null;
-
   const isDay =
     timestamp != null && sunrise != null && sunset != null
       ? timestamp > sunrise && timestamp < sunset
       : true;
-
   return {
     temperature,
     condition,
@@ -60,11 +79,10 @@ export function normalizeWeather(raw) {
   };
 }
 
-export async function getWeather(lat = DEFAULT_LAT, lon = DEFAULT_LON) {
-  const raw = await fetchWeather(lat, lon);
+export async function getWeather(arg1 = DEFAULT_LAT, arg2 = DEFAULT_LON, arg3) {
+  const raw = await fetchWeather(arg1, arg2, arg3);
   return normalizeWeather(raw);
 }
 
-// Back-compat aliases/exports
 export { fetchWeather as fetchWeatherData };
 export default fetchWeather;

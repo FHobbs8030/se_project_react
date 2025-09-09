@@ -4,3 +4,5 @@ export const CurrentTemperatureUnitContext = createContext({
   currentTemperatureUnit: "F",          
   handleToggleSwitchChange: () => {},   
 });
+
+

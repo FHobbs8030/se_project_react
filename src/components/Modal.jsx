@@ -30,3 +30,5 @@ export const Modal = ({ name, onClose, children }) => {
     </div>
   );
 };
+
+

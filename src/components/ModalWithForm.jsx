@@ -1,4 +1,3 @@
-import React from "react";
 import { Modal } from "./Modal";
 import "../blocks/ModalWithForm.css";
 
@@ -34,3 +33,5 @@ function ModalWithForm({
 }
 
 export default ModalWithForm;
+
+

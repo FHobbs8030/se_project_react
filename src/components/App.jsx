@@ -1,5 +1,5 @@
 // src/components/App.jsx
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { Outlet, useNavigate } from 'react-router-dom';
 
 import Header from './Header.jsx';
@@ -24,39 +24,35 @@ const API_BASE = import.meta.env.VITE_API_BASE_URL;
 function App() {
   const navigate = useNavigate();
 
-  // ---- User ----
   const [currentUser, setCurrentUser] = useState(null);
 
-  // ---- Weather ----
   const [weatherData, setWeatherData] = useState(null);
   const [isLoadingWeather, setIsLoadingWeather] = useState(true);
   const [weatherError, setWeatherError] = useState(null);
 
-  // ---- Clothes ----
   const [clothingItems, setClothingItems] = useState([]);
 
-  // ---- Modals ----
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [selectedItem, setSelectedItem] = useState(null);
   const [isItemModalOpen, setIsItemModalOpen] = useState(false);
   const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
   const [itemToDelete, setItemToDelete] = useState(null);
 
-  // ---- UI ----
   const [currentTemperatureUnit, setCurrentTemperatureUnit] = useState('F');
 
-  // Fallback if weather fails
-  const fallbackWeatherData = {
-    temperature: 72,
-    condition: 'Clear',
-    isDay: true,
-    timestamp: null,
-    sunrise: null,
-    sunset: null,
-    city: 'Carson City',
-  };
+  const fallbackWeatherData = useMemo(
+    () => ({
+      temperature: 72,
+      condition: 'Clear',
+      isDay: true,
+      timestamp: null,
+      sunrise: null,
+      sunset: null,
+      city: 'Carson City',
+    }),
+    []
+  );
 
-  // Toggle F/C
   const handleToggleSwitchChange = () =>
     setCurrentTemperatureUnit((prev) => (prev === 'F' ? 'C' : 'F'));
 
@@ -81,7 +77,7 @@ function App() {
       setClothingItems((prev) => [savedItem, ...prev]);
       handleCloseModal();
     } catch (err) {
-      console.error('❌ Error adding item:', err);
+      console.error('Error adding item:', err);
     }
   };
 
@@ -98,7 +94,7 @@ function App() {
         setClothingItems((prev) => prev.filter((ci) => ci._id !== id && ci.id !== id));
       }
     } catch (err) {
-      console.error('❌ Error deleting item:', err);
+      console.error('Error deleting item:', err);
     } finally {
       setIsConfirmModalOpen(false);
       setIsItemModalOpen(false);
@@ -109,9 +105,6 @@ function App() {
 
   const handleLogout = () => navigate('/');
 
-  // ---- Effects ----
-
-  // Load current user (for ownership checks in ItemModal/Profile)
   useEffect(() => {
     const token = localStorage.getItem('jwt');
     if (!token || !API_BASE) return;
@@ -122,11 +115,10 @@ function App() {
       .then((r) => (r.ok ? r.json() : Promise.reject(r)))
       .then(setCurrentUser)
       .catch((err) => {
-        console.error('❌ Failed to load current user:', err);
+        console.error('Failed to load current user:', err);
       });
   }, []);
 
-  // Load weather (already normalized by getWeather)
   useEffect(() => {
     let cancelled = false;
     (async () => {
@@ -139,7 +131,6 @@ function App() {
         }
       } catch (err) {
         if (!cancelled) {
-          console.error('❌ Weather fetch failed:', err);
           setWeatherData(fallbackWeatherData);
           setWeatherError('Unable to load weather');
         }
@@ -150,9 +141,8 @@ function App() {
     return () => {
       cancelled = true;
     };
-  }, []);
+  }, [fallbackWeatherData]);
 
-  // Load clothing items
   useEffect(() => {
     let cancelled = false;
     (async () => {
@@ -164,7 +154,7 @@ function App() {
         }));
         if (!cancelled) setClothingItems(normalizedItems);
       } catch (err) {
-        console.error('❌ Error loading clothing items:', err);
+        console.error('Error loading clothing items:', err);
       }
     })();
     return () => {
@@ -172,7 +162,6 @@ function App() {
     };
   }, []);
 
-  // ---- Render ----
   return (
     <CurrentUserContext.Provider value={currentUser}>
       <CurrentTemperatureUnitContext.Provider
@@ -199,30 +188,30 @@ function App() {
             </div>
           </div>
 
-        {isItemModalOpen && selectedItem && !isConfirmModalOpen && (
-          <ItemModal
-            item={selectedItem}
-            onClose={handleCloseModal}
-            onConfirmDelete={(itm) => requestDeleteItem(itm)}
-          />
-        )}
+          {isItemModalOpen && selectedItem && !isConfirmModalOpen && (
+            <ItemModal
+              item={selectedItem}
+              onClose={handleCloseModal}
+              onConfirmDelete={(itm) => requestDeleteItem(itm)}
+            />
+          )}
 
-        {isAddModalOpen && (
-          <AddItemModal
-            isOpen={isAddModalOpen}
-            onCloseModal={handleCloseModal}
-            onAddItem={handleAddGarmentSubmit}
-          />
-        )}
+          {isAddModalOpen && (
+            <AddItemModal
+              isOpen={isAddModalOpen}
+              onCloseModal={handleCloseModal}
+              onAddItem={handleAddGarmentSubmit}
+            />
+          )}
 
-        {isConfirmModalOpen && (
-          <ConfirmDeleteModal
-            isOpen={isConfirmModalOpen}
-            onClose={handleCloseModal}
-            onCancel={handleCloseModal}
-            onConfirm={handleConfirmDelete}
-          />
-        )}
+          {isConfirmModalOpen && (
+            <ConfirmDeleteModal
+              isOpen={isConfirmModalOpen}
+              onClose={handleCloseModal}
+              onCancel={handleCloseModal}
+              onConfirm={handleConfirmDelete}
+            />
+          )}
         </div>
       </CurrentTemperatureUnitContext.Provider>
     </CurrentUserContext.Provider>

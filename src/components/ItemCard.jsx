@@ -1,4 +1,3 @@
-import React from 'react';
 import '../blocks/ItemCard.css';
 
 function ItemCard({ item, onCardClick, needsScaling }) {
@@ -25,3 +24,5 @@ function ItemCard({ item, onCardClick, needsScaling }) {
 }
 
 export default ItemCard;
+
+
