@@ -16,6 +16,8 @@ import {
   addClothingItem,
   deleteClothingItem,
 } from '../utils/clothingApi';
+import { getMe } from '../utils/authApi';
+
 import { CurrentTemperatureUnitContext } from '../contextStore/CurrentTemperatureUnitContext';
 import { CurrentUserContext } from '../contextStore/CurrentUserContext';
 
@@ -103,20 +105,33 @@ function App() {
     }
   };
 
-  const handleLogout = () => navigate('/');
+  const handleLogout = () => {
+    localStorage.removeItem('jwt');
+    setCurrentUser(null);
+    window.dispatchEvent(new Event('auth-changed'));
+    navigate('/signin');
+  };
 
   useEffect(() => {
-    const token = localStorage.getItem('jwt');
-    if (!token || !API_BASE) return;
-
-    fetch(`${API_BASE}/users/me`, {
-      headers: { Authorization: `Bearer ${token}` },
-    })
-      .then((r) => (r.ok ? r.json() : Promise.reject(r)))
-      .then(setCurrentUser)
-      .catch((err) => {
-        console.error('Failed to load current user:', err);
-      });
+    async function loadUser() {
+      const token = localStorage.getItem('jwt');
+      if (!token) {
+        setCurrentUser(null);
+        return;
+      }
+      try {
+        const me = await getMe();
+        setCurrentUser(me);
+      } catch (e) {
+        console.error('Failed to load current user:', e);
+        localStorage.removeItem('jwt');
+        setCurrentUser(null);
+      }
+    }
+    loadUser();
+    const onAuth = () => loadUser();
+    window.addEventListener('auth-changed', onAuth);
+    return () => window.removeEventListener('auth-changed', onAuth);
   }, []);
 
   useEffect(() => {
@@ -129,7 +144,7 @@ function App() {
           setWeatherData(normalized);
           setWeatherError(null);
         }
-      } catch (err) {
+      } catch {
         if (!cancelled) {
           setWeatherData(fallbackWeatherData);
           setWeatherError('Unable to load weather');
@@ -190,6 +205,7 @@ function App() {
                   isLoadingWeather,
                   weatherError,
                   onAddClick: handleAddClick,
+                  currentUser, // expose to nested routes (e.g., Profile)
                 }}
               />
 
@@ -202,7 +218,6 @@ function App() {
               item={selectedItem}
               onClose={handleCloseModal}
               onConfirmDelete={(itm) => requestDeleteItem(itm)}
-              showDelete
             />
           )}
 

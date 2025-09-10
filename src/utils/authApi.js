@@ -1,10 +1,34 @@
-// src/utils/authApi.js
 import { api } from './http';
 
-export const signIn  = (email, password) =>
-  api('/signin',  { method: 'POST', body: JSON.stringify({ email, password }) });
+const TOKEN_KEY = 'jwt';
 
-export const signUp  = (payload) =>
-  api('/signup',  { method: 'POST', body: JSON.stringify(payload) });
+export const signIn = async (email, password) => {
+  const data = await api('/signin', {
+    method: 'POST',
+    body: JSON.stringify({ email, password }),
+  });
+  if (data?.token) {
+    localStorage.setItem(TOKEN_KEY, data.token);
+    window.dispatchEvent(new Event('auth-changed'));
+  }
+  return data;
+};
 
-export const getMe   = () => api('/users/me');
+export const signUp = async (payload) => {
+  const data = await api('/signup', {
+    method: 'POST',
+    body: JSON.stringify(payload),
+  });
+  if (data?.token) {
+    localStorage.setItem(TOKEN_KEY, data.token);
+    window.dispatchEvent(new Event('auth-changed'));
+  }
+  return data;
+};
+
+export const getMe = () => api('/users/me');  // <-- add this
+
+export const logout = () => {
+  localStorage.removeItem(TOKEN_KEY);
+  window.dispatchEvent(new Event('auth-changed'));
+};
