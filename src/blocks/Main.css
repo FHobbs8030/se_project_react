@@ -1,6 +1,6 @@
 .main {
   width: 100%;
-  max-width: 1440px;
+  max-width: 1120px;
   margin: 0 auto;
   padding: 0 40px;
   box-sizing: border-box;
@@ -15,8 +15,8 @@
 
 .main__cards {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-  gap: 20px;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
   justify-content: center;
   padding: 16px 0;
   width: 100%;
@@ -28,7 +28,7 @@
 }
 
 .main__message {
-  font-family: Cabinet Grotesk;
+  font-family: Cabinet Grotesk, sans-serif;
   font-weight: 700;
   font-size: 20px;
   line-height: 100%;
@@ -45,28 +45,28 @@
   margin: 0;
 }
 
-@media screen and (max-width: 600px) {
+@media (max-width: 1024px) {
+  .main {
+    padding: 0 32px;
+  }
+  .main__cards {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px; /* tablet gap */
+  }
+  .main__message {
+    margin: 28px 0 22px 0;
+  }
+}
+
+@media (max-width: 640px) {
   .main {
     padding: 0 20px;
   }
-
   .main__cards {
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    grid-template-columns: 1fr;
+    gap: 16px;
   }
-
   .main__message {
     margin: 20px 0 17px 0;
-  }
-}
-
-@media screen and (min-width: 1024px) and (max-width: 1439px) {
-  .main__cards {
-    grid-template-columns: repeat(3, 1fr);
-  }
-}
-
-@media screen and (min-width: 1440px) {
-  .main__cards {
-    grid-template-columns: repeat(4, 1fr);
   }
 }

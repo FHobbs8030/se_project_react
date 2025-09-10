@@ -19,7 +19,7 @@ import {
 import { CurrentTemperatureUnitContext } from '../contextStore/CurrentTemperatureUnitContext';
 import { CurrentUserContext } from '../contextStore/CurrentUserContext';
 
-const API_BASE = import.meta.env.VITE_API_BASE_URL;
+const API_BASE = import.meta.env.VITE_API_BASE_URL || '';
 
 function App() {
   const navigate = useNavigate();
@@ -148,10 +148,19 @@ function App() {
     (async () => {
       try {
         const items = await getClothingItems();
-        const normalizedItems = items.map((item) => ({
-          ...item,
-          weather: typeof item.weather === 'string' ? item.weather.toLowerCase() : item.weather,
-        }));
+        const normalizedItems = items.map((item) => {
+          const raw = item.imageUrl ?? item.link ?? item.image ?? '';
+          const absolute =
+            typeof raw === 'string' && raw.startsWith('/') && API_BASE
+              ? `${API_BASE}${raw}`
+              : raw;
+          return {
+            ...item,
+            imageUrl: absolute,
+            weather:
+              typeof item.weather === 'string' ? item.weather.toLowerCase() : item.weather,
+          };
+        });
         if (!cancelled) setClothingItems(normalizedItems);
       } catch (err) {
         console.error('Error loading clothing items:', err);
@@ -193,6 +202,7 @@ function App() {
               item={selectedItem}
               onClose={handleCloseModal}
               onConfirmDelete={(itm) => requestDeleteItem(itm)}
+              showDelete
             />
           )}
 
