@@ -1,8 +1,15 @@
 .clothes-section {
-  padding: 16px 0 16px 16px;
   background-color: white;
   width: 100%;
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: 0 16px;
   box-sizing: border-box;
+}
+
+.clothes-section__title {
+  margin: 16px 0;
+  font-weight: 700;
 }
 
 .clothes-grid {
