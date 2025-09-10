@@ -1,8 +1,9 @@
+// src/components/ItemModal.jsx
 import { useContext, useEffect } from 'react';
 import { CurrentUserContext } from '../contextStore/CurrentUserContext';
 import '../blocks/ItemModal.css';
 
-function ItemModal({ item, onClose, onConfirmDelete }) {
+function ItemModal({ item, onClose, onConfirmDelete, showDelete = false }) {
   const currentUser = useContext(CurrentUserContext);
 
   useEffect(() => {
@@ -23,8 +24,6 @@ function ItemModal({ item, onClose, onConfirmDelete }) {
       : item?.owner) || null;
 
   const canDelete = !!(userId && ownerId && String(ownerId) === String(userId));
-
-  console.log('[ItemModal]', { userId, ownerId, canDelete, item });
 
   const imgSrc = item.imageUrl || item.link || item.image || '';
   const name = item.name || 'Clothing item';
@@ -54,21 +53,18 @@ function ItemModal({ item, onClose, onConfirmDelete }) {
             <p className="item-modal__weather">Weather: {item.weather}</p>
           </div>
 
-          <button
-            type="button"
-            className="item-modal__delete-button"
-            title={canDelete ? 'Delete this item' : 'Only the owner can delete this item'}
-            onClick={(e) => {
-              e.stopPropagation();
-              if (!canDelete) {
-                alert('Only the owner can delete this item.');
-                return;
-              }
-              onConfirmDelete(item);
-            }}
-          >
-            Delete item
-          </button>
+          {showDelete && canDelete && (
+            <button
+              type="button"
+              className="item-modal__delete-button"
+              onClick={(e) => {
+                e.stopPropagation();
+                onConfirmDelete(item);
+              }}
+            >
+              Delete item
+            </button>
+          )}
         </div>
       </div>
     </div>
