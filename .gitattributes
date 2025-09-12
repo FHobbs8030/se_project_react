@@ -1,4 +1,7 @@
-* text=auto
+# Default: treat text files as text and commit LF
+* text=auto eol=lf
+
+# Explicit LF for common source types
 *.js   text eol=lf
 *.jsx  text eol=lf
 *.ts   text eol=lf
@@ -7,3 +10,19 @@
 *.scss text eol=lf
 *.json text eol=lf
 *.md   text eol=lf
+
+# Binary/special cases (never normalize)
+*.png  -text
+*.jpg  -text
+*.jpeg -text
+*.gif  -text
+*.svg  -text
+*.ico  -text
+*.pdf  -text
+*.zip  -text
+*.eot  -text
+*.ttf  -text
+*.woff -text
+*.woff2 -text
+
+*.env  merge=ours
