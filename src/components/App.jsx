@@ -1,4 +1,3 @@
-// src/components/App.jsx
 import { useState, useEffect, useMemo } from 'react';
 import { Outlet, useNavigate } from 'react-router-dom';
 
@@ -10,7 +9,7 @@ import ConfirmDeleteModal from './ConfirmDeleteModal.jsx';
 
 import '../blocks/App.css';
 
-import { getWeather } from '../utils/weatherApi';
+import { fetchWeather } from '../utils/weatherApi';
 import {
   getClothingItems,
   addClothingItem,
@@ -27,10 +26,7 @@ function App() {
   const navigate = useNavigate();
 
   const [currentUser, setCurrentUser] = useState(null);
-
-  const [weatherData, setWeatherData] = useState(null);
-  const [isLoadingWeather, setIsLoadingWeather] = useState(true);
-  const [weatherError, setWeatherError] = useState(null);
+  const [city, setCity] = useState('');
 
   const [clothingItems, setClothingItems] = useState([]);
 
@@ -43,15 +39,7 @@ function App() {
   const [currentTemperatureUnit, setCurrentTemperatureUnit] = useState('F');
 
   const fallbackWeatherData = useMemo(
-    () => ({
-      temperature: 72,
-      condition: 'Clear',
-      isDay: true,
-      timestamp: null,
-      sunrise: null,
-      sunset: null,
-      city: 'Carson City',
-    }),
+    () => ({ city: 'Carson City' }),
     []
   );
 
@@ -109,7 +97,7 @@ function App() {
     localStorage.removeItem('jwt');
     setCurrentUser(null);
     window.dispatchEvent(new Event('auth-changed'));
-    navigate('/signin');
+    navigate('/signin', { replace: true });
   };
 
   useEffect(() => {
@@ -135,22 +123,23 @@ function App() {
   }, []);
 
   useEffect(() => {
+    const onFocus = () => {
+      if (localStorage.getItem('jwt')) {
+        getMe().then(setCurrentUser).catch(() => {});
+      }
+    };
+    window.addEventListener('focus', onFocus);
+    return () => window.removeEventListener('focus', onFocus);
+  }, []);
+
+  useEffect(() => {
     let cancelled = false;
     (async () => {
-      setIsLoadingWeather(true);
       try {
-        const normalized = await getWeather();
-        if (!cancelled) {
-          setWeatherData(normalized);
-          setWeatherError(null);
-        }
+        const wx = await fetchWeather();
+        if (!cancelled) setCity(wx?.name || fallbackWeatherData.city);
       } catch {
-        if (!cancelled) {
-          setWeatherData(fallbackWeatherData);
-          setWeatherError('Unable to load weather');
-        }
-      } finally {
-        if (!cancelled) setIsLoadingWeather(false);
+        if (!cancelled) setCity(fallbackWeatherData.city);
       }
     })();
     return () => {
@@ -194,18 +183,19 @@ function App() {
         <div className="page">
           <div className="app">
             <div className="app__content">
-              <Header onAddClick={handleAddClick} onLogout={handleLogout} />
+              <Header
+                onAddClick={handleAddClick}
+                onLogout={handleLogout}
+                locationText={city}
+              />
 
               <Outlet
                 context={{
-                  weatherData,
                   clothingItems,
                   onCardClick: handleCardClick,
                   onDeleteClick: requestDeleteItem,
-                  isLoadingWeather,
-                  weatherError,
                   onAddClick: handleAddClick,
-                  currentUser, // expose to nested routes (e.g., Profile)
+                  currentUser,
                 }}
               />
 

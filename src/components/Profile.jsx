@@ -1,36 +1,49 @@
-import { useOutletContext } from 'react-router-dom';
-import ClothesSection from './ClothesSection.jsx';
-import '../blocks/Profile.css';
+import { useEffect, useState, useContext } from "react";
+import { getClothingItems } from "../utils/clothingApi";
+import { CurrentUserContext } from "../contextStore/CurrentUserContext";
+import ItemCard from "./ItemCard";
 
 export default function Profile() {
-  // Call the hook unconditionally at the top level
-  const ctx = useOutletContext?.() ?? {};
+  const currentUser = useContext(CurrentUserContext);
+  const [loading, setLoading] = useState(true);
+  const [myItems, setMyItems] = useState([]);
+  const [error, setError] = useState("");
 
-  const {
-    clothingItems = [],
-    onCardClick,
-    onDeleteClick,
-    currentUser,          // provided by App.jsx context (see below)
-  } = ctx;
+  useEffect(() => {
+    let ignore = false;
 
-  // Example use so it's not “unused” and to differentiate owner view
-  const isOwner = Boolean(currentUser?._id);
+    async function load() {
+      try {
+        setLoading(true);
+        setError("");
+        const items = await getClothingItems();
+        const mine =
+          Array.isArray(items) && currentUser?._id
+            ? items.filter((i) => String(i.owner) === String(currentUser._id))
+            : [];
+        if (!ignore) setMyItems(mine);
+      } catch {
+        if (!ignore) setError("Failed to load items.");
+      } finally {
+        if (!ignore) setLoading(false);
+      }
+    }
+
+    if (currentUser?._id) load();
+    return () => {
+      ignore = true;
+    };
+  }, [currentUser?._id]);
+
+  if (loading) return <p>Loading...</p>;
+  if (error) return <p style={{ color: "crimson" }}>{error}</p>;
+  if (!myItems.length) return <p>No items to show.</p>;
 
   return (
-    <main className="profile">
-      <h2 className="profile__title">My Profile</h2>
-
-      <section className="profile__items">
-        <ClothesSection
-          title="Your items"
-          clothingItems={clothingItems}
-          onCardClick={onCardClick}
-          onDeleteItem={onDeleteClick}
-          showMessage
-          // owner sees delete buttons; average visitors won’t
-          showDelete={isOwner}
-        />
-      </section>
-    </main>
+    <section className="profile-items">
+      {myItems.map((item) => (
+        <ItemCard key={item._id} item={item} variant="small" />
+      ))}
+    </section>
   );
 }

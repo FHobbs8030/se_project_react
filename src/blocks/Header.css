@@ -2,8 +2,9 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
+  gap: 16px;
   padding: 16px 40px;
-  margin: 0;
+  margin: 0 0 24px 0;
   background-color: #ffffff;
   font-family: 'Cabinet Grotesk', 'Inter', sans-serif;
   border: none;
@@ -35,23 +36,44 @@
 .header__add-button {
   background-color: #f4f4f4;
   color: #000;
-  font-weight: bold;
+  font-weight: 700;
   padding: 8px 16px;
   border-radius: 6px;
   border: none;
   cursor: pointer;
-  transition: background-color 0.3s;
+  transition: background-color 0.2s ease;
 }
 
 .header__add-button:hover {
-  background-color: #e0e0e0;
+  background-color: #e7e7e7;
+}
+
+.header__link-button,
+.header__logout-button {
+  background: #fff;
+  color: #111;
+  padding: 6px 12px;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  font-weight: 500;
+  cursor: pointer;
+  text-decoration: none;
+  line-height: 1;
+  display: inline-flex;
+  align-items: center;
+}
+
+.header__link-button:hover,
+.header__logout-button:hover {
+  background: #f9fafb;
 }
 
 .header__user-info {
-  display: flex;
+  display: inline-flex;
   align-items: center;
-  text-decoration: none;
   gap: 8px;
+  text-decoration: none;
+  color: inherit;
 }
 
 .header__user-name {
@@ -62,13 +84,14 @@
 }
 
 .header__user-avatar {
-  height: 40px;
-  width: 40px;
+  width: 32px;
+  height: 32px;
   border-radius: 50%;
   object-fit: cover;
+  display: block;
 }
 
-/* Responsive: switch to column below 868px */
+/* Responsive */
 @media screen and (max-width: 868px) {
   .header {
     flex-direction: column;
@@ -86,16 +109,10 @@
     flex-wrap: wrap;
     gap: 12px;
   }
-
-  .header__user-info {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-  }
 }
 
 @media screen and (max-width: 340px) {
   .header__user-info {
-    padding: 0 0 0 22px;
+    padding-left: 22px;
   }
 }

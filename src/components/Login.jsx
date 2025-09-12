@@ -3,31 +3,37 @@ import { useNavigate } from 'react-router-dom';
 import { signIn, getMe } from '../utils/authApi';
 
 export default function Login() {
-  const [email, setEmail]       = useState('');
-  const [password, setPassword] = useState('');
-  const [err, setErr]           = useState('');
   const navigate = useNavigate();
+  const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
 
   async function onSubmit(e) {
     e.preventDefault();
-    setErr('');
+    setError('');
+    setLoading(true);
+    const email = e.target.email.value;
+    const password = e.target.password.value;
     try {
-      const { token } = await signIn(email, password);
-      localStorage.setItem('jwt', token);
-      await getMe(); 
-      navigate('/profile');
-    } catch (e) {
-      setErr(e.message || 'Login failed');
+      await signIn({ email, password });
+      window.dispatchEvent(new Event('auth-changed'));
+      await getMe();
+      navigate('/', { replace: true });
+    } catch (err) {
+      setError(err?.message || 'Sign-in failed');
+    } finally {
+      setLoading(false);
     }
   }
 
   return (
-    <form onSubmit={onSubmit} className="auth-form">
+    <main className="page">
       <h2>Sign in</h2>
-      {err && <p className="auth-form__error">{err}</p>}
-      <input placeholder="Email" type="email" value={email} onChange={e=>setEmail(e.target.value)} required />
-      <input placeholder="Password" type="password" value={password} onChange={e=>setPassword(e.target.value)} required />
-      <button type="submit">Sign in</button>
-    </form>
+      {error && <p style={{ color: 'crimson', marginBottom: 8 }}>{error}</p>}
+      <form onSubmit={onSubmit}>
+        <input name="email" type="email" placeholder="email" defaultValue="fred@example.com" required />
+        <input name="password" type="password" placeholder="password" required />
+        <button type="submit" disabled={loading}>{loading ? 'Signing in…' : 'Sign in'}</button>
+      </form>
+    </main>
   );
 }

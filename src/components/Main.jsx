@@ -5,7 +5,7 @@ import ClothesSection from './ClothesSection';
 import WeatherCard from './WeatherCard';
 import { CurrentTemperatureUnitContext } from '../contextStore/CurrentTemperatureUnitContext';
 import { fetchWeather } from '../utils/weatherApi';
-import getWeatherIcon from '../utils/getWeatherIcon';   // <- add this
+import getWeatherIcon from '../utils/getWeatherIcon';
 import '../blocks/Main.css';
 
 function Main() {
@@ -75,8 +75,8 @@ function Main() {
       <WeatherCard
         temperature={displayTemp}
         unit={currentTemperatureUnit}
-        isDay={weatherData.isDay}                                  // <- boolean
-        icon={getWeatherIcon(weatherData.condition, weatherData.isDay)} // <- show sun/clouds
+        isDay={weatherData.isDay}
+        icon={getWeatherIcon(weatherData.condition, weatherData.isDay)}
         timestamp={weatherData.timestamp}
         sunrise={weatherData.sunrise}
         sunset={weatherData.sunset}
@@ -99,5 +99,3 @@ function Main() {
 }
 
 export default Main;
-
-
