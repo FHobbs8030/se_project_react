@@ -1,49 +1,71 @@
-import { useEffect, useState, useContext } from "react";
-import { getClothingItems } from "../utils/clothingApi";
-import { CurrentUserContext } from "../contextStore/CurrentUserContext";
-import ItemCard from "./ItemCard";
+import { useMemo } from 'react';
+import { useOutletContext } from 'react-router-dom';
+import ClothesSection from './ClothesSection';
+import '../blocks/Profile.css';
 
 export default function Profile() {
-  const currentUser = useContext(CurrentUserContext);
-  const [loading, setLoading] = useState(true);
-  const [myItems, setMyItems] = useState([]);
-  const [error, setError] = useState("");
+  const outlet = useOutletContext?.() || {};
+  const {
+    clothingItems = [],
+    currentUser = null,
+    onCardClick,
+    onDeleteClick,
+    onAddClick,
+  } = outlet;
 
-  useEffect(() => {
-    let ignore = false;
+  console.log('[Profile] outlet:', outlet);
+  console.log('[Profile] clothingItems len:', clothingItems.length);
+  console.log('[Profile] first item:', clothingItems[0]);
 
-    async function load() {
-      try {
-        setLoading(true);
-        setError("");
-        const items = await getClothingItems();
-        const mine =
-          Array.isArray(items) && currentUser?._id
-            ? items.filter((i) => String(i.owner) === String(currentUser._id))
-            : [];
-        if (!ignore) setMyItems(mine);
-      } catch {
-        if (!ignore) setError("Failed to load items.");
-      } finally {
-        if (!ignore) setLoading(false);
-      }
-    }
+  const ownersDebug = clothingItems.map((i) => ({
+    name: i?.name,
+    ownerRaw: i?.owner,
+    ownerId: typeof i?.owner === 'string' ? i?.owner : i?.owner?._id ?? i?.owner?.id ?? null,
+  }));
+  console.table(ownersDebug);
 
-    if (currentUser?._id) load();
-    return () => {
-      ignore = true;
+  const myId = currentUser?._id ?? currentUser?.id ?? null;
+  console.log('[Profile] myId:', myId);
+
+  const compare = clothingItems.map((i) => {
+    const ownerId =
+      typeof i?.owner === 'string' ? i?.owner : i?.owner?._id ?? i?.owner?.id ?? null;
+    return {
+      name: i?.name,
+      ownerId,
+      equalsMyId: ownerId && myId ? String(ownerId) === String(myId) : null,
     };
-  }, [currentUser?._id]);
+  });
+  console.table(compare);
 
-  if (loading) return <p>Loading...</p>;
-  if (error) return <p style={{ color: "crimson" }}>{error}</p>;
-  if (!myItems.length) return <p>No items to show.</p>;
+  console.table(clothingItems.map((i) => ({ name: i?.name, owner: i?.owner?._id ?? i?.owner })));
+
+  const myItems = useMemo(() => {
+    if (!Array.isArray(clothingItems)) return [];
+    if (!myId) return clothingItems;
+    return clothingItems.filter((it) => {
+      const owner = it?.owner;
+      const ownerId = typeof owner === 'string' ? owner : owner?._id ?? owner?.id ?? null;
+      if (!ownerId) return true;
+      return String(ownerId) === String(myId);
+    });
+  }, [clothingItems, myId]);
+
+  console.log('[Profile] myItems length:', myItems.length, 'first:', myItems[0]);
 
   return (
-    <section className="profile-items">
-      {myItems.map((item) => (
-        <ItemCard key={item._id} item={item} variant="small" />
-      ))}
+    <section className="profile">
+      <div className="profile__header">
+        <h2 className="profile__title">Your items</h2>
+        <button className="profile__add-btn" onClick={onAddClick}>+ Add Clothes</button>
+      </div>
+
+      <ClothesSection
+        items={myItems}
+        onCardClick={onCardClick}
+        onDeleteClick={onDeleteClick}
+        onAddClick={onAddClick}
+      />
     </section>
   );
 }

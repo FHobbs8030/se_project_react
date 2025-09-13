@@ -1,38 +1,40 @@
-const WEATHER_API_URL =
-  (import.meta.env.VITE_WEATHER_API_URL ?? 'https://api.openweathermap.org/data/2.5/weather').trim();
+const WEATHER_API_URL = (import.meta.env.VITE_WEATHER_API_URL ?? 'https://api.openweathermap.org/data/2.5/weather').trim();
 
-const WEATHER_KEY =
-  (import.meta.env.VITE_WEATHER_API_KEY ??
-    import.meta.env.VITE_APP_WEATHER_API_KEY ??
-    '').trim();
+const RAW_KEY =
+  (import.meta.env.VITE_APP_WEATHER_API_KEY ??
+   import.meta.env.VITE_WEATHER_API_KEY ??
+   '').trim().replace(/^["']|["']$/g, '');
+
+if (!RAW_KEY) throw new Error('Missing OpenWeather API key. Set VITE_APP_WEATHER_API_KEY in .env');
+const WEATHER_KEY = RAW_KEY;
 
 const [DEFAULT_LAT, DEFAULT_LON] = (import.meta.env.VITE_DEFAULT_COORDS ?? '39.1638,-119.7674')
   .split(',')
-  .map((n) => Number(n));
+  .map((n) => Number(n.trim()));
 
-const handleJSON = async (res) => {
+async function handleJSON(res) {
   const text = await res.text();
   const data = text ? JSON.parse(text) : null;
   if (!res.ok) {
-    const msg = (data && (data.message || data.error)) || `${res.status} ${res.statusText}`;
-    throw new Error(msg);
+    const base = (data && (data.message || data.error)) || `${res.status} ${res.statusText}`;
+    if (res.status === 401) throw new Error(base || 'Invalid API key');
+    throw new Error(base);
   }
   return data;
-};
+}
 
-const buildUrl = (lat, lon, units = 'imperial') => {
+function buildUrl(lat, lon, units = 'imperial') {
   const url = new URL(WEATHER_API_URL);
   url.search = new URLSearchParams({
     lat: String(lat),
     lon: String(lon),
-    units: units,
+    units,
     appid: WEATHER_KEY,
   });
   return url.toString();
-};
+}
 
 export async function fetchWeather(arg1 = DEFAULT_LAT, arg2 = DEFAULT_LON, arg3) {
-  if (!WEATHER_KEY) throw new Error('Missing weather API key');
   let lat, lon, units;
   if (typeof arg1 === 'object') {
     lat = arg1.latitude ?? arg1.lat ?? DEFAULT_LAT;
@@ -68,15 +70,7 @@ export function normalizeWeather(raw) {
     timestamp != null && sunrise != null && sunset != null
       ? timestamp > sunrise && timestamp < sunset
       : true;
-  return {
-    temperature,
-    condition,
-    isDay,
-    timestamp,
-    sunrise,
-    sunset,
-    city: raw?.name ?? '',
-  };
+  return { temperature, condition, isDay, timestamp, sunrise, sunset, city: raw?.name ?? '' };
 }
 
 export async function getWeather(arg1 = DEFAULT_LAT, arg2 = DEFAULT_LON, arg3) {

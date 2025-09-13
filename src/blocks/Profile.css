@@ -1,52 +1,27 @@
 .profile {
-  display: flex;
-  flex-direction: row;
-}
-
-.profile-main {
-  flex: 1;
-  padding: 0 20px 20px 20px;
-}
-
-.profile-content {
-  max-width: 1500px;
+  width: 100%;
+  max-width: 1120px;
   margin: 0 auto;
-  padding: 0 24px; 
-  display: flex;
-  flex-direction: column;
+  padding: 0 16px;
 }
-
-.profile-header {
+.profile__top {
   display: flex;
   align-items: center;
+  gap: 12px;
+  margin: 16px 0;
 }
-
-.profile-header__title {
-  max-width: 100%;
-  font-family: Cabinet Grotesk;
+.profile__title {
   font-weight: 700;
-  font-size: 20px;
-  line-height: 100%;
-  color: #333;
-  margin: 0px;
-  padding: 10px;
+  margin: 0;
 }
-
-.profile-header__add-button {
-  color: #00000099;
-  width: 120px;
-  max-width: 100%;
-  font-family: Cabinet Grotesk;
-  font-weight: 700;
-  font-size: 20px;
-  line-height: 100%;
-  padding: 10px;
-  border-radius: 6px;
-  border: none;
+.profile__add-btn {
+  padding: 8px 14px;
+  border-radius: 999px;
+  border: 1px solid #e5e7eb;
+  background: #fff;
   cursor: pointer;
-  transition: background-color 0.3s ease;
 }
-
-.profile-header__add-button:hover {
-   background-color: #e0e0e0;
+.profile__empty {
+  margin: 8px 0 24px;
+  color: #6b7280;
 }

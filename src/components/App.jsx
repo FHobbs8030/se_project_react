@@ -6,15 +6,10 @@ import Footer from './Footer.jsx';
 import ItemModal from './ItemModal.jsx';
 import AddItemModal from './AddItemModal.jsx';
 import ConfirmDeleteModal from './ConfirmDeleteModal.jsx';
-
 import '../blocks/App.css';
 
 import { fetchWeather } from '../utils/weatherApi';
-import {
-  getClothingItems,
-  addClothingItem,
-  deleteClothingItem,
-} from '../utils/clothingApi';
+import { getClothingItems, addClothingItem, deleteClothingItem } from '../utils/clothingApi';
 import { getMe } from '../utils/authApi';
 
 import { CurrentTemperatureUnitContext } from '../contextStore/CurrentTemperatureUnitContext';
@@ -27,7 +22,6 @@ function App() {
 
   const [currentUser, setCurrentUser] = useState(null);
   const [city, setCity] = useState('');
-
   const [clothingItems, setClothingItems] = useState([]);
 
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
@@ -38,10 +32,7 @@ function App() {
 
   const [currentTemperatureUnit, setCurrentTemperatureUnit] = useState('F');
 
-  const fallbackWeatherData = useMemo(
-    () => ({ city: 'Carson City' }),
-    []
-  );
+  const fallbackWeatherData = useMemo(() => ({ city: 'Carson City' }), []);
 
   const handleToggleSwitchChange = () =>
     setCurrentTemperatureUnit((prev) => (prev === 'F' ? 'C' : 'F'));
@@ -110,8 +101,7 @@ function App() {
       try {
         const me = await getMe();
         setCurrentUser(me);
-      } catch (e) {
-        console.error('Failed to load current user:', e);
+      } catch {
         localStorage.removeItem('jwt');
         setCurrentUser(null);
       }
@@ -152,20 +142,62 @@ function App() {
     (async () => {
       try {
         const items = await getClothingItems();
+
+        const nameToFile = {
+          't-shirt': '/images/clothes/T-shirt.png',
+          tshirt: '/images/clothes/T-shirt.png',
+          't shirt': '/images/clothes/T-shirt.png',
+          shorts: '/images/clothes/shorts.png',
+          sneakers: '/images/clothes/sneakers.png',
+          shoes: '/images/clothes/shoes.png',
+          cap: '/images/clothes/cap.png',
+          'vintage cap': '/images/clothes/Vintage_Cap.png',
+          jeans: '/images/clothes/jeans.png',
+        };
+
         const normalizedItems = items.map((item) => {
-          const raw = item.imageUrl ?? item.link ?? item.image ?? '';
-          const absolute =
-            typeof raw === 'string' && raw.startsWith('/') && API_BASE
-              ? `${API_BASE}${raw}`
-              : raw;
+          let raw = item.imageUrl ?? item.link ?? '';
+
+          if (!raw && item.name) {
+            const key = String(item.name).toLowerCase().trim();
+            raw = nameToFile[key] || '';
+          }
+
+          if (raw && /^\/images\/(?!clothes\/)/i.test(raw)) {
+            const filename = raw.split('/').pop();
+            raw = `/images/clothes/${filename}`;
+          }
+
+          const isHttp = /^https?:\/\//i.test(raw);
+          let resolved = raw;
+          if (!raw) {
+            resolved = '';
+          } else if (raw.startsWith('/') && API_BASE) {
+            resolved = `${API_BASE}${raw}`;
+          } else if (!isHttp && !raw.startsWith('/')) {
+            resolved = `/${raw.replace(/^\.?\//, '')}`;
+          }
+
           return {
             ...item,
-            imageUrl: absolute,
+            imageUrl: resolved || '/placeholder.png',
             weather:
-              typeof item.weather === 'string' ? item.weather.toLowerCase() : item.weather,
+              typeof item.weather === 'string'
+                ? item.weather.toLowerCase().trim()
+                : item.weather,
           };
         });
-        if (!cancelled) setClothingItems(normalizedItems);
+
+        if (!cancelled) {
+          console.table(
+            normalizedItems.map((i) => ({
+              name: i.name,
+              imageUrl: i.imageUrl,
+              weather: i.weather,
+            }))
+          );
+          setClothingItems(normalizedItems);
+        }
       } catch (err) {
         console.error('Error loading clothing items:', err);
       }
@@ -175,6 +207,10 @@ function App() {
     };
   }, []);
 
+  useEffect(() => {
+    window.__ctx = { clothingItems, currentUser };
+  }, [clothingItems, currentUser]);
+
   return (
     <CurrentUserContext.Provider value={currentUser}>
       <CurrentTemperatureUnitContext.Provider
@@ -183,12 +219,7 @@ function App() {
         <div className="page">
           <div className="app">
             <div className="app__content">
-              <Header
-                onAddClick={handleAddClick}
-                onLogout={handleLogout}
-                locationText={city}
-              />
-
+              <Header onAddClick={handleAddClick} onLogout={handleLogout} locationText={city} />
               <Outlet
                 context={{
                   clothingItems,
@@ -198,7 +229,6 @@ function App() {
                   currentUser,
                 }}
               />
-
               <Footer />
             </div>
           </div>

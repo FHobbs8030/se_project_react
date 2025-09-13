@@ -1,8 +1,8 @@
 .main {
   width: 100%;
-  max-width: 1120px;
+  max-width: 1280px;
   margin: 0 auto;
-  padding: 0 40px;
+  padding: 0 24px 48px;
   box-sizing: border-box;
 }
 
@@ -11,20 +11,6 @@
   margin: 0;
   padding: 8px 0 18px 0;
   text-align: left;
-}
-
-.main__cards {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 24px;
-  justify-content: center;
-  padding: 16px 0;
-  width: 100%;
-}
-
-.mainweather {
-  text-align: left;
-  margin: 2.5rem 0 2.125rem 0;
 }
 
 .main__message {
@@ -36,6 +22,29 @@
   color: #000;
 }
 
+.cards {
+  margin: 24px auto 48px;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  grid-template-columns: repeat(3, 323px);
+  gap: 21px;
+  column-gap: 21px;
+  row-gap: 21px;
+  justify-content: center;
+}
+
+@media (min-width: 1440px) {
+  .cards {
+    grid-template-columns: repeat(4, 323px);
+  }
+}
+
+.mainweather {
+  text-align: left;
+  margin: 2.5rem 0 2.125rem 0;
+}
+
 .main__clothing-items {
   list-style: none;
   display: flex;
@@ -45,26 +54,32 @@
   margin: 0;
 }
 
+.profile-items {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 16px;
+}
+
 @media (max-width: 1024px) {
   .main {
-    padding: 0 32px;
+    padding: 0 32px 40px;
   }
-  .main__cards {
-    grid-template-columns: repeat(2, 1fr);
-    gap: 20px; /* tablet gap */
+  .cards {
+    grid-template-columns: repeat(2, 323px);
+    gap: 21px;
   }
   .main__message {
     margin: 28px 0 22px 0;
   }
 }
 
-@media (max-width: 640px) {
+@media (max-width: 700px) {
   .main {
-    padding: 0 20px;
+    padding: 0 20px 32px;
   }
-  .main__cards {
-    grid-template-columns: 1fr;
-    gap: 16px;
+  .cards {
+    grid-template-columns: 323px;
+    gap: 21px;
   }
   .main__message {
     margin: 20px 0 17px 0;

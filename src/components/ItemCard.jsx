@@ -1,8 +1,30 @@
-// src/components/ItemCard.jsx
 import "../blocks/ItemCard.css";
 
+const API_BASE = import.meta.env.VITE_API_BASE_URL || "";
+
+function resolveItemSrc(item) {
+  const raw =
+    item?.imageUrl ??
+    item?.link ??
+    item?.image ??
+    item?.photoUrl ??
+    "";
+
+  if (!raw) return "/placeholder.png";
+
+  const isAbsolute = /^https?:\/\//i.test(raw);
+  const startsWithSlash = raw.startsWith("/");
+  if (!isAbsolute && !startsWithSlash) {
+    return `/${raw.replace(/^\.?\//, "")}`;
+  }
+  if (startsWithSlash && API_BASE) {
+    return `${API_BASE}${raw}`;
+  }
+  return raw;
+}
+
 export default function ItemCard({ item, onCardClick, needsScaling = false }) {
-  const src = item?.imageUrl || "/placeholder.png";
+  const src = resolveItemSrc(item);
   const imgClass = `card__image${needsScaling ? " card__image--scaled" : ""}`;
 
   const handleError = (e) => {
@@ -17,7 +39,6 @@ export default function ItemCard({ item, onCardClick, needsScaling = false }) {
       <div className="card__name-wrapper">
         <span className="card__name">{item?.name || "Item"}</span>
       </div>
-
       <div className="card__image-container">
         <img
           className={imgClass}

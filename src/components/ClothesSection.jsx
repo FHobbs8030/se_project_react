@@ -1,7 +1,7 @@
 import { memo } from 'react';
 import PropTypes from 'prop-types';
 import ItemCard from './ItemCard';
-import '../blocks/Cards.css';
+import '../blocks/Main.css';
 import '../blocks/ClothesSection.css';
 
 const ClothesSection = memo(function ClothesSection({
@@ -17,9 +17,9 @@ const ClothesSection = memo(function ClothesSection({
   return (
     <section className="clothes-section" aria-label="Clothing suggestions">
       {showMessage && <p className="clothes-section__title">{title}</p>}
-      <div className="main__cards">
-        {hasItems ? (
-          clothingItems.map((item, idx) => (
+      {hasItems ? (
+        <ul className="cards">
+          {clothingItems.map((item, idx) => (
             <ItemCard
               key={item._id ?? item.id ?? item.name ?? `item-${idx}`}
               item={item}
@@ -28,11 +28,11 @@ const ClothesSection = memo(function ClothesSection({
               showDelete={showDelete}
               needsScaling={false}
             />
-          ))
-        ) : (
-          <p className="clothes-section__empty">No items to show.</p>
-        )}
-      </div>
+          ))}
+        </ul>
+      ) : (
+        <p className="clothes-section__empty">No items to show.</p>
+      )}
     </section>
   );
 });
