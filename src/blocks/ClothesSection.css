@@ -1,6 +1,6 @@
 .clothes-section {
   width: 100%;
-  max-width: 1280px;
+  max-width: 100%;
   margin: 0 auto;
   padding: 0;
   box-sizing: border-box;
@@ -22,6 +22,34 @@
 }
 
 .clothes-section .cards {
-  gap: 21px !important;
+  display: grid;
+  width: 100%;
+  gap: 20px;
+  grid-template-columns: repeat(1, 325px);
+  grid-auto-rows: 328px;
   justify-content: center;
+}
+
+.clothes-section .cards > * {
+  margin: 0;
+  width: 325px;
+  height: 328px;
+}
+
+@media (min-width: 640px) {
+  .clothes-section .cards {
+    grid-template-columns: repeat(2, 325px);
+  }
+}
+
+@media (min-width: 1024px) {
+  .clothes-section .cards {
+    grid-template-columns: repeat(3, 325px);
+  }
+}
+
+@media (min-width: 1440px) {
+  .clothes-section .cards {
+    grid-template-columns: repeat(4, 325px);
+  }
 }

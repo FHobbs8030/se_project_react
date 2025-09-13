@@ -1,49 +1,54 @@
-import { memo } from 'react';
-import PropTypes from 'prop-types';
-import ItemCard from './ItemCard';
-import '../blocks/Main.css';
+import ItemCard from './ItemCard.jsx';
 import '../blocks/ClothesSection.css';
 
-const ClothesSection = memo(function ClothesSection({
-  clothingItems = [],
+function normalizeItem(i) {
+  return {
+    _id: i._id || i.id,
+    name: i.name || i.title || 'Untitled',
+    imageUrl: i.imageUrl || i.image || i.link || '',
+    weather: i.weather ?? null,
+    owner: i.owner,
+  };
+}
+
+export default function ClothesSection({
+  items,
+  clothingItems,
   onCardClick,
+  onDeleteClick,
   onDeleteItem,
   title = 'Recommended items',
   showMessage = true,
   showDelete = false,
 }) {
-  const hasItems = Array.isArray(clothingItems) && clothingItems.length > 0;
+  const data = Array.isArray(items)
+    ? items
+    : Array.isArray(clothingItems)
+    ? clothingItems
+    : [];
+
+  const handleDelete = onDeleteClick || onDeleteItem;
+
+  if (!data.length) return showMessage ? <p className="clothes-section__empty">No items to show.</p> : null;
 
   return (
-    <section className="clothes-section" aria-label="Clothing suggestions">
-      {showMessage && <p className="clothes-section__title">{title}</p>}
-      {hasItems ? (
-        <ul className="cards">
-          {clothingItems.map((item, idx) => (
+    <section className="clothes-section">
+      {title && <h2 className="clothes-section__title">{title}</h2>}
+      <ul className="cards">
+        {data.map((raw) => {
+          const item = normalizeItem(raw);
+          return (
             <ItemCard
-              key={item._id ?? item.id ?? item.name ?? `item-${idx}`}
+              key={item._id || item.name}
               item={item}
-              onCardClick={onCardClick}
-              onDeleteClick={onDeleteItem}
+              onSelect={onCardClick}
+              onDeleteClick={handleDelete}
               showDelete={showDelete}
               needsScaling={false}
             />
-          ))}
-        </ul>
-      ) : (
-        <p className="clothes-section__empty">No items to show.</p>
-      )}
+          );
+        })}
+      </ul>
     </section>
   );
-});
-
-ClothesSection.propTypes = {
-  clothingItems: PropTypes.arrayOf(PropTypes.object),
-  onCardClick: PropTypes.func,
-  onDeleteItem: PropTypes.func,
-  title: PropTypes.string,
-  showMessage: PropTypes.bool,
-  showDelete: PropTypes.bool,
-};
-
-export default ClothesSection;
+}

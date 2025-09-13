@@ -1,16 +1,16 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { signIn, getMe } from '../utils/authApi';
+import { signIn, getMe } from '../utils/authApi.js';
 
 export default function Login() {
-  const navigate = useNavigate();
-  const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
+  const navigate = useNavigate();
 
   async function onSubmit(e) {
     e.preventDefault();
-    setError('');
     setLoading(true);
+    setError('');
     const email = e.target.email.value;
     const password = e.target.password.value;
     try {
@@ -30,7 +30,7 @@ export default function Login() {
       <h2>Sign in</h2>
       {error && <p style={{ color: 'crimson', marginBottom: 8 }}>{error}</p>}
       <form onSubmit={onSubmit}>
-        <input name="email" type="email" placeholder="email" defaultValue="fred@example.com" required />
+        <input name="email" type="email" placeholder="email" required />
         <input name="password" type="password" placeholder="password" required />
         <button type="submit" disabled={loading}>{loading ? 'Signing in…' : 'Sign in'}</button>
       </form>

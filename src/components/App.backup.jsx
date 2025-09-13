@@ -9,11 +9,7 @@ import ConfirmDeleteModal from './ConfirmDeleteModal.jsx';
 import '../blocks/App.css';
 
 import { fetchWeather } from '../utils/weatherApi.js';
-import {
-  getClothingItems,
-  addClothingItem,
-  deleteClothingItem,
-} from '../utils/clothingApi.js';
+import { getClothingItems, addClothingItem, deleteClothingItem } from '../utils/clothingApi.js';
 import { getMe } from '../utils/authApi.js';
 
 import { CurrentTemperatureUnitContext } from '../contextStore/CurrentTemperatureUnitContext';
@@ -39,7 +35,7 @@ function App() {
   const fallbackWeatherData = useMemo(() => ({ city: 'Carson City' }), []);
 
   const handleToggleSwitchChange = () =>
-    setCurrentTemperatureUnit(prev => (prev === 'F' ? 'C' : 'F'));
+    setCurrentTemperatureUnit((prev) => (prev === 'F' ? 'C' : 'F'));
 
   const handleAddClick = () => setIsAddModalOpen(true);
 
@@ -51,22 +47,22 @@ function App() {
     setItemToDelete(null);
   };
 
-  const handleCardClick = item => {
+  const handleCardClick = (item) => {
     setSelectedItem(item);
     setIsItemModalOpen(true);
   };
 
-  const handleAddGarmentSubmit = async newItem => {
+  const handleAddGarmentSubmit = async (newItem) => {
     try {
       const savedItem = await addClothingItem(newItem);
-      setClothingItems(prev => [savedItem, ...prev]);
+      setClothingItems((prev) => [savedItem, ...prev]);
       handleCloseModal();
     } catch (err) {
       console.error('Error adding item:', err);
     }
   };
 
-  const requestDeleteItem = item => {
+  const requestDeleteItem = (item) => {
     setItemToDelete(item);
     setIsConfirmModalOpen(true);
   };
@@ -76,9 +72,7 @@ function App() {
       const id = itemToDelete?._id || itemToDelete?.id;
       if (id) {
         await deleteClothingItem(id);
-        setClothingItems(prev =>
-          prev.filter(ci => ci._id !== id && ci.id !== id)
-        );
+        setClothingItems((prev) => prev.filter((ci) => ci._id !== id && ci.id !== id));
       }
     } catch (err) {
       console.error('Error deleting item:', err);
@@ -121,9 +115,7 @@ function App() {
   useEffect(() => {
     const onFocus = () => {
       if (localStorage.getItem('jwt')) {
-        getMe()
-          .then(setCurrentUser)
-          .catch(() => {});
+        getMe().then(setCurrentUser).catch(() => {});
       }
     };
     window.addEventListener('focus', onFocus);
@@ -153,9 +145,8 @@ function App() {
 
         const nameToFile = {
           't-shirt': '/images/clothes/T-shirt.png',
-          't shirt': '/images/clothes/T-shirt.png',
           tshirt: '/images/clothes/T-shirt.png',
-          tee: '/images/clothes/T-shirt.png',
+          't shirt': '/images/clothes/T-shirt.png',
           shorts: '/images/clothes/shorts.png',
           sneakers: '/images/clothes/sneakers.png',
           shoes: '/images/clothes/shoes.png',
@@ -164,7 +155,7 @@ function App() {
           jeans: '/images/clothes/jeans.png',
         };
 
-        const normalizedItems = items.map(item => {
+        const normalizedItems = items.map((item) => {
           let raw = item.imageUrl ?? item.link ?? '';
 
           if (!raw && item.name) {
@@ -179,16 +170,11 @@ function App() {
 
           const isHttp = /^https?:\/\//i.test(raw);
           let resolved = raw;
-
           if (!raw) {
             resolved = '';
-          } else if (isHttp) {
-            resolved = raw;
-          } else if (raw.startsWith('/images/')) {
-            resolved = raw;
-          } else if (raw.startsWith('/')) {
-            resolved = API_BASE ? `${API_BASE}${raw}` : raw;
-          } else {
+          } else if (raw.startsWith('/') && API_BASE) {
+            resolved = `${API_BASE}${raw}`;
+          } else if (!isHttp && !raw.startsWith('/')) {
             resolved = `/${raw.replace(/^\.?\//, '')}`;
           }
 
@@ -204,7 +190,7 @@ function App() {
 
         if (!cancelled) {
           console.table(
-            normalizedItems.map(i => ({
+            normalizedItems.map((i) => ({
               name: i.name,
               imageUrl: i.imageUrl,
               weather: i.weather,
@@ -233,11 +219,7 @@ function App() {
         <div className="page">
           <div className="app">
             <div className="app__content">
-              <Header
-                onAddClick={handleAddClick}
-                onLogout={handleLogout}
-                locationText={city}
-              />
+              <Header onAddClick={handleAddClick} onLogout={handleLogout} locationText={city} />
               <Outlet
                 context={{
                   clothingItems,
@@ -255,7 +237,7 @@ function App() {
             <ItemModal
               item={selectedItem}
               onClose={handleCloseModal}
-              onConfirmDelete={itm => requestDeleteItem(itm)}
+              onConfirmDelete={(itm) => requestDeleteItem(itm)}
             />
           )}
 

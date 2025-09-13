@@ -1,59 +1,41 @@
-const API_BASE = import.meta.env.VITE_API_BASE_URL || '';
+const API_BASE = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3001';
 
-function getToken() {
-  return localStorage.getItem('jwt') || null;
-}
-function setToken(token) {
-  if (token) localStorage.setItem('jwt', token);
-}
-export function clearToken() {
-  localStorage.removeItem('jwt');
-}
+const jsonHeaders = (token) => ({
+  'Content-Type': 'application/json',
+  ...(token ? { Authorization: `Bearer ${token}` } : {}),
+});
 
-async function parseError(res) {
-  try {
-    const data = await res.json();
-    const msg = data?.message || data?.error || JSON.stringify(data);
-    throw new Error(msg || `HTTP ${res.status}`);
-  } catch {
-    const txt = await res.text();
-    throw new Error(txt || `HTTP ${res.status}`);
-  }
+const handle = async (res) => {
+  const text = await res.text().catch(() => '');
+  if (!res.ok) throw new Error(text || `HTTP ${res.status}`);
+  return text ? JSON.parse(text) : {};
+};
+
+export async function signUp({ name, email, password }) {
+  return fetch(`${API_BASE}/signup`, {
+    method: 'POST',
+    headers: jsonHeaders(),
+    body: JSON.stringify({ name, email, password }),
+  }).then(handle);
 }
 
 export async function signIn({ email, password }) {
-  const res = await fetch(`${API_BASE}/signin`, {
+  const { token } = await fetch(`${API_BASE}/signin`, {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ email: String(email || '').trim(), password: String(password || '') }),
-  });
-  if (!res.ok) return parseError(res);
-  const data = await res.json();
-  if (data?.token) setToken(data.token);
-  return data;
+    headers: jsonHeaders(),
+    body: JSON.stringify({ email, password }),
+  }).then(handle);
+  localStorage.setItem('jwt', token);
+  return token;
 }
 
-export async function signUp({ name, email, password, avatar }) {
-  const res = await fetch(`${API_BASE}/signup`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      name: String(name || '').trim(),
-      email: String(email || '').trim(),
-      password: String(password || ''),
-      avatar,
-    }),
-  });
-  if (!res.ok) return parseError(res);
-  return res.json();
+export async function getMe() {
+  const token = localStorage.getItem('jwt');
+  return fetch(`${API_BASE}/users/me`, {
+    headers: jsonHeaders(token),
+  }).then(handle);
 }
 
-export async function getMe(token = getToken()) {
-  const res = await fetch(`${API_BASE}/users/me`, {
-    headers: { Authorization: `Bearer ${token}` },
-  });
-  if (!res.ok) return parseError(res);
-  return res.json();
+export function signOut() {
+  localStorage.removeItem('jwt');
 }
-
-export { getToken, setToken };

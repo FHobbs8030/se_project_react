@@ -1,22 +1,21 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { signUp, signIn } from '../utils/authApi';
+import { signUp, signIn } from '../utils/authApi.js';
 
 export default function Register() {
-  const [email, setEmail]       = useState('');
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [name, setName]         = useState('');
-  const [err, setErr]           = useState('');
+  const [name, setName] = useState('');
+  const [err, setErr] = useState('');
   const navigate = useNavigate();
 
   async function onSubmit(e) {
     e.preventDefault();
     setErr('');
     try {
-      await signUp({ email, password, name });
-      const { token } = await signIn(email, password);
-      localStorage.setItem('jwt', token);
-      navigate('/profile');
+      await signUp({ name, email, password });
+      await signIn({ email, password });
+      navigate('/profile', { replace: true });
     } catch (e) {
       setErr(e.message || 'Registration failed');
     }
