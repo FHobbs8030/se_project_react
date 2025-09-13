@@ -5,16 +5,17 @@
   position: relative;
   display: flex;
   align-items: center;
+  width: 100%;
   max-width: 1360px;
   height: var(--wx-card-h);
   min-height: var(--wx-card-h);
   margin: 0 auto;
   border-radius: var(--wx-card-radius);
-  overflow: hidden;                  /* clip the corner icon to the rounded corner */
+  overflow: hidden;
 }
 
 .weather-card__overlay {
-  position: relative;                /* stacking context for z-index */
+  position: relative;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -29,23 +30,22 @@
 
 .weather-card__temp {
   position: relative;
-  z-index: 3;                        /* always above the corner art */
+  z-index: 3;
   font-size: 32px;
   font-weight: 700;
   color: #fff;
   line-height: 1;
 }
 
-/* Sun/cloud corner art */
 .weather-card__icon {
   position: absolute;
   right: 0;
-  top: -8px;                         /* lift the sun a bit */
-  height: calc(var(--wx-card-h) + 16px); /* lets the cloud dip into the bar */
+  top: -8px;
+  height: calc(var(--wx-card-h) + 16px);
   width: auto;
   object-fit: contain;
   pointer-events: none;
-  z-index: 2;                        /* below temp */
+  z-index: 2;
 }
 
 @media (max-width: 600px) {

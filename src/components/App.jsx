@@ -26,6 +26,7 @@ function App() {
 
   const [currentUser, setCurrentUser] = useState(null);
   const [city, setCity] = useState('');
+  const [weather, setWeather] = useState(null);
   const [clothingItems, setClothingItems] = useState([]);
 
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
@@ -121,9 +122,7 @@ function App() {
   useEffect(() => {
     const onFocus = () => {
       if (localStorage.getItem('jwt')) {
-        getMe()
-          .then(setCurrentUser)
-          .catch(() => {});
+        getMe().then(setCurrentUser).catch(() => {});
       }
     };
     window.addEventListener('focus', onFocus);
@@ -135,9 +134,15 @@ function App() {
     (async () => {
       try {
         const wx = await fetchWeather();
-        if (!cancelled) setCity(wx?.name || fallbackWeatherData.city);
+        if (!cancelled) {
+          setCity(wx?.name || fallbackWeatherData.city);
+          setWeather(wx || null);
+        }
       } catch {
-        if (!cancelled) setCity(fallbackWeatherData.city);
+        if (!cancelled) {
+          setCity(fallbackWeatherData.city);
+          setWeather(null);
+        }
       }
     })();
     return () => {
@@ -245,6 +250,9 @@ function App() {
                   onDeleteClick: requestDeleteItem,
                   onAddClick: handleAddClick,
                   currentUser,
+                  weather,
+                  city,
+                  currentTemperatureUnit,
                 }}
               />
               <Footer />
