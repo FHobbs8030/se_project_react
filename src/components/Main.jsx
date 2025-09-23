@@ -1,103 +1,124 @@
-// src/components/Main.jsx
 import { useContext, useEffect, useMemo, useState } from 'react';
 import { useOutletContext } from 'react-router-dom';
 import ClothesSection from './ClothesSection';
 import WeatherCard from './WeatherCard';
 import { CurrentTemperatureUnitContext } from '../contextStore/CurrentTemperatureUnitContext';
 import { fetchWeather } from '../utils/weatherApi';
-import getWeatherIcon from '../utils/getWeatherIcon';   // <- add this
 import '../blocks/Main.css';
 
-function Main() {
-  const { clothingItems = [], onCardClick } = useOutletContext();
+export default function Main() {
+  const { clothingItems = [], onCardClick, onDeleteClick } = useOutletContext();
   const { currentTemperatureUnit } = useContext(CurrentTemperatureUnitContext);
 
   const [wx, setWx] = useState(null);
-  const [isLoadingWeather, setLoading] = useState(true);
+  const [loading, setLoading] = useState(true);
   const [weatherError, setWeatherError] = useState('');
 
   useEffect(() => {
     let cancelled = false;
     setLoading(true);
     fetchWeather()
-      .then((data) => {
-        if (!cancelled) { setWx(data); setWeatherError(''); }
+      .then(data => {
+        if (!cancelled) {
+          setWx(data);
+          setWeatherError('');
+        }
       })
-      .catch((e) => { if (!cancelled) setWeatherError(e?.message || 'Failed to load weather'); })
-      .finally(() => { if (!cancelled) setLoading(false); });
-    return () => { cancelled = true; };
+      .catch(e => {
+        if (!cancelled) {
+          setWeatherError(e?.message || 'Failed to load weather');
+          setWx({
+            sys: { sunrise: 0, sunset: 24 * 3600 },
+            main: { temp: 72 },
+            weather: [{ main: 'Clear' }],
+          });
+        }
+      })
+      .finally(() => {
+        if (!cancelled) setLoading(false);
+      });
+    return () => {
+      cancelled = true;
+    };
   }, []);
 
-  const weatherData = useMemo(() => {
+  const norm = useMemo(() => {
     if (!wx) return null;
     const tempF = Number(wx?.main?.temp);
-    const condition = (wx?.weather?.[0]?.main || '').trim();
-    const dtMs = wx?.dt ? wx.dt * 1000 : Date.now();
-    const sunriseMs = wx?.sys?.sunrise ? wx.sys.sunrise * 1000 : 0;
-    const sunsetMs = wx?.sys?.sunset ? wx.sys.sunset * 1000 : 0;
-    const isDay = dtMs > sunriseMs && dtMs < sunsetMs;
+    const ts = Math.floor(Date.now() / 1000);
+    const sunrise = Number(wx?.sys?.sunrise) || 0;
+    const sunset = Number(wx?.sys?.sunset) || 24 * 3600;
+    const isDay = ts > sunrise && ts < sunset;
     return {
-      temperature: Number.isFinite(tempF) ? tempF : null,
-      condition,
+      tempF: Number.isFinite(tempF) ? tempF : null,
+      ts,
+      sunrise,
+      sunset,
       isDay,
-      timestamp: dtMs,
-      sunrise: sunriseMs,
-      sunset: sunsetMs,
     };
   }, [wx]);
 
-  const { displayTemp, weatherType, recommended, listToShow } = useMemo(() => {
-    const rawTemp = weatherData?.temperature ?? null;
-    const condLower = (weatherData?.condition || '').toLowerCase();
-    let type = 'warm';
-    if (condLower === 'snow' || (rawTemp != null && rawTemp < 50)) type = 'cold';
-    else if (condLower === 'rain' || (rawTemp != null && rawTemp > 75)) type = 'hot';
+  const displayTemp = useMemo(() => {
+    if (!norm || norm.tempF == null) return '--';
+    return Math.round(
+      currentTemperatureUnit === 'F' ? norm.tempF : ((norm.tempF - 32) * 5) / 9
+    );
+  }, [norm, currentTemperatureUnit]);
 
-    const tempOut =
-      rawTemp == null
-        ? '--'
-        : Math.round(currentTemperatureUnit === 'F' ? rawTemp : ((rawTemp - 32) * 5) / 9);
+  const weatherType = useMemo(() => {
+    const t = norm?.tempF;
+    if (t != null && t < 50) return 'cold';
+    if (t != null && t > 75) return 'hot';
+    return 'warm';
+  }, [norm]);
 
-    const wanted = type.toLowerCase();
-    const rec = Array.isArray(clothingItems)
-      ? clothingItems.filter((item) => (item?.weather ?? '').toString().toLowerCase() === wanted)
+  const recommended = useMemo(() => {
+    const wanted = weatherType.toLowerCase();
+    return Array.isArray(clothingItems)
+      ? clothingItems.filter(
+          item => (item?.weather ?? '').toString().toLowerCase() === wanted
+        )
       : [];
-    const list = (rec.length ? rec : clothingItems).slice(0, 4);
-    return { displayTemp: tempOut, weatherType: type, recommended: rec, listToShow: list };
-  }, [weatherData, clothingItems, currentTemperatureUnit]);
+  }, [clothingItems, weatherType]);
 
-  if (isLoadingWeather) return <p className="main__message">Loading weather data...</p>;
-  if (weatherError) return <p className="main__message">{weatherError}</p>;
-  if (!weatherData) return <p className="main__message">Weather data is unavailable.</p>;
+  const listToShow = (recommended.length ? recommended : clothingItems).slice(
+    0,
+    4
+  );
 
   return (
     <main className="main">
       <WeatherCard
-        temperature={displayTemp}
+        temperature={norm?.tempF ?? null}
         unit={currentTemperatureUnit}
-        isDay={weatherData.isDay}                                  // <- boolean
-        icon={getWeatherIcon(weatherData.condition, weatherData.isDay)} // <- show sun/clouds
-        timestamp={weatherData.timestamp}
-        sunrise={weatherData.sunrise}
-        sunset={weatherData.sunset}
+        isDay={norm?.isDay}
+        icon={undefined}
+        timestamp={norm?.ts}
+        sunrise={norm?.sunrise}
+        sunset={norm?.sunset}
       />
-
       <section className="main__weather">
         <p className="main__message">
-          Today is {displayTemp !== '--' ? `${displayTemp}°${currentTemperatureUnit}` : 'unknown'} / You may want to wear:
+          Today is{' '}
+          {displayTemp !== '--'
+            ? `${displayTemp}°${currentTemperatureUnit}`
+            : 'unknown'}{' '}
+          / You may want to wear:
         </p>
       </section>
+      {loading ? (
+        <p className="main__message">Loading weather data...</p>
+      ) : weatherError ? (
+        <p className="main__message">{weatherError}</p>
+      ) : null}
 
       <ClothesSection
         clothingItems={listToShow}
         onCardClick={onCardClick}
-        weatherType={recommended.length ? weatherType : null}
+        onDeleteItem={onDeleteClick}
+        showDelete={true}
         showMessage={false}
       />
     </main>
   );
 }
-
-export default Main;
-
-

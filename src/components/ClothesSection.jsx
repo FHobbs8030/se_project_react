@@ -1,14 +1,14 @@
-import { memo } from 'react';
-import PropTypes from 'prop-types';
-import ItemCard from './ItemCard';
-import '../blocks/Cards.css';
-import '../blocks/ClothesSection.css';
+import { memo } from "react";
+import PropTypes from "prop-types";
+import ItemCard from "./ItemCard";
+import "../blocks/Cards.css";
+import "../blocks/ClothesSection.css";
 
 const ClothesSection = memo(function ClothesSection({
   clothingItems = [],
   onCardClick,
   onDeleteItem,
-  title = 'Recommended items',
+  title = "Recommended items",
   showMessage = true,
   showDelete = false,
 }) {

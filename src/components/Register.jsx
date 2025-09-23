@@ -1,3 +1,4 @@
+// src/components/Register.jsx
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { signUp, signIn } from '../utils/authApi';
@@ -32,21 +33,23 @@ export default function Register() {
       {error && <div role="alert">{error}</div>}
       <label>
         Name
-        <input value={name} onChange={(e)=>setName(e.target.value)} required />
+        <input value={name} onChange={(e) => setName(e.target.value)} required />
       </label>
       <label>
         Avatar URL
-        <input value={avatar} onChange={(e)=>setAvatar(e.target.value)} />
+        <input value={avatar} onChange={(e) => setAvatar(e.target.value)} />
       </label>
       <label>
         Email
-        <input type="email" value={email} onChange={(e)=>setEmail(e.target.value)} required />
+        <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} required />
       </label>
       <label>
         Password
-        <input type="password" value={password} onChange={(e)=>setPassword(e.target.value)} required />
+        <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} required />
       </label>
-      <button disabled={submitting} type="submit">{submitting ? 'Creating...' : 'Create account'}</button>
+      <button disabled={submitting} type="submit">
+        {submitting ? 'Creating...' : 'Create account'}
+      </button>
     </form>
   );
 }

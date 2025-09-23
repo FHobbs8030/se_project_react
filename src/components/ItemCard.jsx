@@ -1,28 +1,74 @@
-import '../blocks/ItemCard.css';
+import PropTypes from "prop-types";
+import "../blocks/ItemCard.css";
 
-function ItemCard({ item, onCardClick, needsScaling }) {
-  const src = item?.imageUrl || '/placeholder.png';
-  const className = `card__image${needsScaling ? ' card__image--scaled' : ''}`;
+export default function ItemCard({
+  item,
+  onCardClick,
+  onDeleteClick,
+  showDelete = false,
+  needsScaling = false,
+}) {
+  const name = item?.name || "Item";
 
-  const handleError = (e) => {
-    if (!e.currentTarget.dataset.fallback) {
-      e.currentTarget.dataset.fallback = '1';
-      e.currentTarget.src = '/placeholder.png';
-    }
-  };
+  const fileGuess =
+    name.toLowerCase().replace(/\s+/g, "_").replace(/[^a-z0-9_]/g, "") + ".png";
+  const fileName = item?.imageName || fileGuess;
+  const src = `/images/clothes/${fileName}`;
+
+  function handleError(e) {
+    e.currentTarget.onerror = null;
+    e.currentTarget.src = "/images/clothes/tshirt.png";
+  }
 
   return (
-    <li className="card" onClick={() => onCardClick(item)}>
+    <article
+      className={`card${needsScaling ? " card--scaled" : ""}`}
+      role="button"
+      tabIndex={0}
+      aria-label={name}
+      onClick={() => onCardClick?.(item)}
+      onKeyDown={(e) => {
+        if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault();
+          onCardClick?.(item);
+        }
+      }}
+    >
       <div className="card__name-wrapper">
-        <span className="card__name">{item?.name || 'Item'}</span>
+        <span className="card__name">{name}</span>
       </div>
+
       <div className="card__image-container">
-        <img className={className} src={src} alt={item?.name || 'Item'} onError={handleError} loading="lazy" />
+        <img
+          className="card__image"
+          src={src}
+          alt={name}
+          loading="lazy"
+          onError={handleError}
+        />
       </div>
-    </li>
+
+      {showDelete && (
+        <button
+          type="button"
+          className="card__delete"
+          aria-label={`Delete ${name}`}
+          onClick={(e) => {
+            e.stopPropagation();
+            onDeleteClick?.(item);
+          }}
+        >
+          ×
+        </button>
+      )}
+    </article>
   );
 }
 
-export default ItemCard;
-
-
+ItemCard.propTypes = {
+  item: PropTypes.object,
+  onCardClick: PropTypes.func,
+  onDeleteClick: PropTypes.func,
+  showDelete: PropTypes.bool,
+  needsScaling: PropTypes.bool,
+};

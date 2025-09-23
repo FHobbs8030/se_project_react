@@ -47,42 +47,5 @@ export async function fetchWeather(arg1 = DEFAULT_LAT, arg2 = DEFAULT_LON, arg3)
   return handleJSON(res);
 }
 
-export function normalizeWeather(raw) {
-  if (!raw || typeof raw !== 'object') {
-    return {
-      temperature: null,
-      condition: 'Clear',
-      isDay: true,
-      timestamp: null,
-      sunrise: null,
-      sunset: null,
-      city: '',
-    };
-  }
-  const temperature = typeof raw?.main?.temp === 'number' ? raw.main.temp : null;
-  const condition = raw?.weather?.[0]?.main ?? 'Clear';
-  const timestamp = typeof raw?.dt === 'number' ? raw.dt : null;
-  const sunrise = typeof raw?.sys?.sunrise === 'number' ? raw.sys.sunrise : null;
-  const sunset = typeof raw?.sys?.sunset === 'number' ? raw.sys.sunset : null;
-  const isDay =
-    timestamp != null && sunrise != null && sunset != null
-      ? timestamp > sunrise && timestamp < sunset
-      : true;
-  return {
-    temperature,
-    condition,
-    isDay,
-    timestamp,
-    sunrise,
-    sunset,
-    city: raw?.name ?? '',
-  };
-}
-
-export async function getWeather(arg1 = DEFAULT_LAT, arg2 = DEFAULT_LON, arg3) {
-  const raw = await fetchWeather(arg1, arg2, arg3);
-  return normalizeWeather(raw);
-}
-
-export { fetchWeather as fetchWeatherData };
-export default fetchWeather;
+// Alias so App.jsx's import doesn't break
+export const getWeather = fetchWeather;
