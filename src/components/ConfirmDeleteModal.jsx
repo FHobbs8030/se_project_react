@@ -1,26 +1,21 @@
 import { useEffect, useRef, useMemo } from "react";
 import "../blocks/ConfirmDeleteModal.css";
 
-function ConfirmDeleteModal({ onConfirm, onCancel, onClose }) {
+export default function ConfirmDeleteModal({ isOpen = true, onConfirm, onCancel, onClose, loading = false }) {
   const modalRef = useRef(null);
-
-  const handleClose = useMemo(
-    () => onCancel || onClose || (() => {}),
-    [onCancel, onClose]
-  );
+  const handleClose = useMemo(() => onCancel || onClose || (() => {}), [onCancel, onClose]);
 
   useEffect(() => {
-    const onKey = (e) => {
-      if (e.key === "Escape") handleClose();
-    };
+    if (!isOpen) return;
+    const onKey = (e) => { if (e.key === "Escape") handleClose(); };
     document.addEventListener("keydown", onKey);
     return () => document.removeEventListener("keydown", onKey);
-  }, [handleClose]);
+  }, [isOpen, handleClose]);
+
+  if (!isOpen) return null;
 
   const handleBackdropClick = (e) => {
-    if (modalRef.current && !modalRef.current.contains(e.target)) {
-      handleClose();
-    }
+    if (modalRef.current && !modalRef.current.contains(e.target)) handleClose();
   };
 
   return (
@@ -43,25 +38,23 @@ function ConfirmDeleteModal({ onConfirm, onCancel, onClose }) {
         </button>
 
         <div className="confirm-modal__content">
-          <p id="confirm-title" className="confirm-modal__title">
-            Are you sure you want to delete this item?
-          </p>
-          <p id="confirm-desc" className="confirm-modal__text">
-            This action is irreversible.
-          </p>
+          <p id="confirm-title" className="confirm-modal__title">Are you sure you want to delete this item?</p>
+          <p id="confirm-desc" className="confirm-modal__text">This action is irreversible.</p>
 
           <button
             className="confirm-modal__delete-button"
             type="button"
             onClick={onConfirm}
+            disabled={loading}
           >
-            Yes, delete item
+            {loading ? "Deleting…" : "Yes, delete item"}
           </button>
 
           <button
             className="confirm-modal__cancel-button"
             type="button"
             onClick={handleClose}
+            disabled={loading}
           >
             Cancel
           </button>
@@ -70,5 +63,3 @@ function ConfirmDeleteModal({ onConfirm, onCancel, onClose }) {
     </div>
   );
 }
-
-export default ConfirmDeleteModal;

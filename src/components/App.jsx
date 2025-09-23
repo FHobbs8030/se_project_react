@@ -1,6 +1,5 @@
-// src/components/App.jsx
 import { useState, useEffect, useMemo } from 'react';
-import { Outlet, useNavigate } from 'react-router-dom';
+import { Outlet } from 'react-router-dom';
 
 import Header from './Header.jsx';
 import Footer from './Footer.jsx';
@@ -11,221 +10,153 @@ import ConfirmDeleteModal from './ConfirmDeleteModal.jsx';
 import '../blocks/App.css';
 
 import { getWeather } from '../utils/weatherApi';
-import {
-  getClothingItems,
-  addClothingItem,
-  deleteClothingItem,
-} from '../utils/clothingApi';
+import { getClothingItems, addClothingItem, deleteClothingItem } from '../utils/clothingApi';
+import { getMe } from '../utils/authApi';
+
 import { CurrentTemperatureUnitContext } from '../contextStore/CurrentTemperatureUnitContext';
 import { CurrentUserContext } from '../contextStore/CurrentUserContext';
 
-const API_BASE = import.meta.env.VITE_API_BASE_URL || '';
-
-function App() {
-  const navigate = useNavigate();
-
+export default function App() {
   const [currentUser, setCurrentUser] = useState(null);
-
   const [weatherData, setWeatherData] = useState(null);
-  const [isLoadingWeather, setIsLoadingWeather] = useState(true);
-  const [weatherError, setWeatherError] = useState(null);
-
+  const [isLoadingWeather, setIsLoadingWeather] = useState(false);
   const [clothingItems, setClothingItems] = useState([]);
-
-  const [isAddModalOpen, setIsAddModalOpen] = useState(false);
-  const [selectedItem, setSelectedItem] = useState(null);
   const [isItemModalOpen, setIsItemModalOpen] = useState(false);
+  const [isAddItemModalOpen, setIsAddItemModalOpen] = useState(false);
   const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
+  const [confirmDeleting, setConfirmDeleting] = useState(false);
+  const [selectedCard, setSelectedCard] = useState(null);
   const [itemToDelete, setItemToDelete] = useState(null);
+  const [tempUnit, setTempUnit] = useState('F');
 
-  const [currentTemperatureUnit, setCurrentTemperatureUnit] = useState('F');
+  useEffect(() => {
+    const t = localStorage.getItem('jwt');
+    if (t) {
+      getMe().then(setCurrentUser).catch(() => {
+        localStorage.removeItem('jwt');
+        setCurrentUser(null);
+      });
+    } else {
+      setCurrentUser(null);
+    }
+  }, []);
 
-  const fallbackWeatherData = useMemo(
-    () => ({
-      temperature: 72,
-      condition: 'Clear',
-      isDay: true,
-      timestamp: null,
-      sunrise: null,
-      sunset: null,
-      city: 'Carson City',
-    }),
-    []
+  useEffect(() => {
+    let ignore = false;
+    async function loadWeather() {
+      try {
+        setIsLoadingWeather(true);
+        const data = await getWeather();
+        if (!ignore) setWeatherData(data);
+      } finally {
+        if (!ignore) setIsLoadingWeather(false);
+      }
+    }
+    loadWeather();
+    return () => { ignore = true; };
+  }, []);
+
+  useEffect(() => {
+    let ignore = false;
+    async function loadItems() {
+      try {
+        const items = await getClothingItems();
+        if (!ignore) setClothingItems(Array.isArray(items) ? items : []);
+      } catch (e) {
+        console.error(e);
+      }
+    }
+    loadItems();
+    return () => { ignore = true; };
+  }, [currentUser]);
+
+  const tempCtx = useMemo(
+    () => ({ currentTemperatureUnit: tempUnit, handleToggleSwitchChange: setTempUnit }),
+    [tempUnit]
   );
 
-  const handleToggleSwitchChange = () =>
-    setCurrentTemperatureUnit((prev) => (prev === 'F' ? 'C' : 'F'));
+  const handleAddItemModal = () => setIsAddItemModalOpen(true);
 
-  const handleAddClick = () => setIsAddModalOpen(true);
-
-  const handleCloseModal = () => {
-    setIsAddModalOpen(false);
+  const handleCloseAllModals = () => {
     setIsItemModalOpen(false);
+    setIsAddItemModalOpen(false);
     setIsConfirmModalOpen(false);
-    setSelectedItem(null);
+    setSelectedCard(null);
     setItemToDelete(null);
+    setConfirmDeleting(false);
   };
 
-  const handleCardClick = (item) => {
-    setSelectedItem(item);
-    setIsItemModalOpen(true);
+  const handleAddItemSubmit = async (item) => {
+    const res = await addClothingItem(item);
+    setClothingItems((prev) => [res, ...prev]);
+    handleCloseAllModals();
   };
 
-  const handleAddGarmentSubmit = async (newItem) => {
-    try {
-      const savedItem = await addClothingItem(newItem);
-      setClothingItems((prev) => [savedItem, ...prev]);
-      handleCloseModal();
-    } catch (err) {
-      console.error('Error adding item:', err);
-    }
-  };
-
-  const requestDeleteItem = (item) => {
+  const handleDeleteClick = (item) => {
     setItemToDelete(item);
     setIsConfirmModalOpen(true);
   };
 
   const handleConfirmDelete = async () => {
+    const id = itemToDelete?._id || itemToDelete?.id;
+    if (!id) return;
+    setConfirmDeleting(true);
+    const prev = clothingItems;
+    setClothingItems((p) => p.filter((ci) => String(ci._id || ci.id) !== String(id)));
     try {
-      const id = itemToDelete?._id || itemToDelete?.id;
-      if (id) {
-        await deleteClothingItem(id);
-        setClothingItems((prev) => prev.filter((ci) => ci._id !== id && ci.id !== id));
-      }
-    } catch (err) {
-      console.error('Error deleting item:', err);
-    } finally {
+      await deleteClothingItem(id);
       setIsConfirmModalOpen(false);
       setIsItemModalOpen(false);
-      setSelectedItem(null);
       setItemToDelete(null);
+    } catch (e) {
+      setClothingItems(prev);
+    } finally {
+      setConfirmDeleting(false);
     }
   };
 
-  const handleLogout = () => navigate('/');
-
-  useEffect(() => {
-    const token = localStorage.getItem('jwt');
-    if (!token || !API_BASE) return;
-
-    fetch(`${API_BASE}/users/me`, {
-      headers: { Authorization: `Bearer ${token}` },
-    })
-      .then((r) => (r.ok ? r.json() : Promise.reject(r)))
-      .then(setCurrentUser)
-      .catch((err) => {
-        console.error('Failed to load current user:', err);
-      });
-  }, []);
-
-  useEffect(() => {
-    let cancelled = false;
-    (async () => {
-      setIsLoadingWeather(true);
-      try {
-        const normalized = await getWeather();
-        if (!cancelled) {
-          setWeatherData(normalized);
-          setWeatherError(null);
-        }
-      } catch (err) {
-        if (!cancelled) {
-          setWeatherData(fallbackWeatherData);
-          setWeatherError('Unable to load weather');
-        }
-      } finally {
-        if (!cancelled) setIsLoadingWeather(false);
-      }
-    })();
-    return () => {
-      cancelled = true;
-    };
-  }, [fallbackWeatherData]);
-
-  useEffect(() => {
-    let cancelled = false;
-    (async () => {
-      try {
-        const items = await getClothingItems();
-        const normalizedItems = items.map((item) => {
-          const raw = item.imageUrl ?? item.link ?? item.image ?? '';
-          const absolute =
-            typeof raw === 'string' && raw.startsWith('/') && API_BASE
-              ? `${API_BASE}${raw}`
-              : raw;
-          return {
-            ...item,
-            imageUrl: absolute,
-            weather:
-              typeof item.weather === 'string' ? item.weather.toLowerCase() : item.weather,
-          };
-        });
-        if (!cancelled) setClothingItems(normalizedItems);
-      } catch (err) {
-        console.error('Error loading clothing items:', err);
-      }
-    })();
-    return () => {
-      cancelled = true;
-    };
-  }, []);
-
   return (
     <CurrentUserContext.Provider value={currentUser}>
-      <CurrentTemperatureUnitContext.Provider
-        value={{ currentTemperatureUnit, handleToggleSwitchChange }}
-      >
-        <div className="page">
-          <div className="app">
-            <div className="app__content">
-              <Header onAddClick={handleAddClick} onLogout={handleLogout} />
+      <CurrentTemperatureUnitContext.Provider value={tempCtx}>
+        <div className="app">
+          <Header
+            onAddItem={handleAddItemModal}
+            weatherData={weatherData}
+            isLoadingWeather={isLoadingWeather}
+          />
 
-              <Outlet
-                context={{
-                  weatherData,
-                  clothingItems,
-                  onCardClick: handleCardClick,
-                  onDeleteClick: requestDeleteItem,
-                  isLoadingWeather,
-                  weatherError,
-                  onAddClick: handleAddClick,
-                }}
-              />
+          <Outlet
+            context={{
+              clothingItems,
+              setClothingItems,
+              onCardClick: (card) => { setSelectedCard(card); setIsItemModalOpen(true); },
+              onDeleteClick: handleDeleteClick
+            }}
+          />
 
-              <Footer />
-            </div>
-          </div>
+          <Footer />
 
-          {isItemModalOpen && selectedItem && !isConfirmModalOpen && (
-            <ItemModal
-              item={selectedItem}
-              onClose={handleCloseModal}
-              onConfirmDelete={(itm) => requestDeleteItem(itm)}
-              showDelete
-            />
-          )}
+          <ItemModal
+            isOpen={isItemModalOpen}
+            card={selectedCard}
+            onClose={handleCloseAllModals}
+            onDelete={handleDeleteClick}
+          />
 
-          {isAddModalOpen && (
-            <AddItemModal
-              isOpen={isAddModalOpen}
-              onCloseModal={handleCloseModal}
-              onAddItem={handleAddGarmentSubmit}
-            />
-          )}
+          <AddItemModal
+            isOpen={isAddItemModalOpen}
+            onClose={handleCloseAllModals}
+            onAddItem={handleAddItemSubmit}
+          />
 
-          {isConfirmModalOpen && (
-            <ConfirmDeleteModal
-              isOpen={isConfirmModalOpen}
-              onClose={handleCloseModal}
-              onCancel={handleCloseModal}
-              onConfirm={handleConfirmDelete}
-            />
-          )}
+          <ConfirmDeleteModal
+            isOpen={isConfirmModalOpen}
+            onClose={handleCloseAllModals}
+            onConfirm={handleConfirmDelete}
+            loading={confirmDeleting}
+          />
         </div>
       </CurrentTemperatureUnitContext.Provider>
     </CurrentUserContext.Provider>
   );
 }
-
-export default App;
