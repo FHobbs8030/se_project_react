@@ -26,7 +26,7 @@ export async function addClothingItem(body) {
   const res = await fetch(`${BASE_URL}/items`, {
     method: 'POST',
     headers: authHeaders(),
-    body: JSON.stringify(body)
+    body: JSON.stringify(body),
   });
   return handleJSON(res);
 }
@@ -34,7 +34,7 @@ export async function addClothingItem(body) {
 export async function deleteClothingItem(id) {
   const res = await fetch(`${BASE_URL}/items/${id}`, {
     method: 'DELETE',
-    headers: authHeaders()
+    headers: authHeaders(),
   });
   return handleJSON(res);
 }

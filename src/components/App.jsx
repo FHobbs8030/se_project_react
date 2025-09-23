@@ -32,10 +32,12 @@ export default function App() {
   useEffect(() => {
     const t = localStorage.getItem('jwt');
     if (t) {
-      getMe().then(setCurrentUser).catch(() => {
-        localStorage.removeItem('jwt');
-        setCurrentUser(null);
-      });
+      getMe()
+        .then(setCurrentUser)
+        .catch(() => {
+          localStorage.removeItem('jwt');
+          setCurrentUser(null);
+        });
     } else {
       setCurrentUser(null);
     }
@@ -43,7 +45,7 @@ export default function App() {
 
   useEffect(() => {
     let ignore = false;
-    async function loadWeather() {
+    (async () => {
       try {
         setIsLoadingWeather(true);
         const data = await getWeather();
@@ -51,28 +53,31 @@ export default function App() {
       } finally {
         if (!ignore) setIsLoadingWeather(false);
       }
-    }
-    loadWeather();
-    return () => { ignore = true; };
+    })();
+    return () => {
+      ignore = true;
+    };
   }, []);
 
   useEffect(() => {
     let ignore = false;
-    async function loadItems() {
+    (async () => {
       try {
         const items = await getClothingItems();
         if (!ignore) setClothingItems(Array.isArray(items) ? items : []);
       } catch (e) {
         console.error(e);
+        if (!ignore) setClothingItems([]);
       }
-    }
-    loadItems();
-    return () => { ignore = true; };
+    })();
+    return () => {
+      ignore = true;
+    };
   }, [currentUser]);
 
   const tempCtx = useMemo(
     () => ({ currentTemperatureUnit: tempUnit, handleToggleSwitchChange: setTempUnit }),
-    [tempUnit]
+    [tempUnit],
   );
 
   const handleAddItemModal = () => setIsAddItemModalOpen(true);
@@ -87,8 +92,8 @@ export default function App() {
   };
 
   const handleAddItemSubmit = async (item) => {
-    const res = await addClothingItem(item);
-    setClothingItems((prev) => [res, ...prev]);
+    const created = await addClothingItem(item);
+    setClothingItems((prev) => [created, ...prev]);
     handleCloseAllModals();
   };
 
@@ -129,8 +134,11 @@ export default function App() {
             context={{
               clothingItems,
               setClothingItems,
-              onCardClick: (card) => { setSelectedCard(card); setIsItemModalOpen(true); },
-              onDeleteClick: handleDeleteClick
+              onCardClick: (card) => {
+                setSelectedCard(card);
+                setIsItemModalOpen(true);
+              },
+              onDeleteClick: handleDeleteClick,
             }}
           />
 

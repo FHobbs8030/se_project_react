@@ -67,9 +67,10 @@ export default function Main() {
 
   const weatherType = useMemo(() => {
     const t = norm?.tempF;
-    if (t != null && t < 50) return 'cold';
-    if (t != null && t > 75) return 'hot';
-    return 'warm';
+    if (t == null) return 'cold';
+    if (t >= 86) return 'hot';
+    if (t >= 66) return 'warm';
+    return 'cold';
   }, [norm]);
 
   const recommended = useMemo(() => {
@@ -81,10 +82,7 @@ export default function Main() {
       : [];
   }, [clothingItems, weatherType]);
 
-  const listToShow = (recommended.length ? recommended : clothingItems).slice(
-    0,
-    4
-  );
+  const listToShow = recommended.length ? recommended : clothingItems;
 
   return (
     <main className="main">
