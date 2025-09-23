@@ -1,51 +1,39 @@
-const BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3001';
+const BASE_URL = import.meta.env.VITE_API_BASE_URL || "http://localhost:3001";
 
-async function handle(res) {
+async function request(path, options = {}) {
+  const res = await fetch(`${BASE_URL}${path}`, {
+    headers: { "Content-Type": "application/json", ...(options.headers || {}) },
+    ...options,
+  });
+  const data = await res.json().catch(() => ({}));
   if (!res.ok) {
-    const body = await res.json().catch(() => ({}));
-    throw new Error(body?.message || `${res.status} ${res.statusText}`);
+    throw Object.assign(new Error(data?.message || "Request failed"), {
+      status: res.status,
+      data,
+    });
   }
-  return res.json();
-}
-
-export function getToken() {
-  return localStorage.getItem('jwt');
-}
-
-export function setToken(token) {
-  if (token) localStorage.setItem('jwt', token);
-}
-
-export function signOut() {
-  localStorage.removeItem('jwt');
-}
-
-export async function signUp(name, avatar, email, password) {
-  const res = await fetch(`${BASE_URL}/signup`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ name, email, password, avatar })
-  });
-  return handle(res);
-}
-
-export async function signIn(email, password) {
-  const res = await fetch(`${BASE_URL}/signin`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ email, password })
-  });
-  const data = await handle(res);
-  if (data?.token) setToken(data.token);
   return data;
 }
 
-export async function getMe() {
-  const token = getToken();
-  const res = await fetch(`${BASE_URL}/users/me`, {
-    headers: { Authorization: `Bearer ${token}` }
+// POST /signup
+export function signUp({ name, avatar, email, password }) {
+  return request("/signup", {
+    method: "POST",
+    body: JSON.stringify({ name, avatar, email, password }),
   });
-  return handle(res);
 }
 
-export default { signUp, signIn, signOut, getMe, getToken, setToken };
+// POST /signin
+export function signIn({ email, password }) {
+  return request("/signin", {
+    method: "POST",
+    body: JSON.stringify({ email, password }),
+  });
+}
+
+// GET /users/me (with Bearer token)
+export function getMe(token) {
+  return request("/users/me", {
+    headers: { Authorization: `Bearer ${token}` },
+  });
+}

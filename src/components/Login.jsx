@@ -1,23 +1,26 @@
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { signIn } from '../utils/authApi';
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { signIn, getMe } from "../utils/authApi.js";
 
 export default function Login() {
   const navigate = useNavigate();
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [submitting, setSubmitting] = useState(false);
-  const [error, setError] = useState('');
+  const [error, setError] = useState("");
 
   async function onSubmit(e) {
     e.preventDefault();
+    setSubmitting(true);
+    setError("");
     try {
-      setSubmitting(true);
-      setError('');
-      await signIn(email, password);
-      navigate('/');
+      const { token } = await signIn({ email, password });
+      localStorage.setItem("jwt", token);
+      const me = await getMe(token);
+      window.dispatchEvent(new CustomEvent("auth:changed", { detail: me }));
+      navigate("/");
     } catch (err) {
-      setError(err.message || 'Login failed');
+      setError(err?.data?.message || err.message || "Login failed");
     } finally {
       setSubmitting(false);
     }
@@ -29,13 +32,27 @@ export default function Login() {
       {error && <div role="alert">{error}</div>}
       <label>
         Email
-        <input type="email" value={email} onChange={(e)=>setEmail(e.target.value)} required />
+        <input
+          type="email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          required
+          autoComplete="email"
+        />
       </label>
       <label>
         Password
-        <input type="password" value={password} onChange={(e)=>setPassword(e.target.value)} required />
+        <input
+          type="password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          required
+          autoComplete="current-password"
+        />
       </label>
-      <button disabled={submitting} type="submit">{submitting ? 'Signing in...' : 'Sign in'}</button>
+      <button disabled={submitting} type="submit">
+        {submitting ? "Signing in..." : "Sign in"}
+      </button>
     </form>
   );
 }

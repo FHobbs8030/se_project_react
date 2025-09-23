@@ -6,12 +6,15 @@ import Footer from './Footer.jsx';
 import ItemModal from './ItemModal.jsx';
 import AddItemModal from './AddItemModal.jsx';
 import ConfirmDeleteModal from './ConfirmDeleteModal.jsx';
-
+import { getMe } from '../utils/authApi.js';
 import '../blocks/App.css';
 
 import { getWeather } from '../utils/weatherApi';
-import { getClothingItems, addClothingItem, deleteClothingItem } from '../utils/clothingApi';
-import { getMe } from '../utils/authApi';
+import {
+  getClothingItems,
+  addClothingItem,
+  deleteClothingItem,
+} from '../utils/clothingApi';
 
 import { CurrentTemperatureUnitContext } from '../contextStore/CurrentTemperatureUnitContext';
 import { CurrentUserContext } from '../contextStore/CurrentUserContext';
@@ -30,17 +33,25 @@ export default function App() {
   const [tempUnit, setTempUnit] = useState('F');
 
   useEffect(() => {
-    const t = localStorage.getItem('jwt');
-    if (t) {
-      getMe()
-        .then(setCurrentUser)
-        .catch(() => {
-          localStorage.removeItem('jwt');
-          setCurrentUser(null);
-        });
-    } else {
+    const token = localStorage.getItem('jwt');
+    if (!token) {
       setCurrentUser(null);
+      return;
     }
+    getMe(token)
+      .then(setCurrentUser)
+      .catch(() => {
+        localStorage.removeItem('jwt');
+        setCurrentUser(null);
+      });
+  }, []);
+
+  useEffect(() => {
+    function onAuthChanged(e) {
+      setCurrentUser(e.detail || null);
+    }
+    window.addEventListener('auth:changed', onAuthChanged);
+    return () => window.removeEventListener('auth:changed', onAuthChanged);
   }, []);
 
   useEffect(() => {
@@ -66,7 +77,6 @@ export default function App() {
         const items = await getClothingItems();
         if (!ignore) setClothingItems(Array.isArray(items) ? items : []);
       } catch (e) {
-        console.error(e);
         if (!ignore) setClothingItems([]);
       }
     })();
@@ -76,8 +86,11 @@ export default function App() {
   }, [currentUser]);
 
   const tempCtx = useMemo(
-    () => ({ currentTemperatureUnit: tempUnit, handleToggleSwitchChange: setTempUnit }),
-    [tempUnit],
+    () => ({
+      currentTemperatureUnit: tempUnit,
+      handleToggleSwitchChange: setTempUnit,
+    }),
+    [tempUnit]
   );
 
   const handleAddItemModal = () => setIsAddItemModalOpen(true);
@@ -91,13 +104,13 @@ export default function App() {
     setConfirmDeleting(false);
   };
 
-  const handleAddItemSubmit = async (item) => {
+  const handleAddItemSubmit = async item => {
     const created = await addClothingItem(item);
-    setClothingItems((prev) => [created, ...prev]);
+    setClothingItems(prev => [created, ...prev]);
     handleCloseAllModals();
   };
 
-  const handleDeleteClick = (item) => {
+  const handleDeleteClick = item => {
     setItemToDelete(item);
     setIsConfirmModalOpen(true);
   };
@@ -107,7 +120,9 @@ export default function App() {
     if (!id) return;
     setConfirmDeleting(true);
     const prev = clothingItems;
-    setClothingItems((p) => p.filter((ci) => String(ci._id || ci.id) !== String(id)));
+    setClothingItems(p =>
+      p.filter(ci => String(ci._id || ci.id) !== String(id))
+    );
     try {
       await deleteClothingItem(id);
       setIsConfirmModalOpen(false);
@@ -134,11 +149,13 @@ export default function App() {
             context={{
               clothingItems,
               setClothingItems,
-              onCardClick: (card) => {
+              onCardClick: card => {
                 setSelectedCard(card);
                 setIsItemModalOpen(true);
               },
               onDeleteClick: handleDeleteClick,
+              weatherData,
+              isLoadingWeather,
             }}
           />
 
