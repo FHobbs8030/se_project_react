@@ -88,7 +88,10 @@ export default function App() {
   const tempCtx = useMemo(
     () => ({
       currentTemperatureUnit: tempUnit,
-      handleToggleSwitchChange: setTempUnit,
+      handleToggleSwitchChange: (next) =>
+        setTempUnit((u) =>
+          next === 'F' || next === 'C' ? next : u === 'F' ? 'C' : 'F'
+        ),
     }),
     [tempUnit]
   );
@@ -104,13 +107,13 @@ export default function App() {
     setConfirmDeleting(false);
   };
 
-  const handleAddItemSubmit = async item => {
+  const handleAddItemSubmit = async (item) => {
     const created = await addClothingItem(item);
-    setClothingItems(prev => [created, ...prev]);
+    setClothingItems((prev) => [created, ...prev]);
     handleCloseAllModals();
   };
 
-  const handleDeleteClick = item => {
+  const handleDeleteClick = (item) => {
     setItemToDelete(item);
     setIsConfirmModalOpen(true);
   };
@@ -120,8 +123,8 @@ export default function App() {
     if (!id) return;
     setConfirmDeleting(true);
     const prev = clothingItems;
-    setClothingItems(p =>
-      p.filter(ci => String(ci._id || ci.id) !== String(id))
+    setClothingItems((p) =>
+      p.filter((ci) => String(ci._id || ci.id) !== String(id))
     );
     try {
       await deleteClothingItem(id);
@@ -149,7 +152,7 @@ export default function App() {
             context={{
               clothingItems,
               setClothingItems,
-              onCardClick: card => {
+              onCardClick: (card) => {
                 setSelectedCard(card);
                 setIsItemModalOpen(true);
               },
