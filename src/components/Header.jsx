@@ -12,7 +12,11 @@ function Header({ onAddClick }) {
     <header className="header">
       <div className="header__left">
         <Link to="/">
-          <img src="/images/Logo.svg" alt="WTWR Logo" className="header__logo" />
+          <img
+            className="header__logo"
+            src="/images/Logo.svg"
+            alt="WTWR Logo"
+          />
         </Link>
         <p className="header__date-location">{currentDate}, Carson City</p>
       </div>
@@ -23,7 +27,11 @@ function Header({ onAddClick }) {
         </button>
         <Link to="/profile" className="header__user-info">
           <p className="header__user-name">Terrence Tegegne</p>
-          <img src="/images/Avatar.png" alt="User Avatar" className="header__user-avatar" />
+          <img
+            className="header__user-avatar"
+            src="/images/Avatar.png"
+            alt="User Avatar"
+          />
         </Link>
       </div>
     </header>
@@ -31,5 +39,3 @@ function Header({ onAddClick }) {
 }
 
 export default Header;
-
-
