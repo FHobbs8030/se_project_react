@@ -1,18 +1,10 @@
-const AUTH_URL = 'http://127.0.0.1:3001';
+import { api } from "./http";
 
-function check(res) {
-  if (!res.ok) return res.json().then((d) => { throw new Error(d?.message || res.status); });
-  return res.json();
-}
+export const signup = (payload) => api("/signup", { method: "POST", body: payload });
 
-export async function signIn(email, password) {
-  const data = await fetch(`${AUTH_URL}/signin`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ email, password }),
-  }).then(check);
-  if (data?.token) localStorage.setItem('jwt', data.token);
-  return data;
-}
+export const signin = (email, password) =>
+  api("/signin", { method: "POST", body: { email, password } });
 
+export const getMe = () => api("/users/me");
 
+export const signout = () => api("/signout", { method: "POST" });
