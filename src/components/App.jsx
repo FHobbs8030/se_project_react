@@ -1,222 +1,181 @@
 import { useState, useEffect, useMemo } from "react";
-import { Outlet, useNavigate } from "react-router-dom";
+import { Outlet, useLocation, useNavigate } from "react-router-dom";
+
 import Header from "./Header.jsx";
 import Footer from "./Footer.jsx";
 import ItemModal from "./ItemModal.jsx";
 import AddItemModal from "./AddItemModal.jsx";
 import ConfirmDeleteModal from "./ConfirmDeleteModal.jsx";
-import "../blocks/App.css";
-import { getWeather } from "../utils/weatherApi";
-import {
-  getClothingItems,
-  addClothingItem,
-  deleteClothingItem,
-} from "../utils/clothingApi";
+
+import { getMe, signin, signup, signout } from "../utils/authApi.js";
+import { getClothingItems, addClothingItem, deleteClothingItem } from "../utils/clothingApi.js";
+import { getWeather } from "../utils/weatherApi.js";
+
 import { CurrentTemperatureUnitContext } from "../contextStore/CurrentTemperatureUnitContext";
 import { CurrentUserContext } from "../contextStore/CurrentUserContext";
 
-const API_BASE = import.meta.env.VITE_API_BASE_URL || "";
+import "../blocks/App.css";
 
-function App() {
+export default function App() {
+  const [currentUser, setCurrentUser] = useState(null);
+  const [jwt, setJwt] = useState(null);
+
+  const [weatherData, setWeatherData] = useState(null);
+  const [isLoadingWeather, setIsLoadingWeather] = useState(false);
+
+  const [clothingItems, setClothingItems] = useState([]);
+  const [selectedItem, setSelectedItem] = useState(null);
+
+  const [isItemModalOpen, setIsItemModalOpen] = useState(false);
+  const [isAddItemOpen, setIsAddItemOpen] = useState(false);
+  const [isDeleteOpen, setIsDeleteOpen] = useState(false);
+
+  const [error, setError] = useState("");
+  const [unit, setUnit] = useState("F");
+
+  const location = useLocation();
   const navigate = useNavigate();
 
-  const [currentUser, setCurrentUser] = useState(null);
-  const [weatherData, setWeatherData] = useState(null);
-  const [isLoadingWeather, setIsLoadingWeather] = useState(true);
-  const [weatherError, setWeatherError] = useState(null);
-  const [clothingItems, setClothingItems] = useState([]);
-  const [isAddModalOpen, setIsAddModalOpen] = useState(false);
-  const [selectedItem, setSelectedItem] = useState(null);
-  const [isItemModalOpen, setIsItemModalOpen] = useState(false);
-  const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
-  const [itemToDelete, setItemToDelete] = useState(null);
-  const [currentTemperatureUnit, setCurrentTemperatureUnit] = useState("F");
+  const isLoggedIn = useMemo(() => Boolean(currentUser && jwt), [currentUser, jwt]);
 
-  const fallbackWeatherData = useMemo(
-    () => ({
-      temperature: 72,
-      condition: "Clear",
-      isDay: true,
-      timestamp: null,
-      sunrise: null,
-      sunset: null,
-      city: "Carson City",
-    }),
-    []
-  );
-
-  const handleToggleSwitchChange = () =>
-    setCurrentTemperatureUnit((prev) => (prev === "F" ? "C" : "F"));
-
-  const handleAddClick = () => setIsAddModalOpen(true);
-
-  const handleCloseModal = () => {
-    setIsAddModalOpen(false);
-    setIsItemModalOpen(false);
-    setIsConfirmModalOpen(false);
-    setSelectedItem(null);
-    setItemToDelete(null);
-  };
-
-  const handleCardClick = (item) => {
-    setSelectedItem(item);
-    setIsItemModalOpen(true);
-  };
-
-  const handleAddGarmentSubmit = async (newItem) => {
-    try {
-      const savedItem = await addClothingItem(newItem);
-      setClothingItems((prev) => [savedItem, ...prev]);
-      handleCloseModal();
-    } catch (err) {
-      console.error("Error adding item:", err);
-    }
-  };
-
-  const requestDeleteItem = (item) => {
-    setItemToDelete(item);
-    setIsConfirmModalOpen(true);
-  };
-
-  const handleConfirmDelete = async () => {
-    try {
-      const id = itemToDelete?._id || itemToDelete?.id;
-      if (id) {
-        await deleteClothingItem(id);
-        setClothingItems((prev) => prev.filter((ci) => ci._id !== id && ci.id !== id));
-      }
-    } catch (err) {
-      console.error("Error deleting item:", err);
-    } finally {
-      setIsConfirmModalOpen(false);
-      setIsItemModalOpen(false);
-      setSelectedItem(null);
-      setItemToDelete(null);
-    }
-  };
-
-  const handleLogout = () => navigate("/");
-
+  // Restore session from localStorage
   useEffect(() => {
-    const token = localStorage.getItem("jwt");
-    if (!token || !API_BASE) return;
-
-    fetch(`${API_BASE}/users/me`, {
-      credentials: "include",
-      headers: { Authorization: `Bearer ${token}` },
-    })
-      .then((r) => (r.ok ? r.json() : Promise.reject(r)))
-      .then(setCurrentUser)
-      .catch((err) => {
-        console.error("Failed to load current user:", err);
-      });
-  }, []);
-
-  useEffect(() => {
-    let cancelled = false;
-    (async () => {
-      setIsLoadingWeather(true);
-      try {
-        const normalized = await getWeather();
-        if (!cancelled) {
-          setWeatherData(normalized);
-          setWeatherError(null);
-        }
-      } catch (err) {
-        if (!cancelled) {
-          setWeatherData(fallbackWeatherData);
-          setWeatherError("Unable to load weather");
-        }
-      } finally {
-        if (!cancelled) setIsLoadingWeather(false);
-      }
-    })();
-    return () => {
-      cancelled = true;
-    };
-  }, [fallbackWeatherData]);
-
-  useEffect(() => {
-    let cancelled = false;
-    (async () => {
-      try {
-        const items = await getClothingItems();
-        const normalizedItems = items.map((item) => {
-          const raw = item.imageUrl ?? item.link ?? item.image ?? "";
-          const absolute =
-            typeof raw === "string" && raw.startsWith("/") && API_BASE
-              ? `${API_BASE}${raw}`
-              : raw;
-          return {
-            ...item,
-            imageUrl: absolute,
-            weather:
-              typeof item.weather === "string" ? item.weather.toLowerCase() : item.weather,
-          };
+    const stored = localStorage.getItem("jwt");
+    if (stored) {
+      setJwt(stored);
+      getMe(stored)
+        .then((me) => setCurrentUser(me))
+        .catch(() => {
+          localStorage.removeItem("jwt");
+          setJwt(null);
+          setCurrentUser(null);
         });
-        if (!cancelled) setClothingItems(normalizedItems);
-      } catch (err) {
-        console.error("Error loading clothing items:", err);
-      }
-    })();
-    return () => {
-      cancelled = true;
-    };
+    }
   }, []);
+
+  // Weather on load
+  useEffect(() => {
+    setIsLoadingWeather(true);
+    getWeather()
+      .then((wx) => setWeatherData(wx))
+      .finally(() => setIsLoadingWeather(false));
+  }, []);
+
+  // Items (re-fetch when auth changes)
+  useEffect(() => {
+    getClothingItems()
+      .then((items) => setClothingItems(Array.isArray(items) ? items : []))
+      .catch(() => {});
+  }, [isLoggedIn]);
+
+  async function handleSignin(email, password) {
+    setError("");
+    try {
+      const data = await signin({ email, password });
+      if (data?.token) {
+        localStorage.setItem("jwt", data.token);
+        setJwt(data.token);
+        const me = await getMe(data.token);
+        setCurrentUser(me);
+        const from = location.state?.from?.pathname || "/profile";
+        navigate(from, { replace: true });
+      }
+    } catch {
+      setError("Login failed. Check your credentials.");
+    }
+  }
+
+  async function handleSignup(name, email, password) {
+    setError("");
+    try {
+      await signup({ name, email, password });
+      await handleSignin(email, password);
+    } catch {
+      setError("Sign up failed. Try a different email.");
+    }
+  }
+
+async function handleLogout() {
+  try {
+    await signout?.();
+  } catch (e) {
+    // Non-fatal: backend signout can fail if token already invalid/expired
+    console.warn("Signout failed (continuing local logout):", e);
+  } finally {
+    localStorage.removeItem("jwt");
+    setJwt(null);
+    setCurrentUser(null);
+    navigate("/", { replace: true });
+  }
+}
+
+  function openAddItem() { setIsAddItemOpen(true); }
+  function closeAddItem() { setIsAddItemOpen(false); }
+
+  function openItem(item) { setSelectedItem(item); setIsItemModalOpen(true); }
+  function closeItem() { setSelectedItem(null); setIsItemModalOpen(false); }
+
+  function openDelete() { setIsDeleteOpen(true); }
+  function closeDelete() { setIsDeleteOpen(false); }
+
+  async function handleAddItem(payload) {
+    const created = await addClothingItem(payload, jwt);
+    setClothingItems((prev) => [created, ...prev]);
+    closeAddItem();
+  }
+
+  async function handleDeleteItem(id) {
+    await deleteClothingItem(id, jwt);
+    setClothingItems((prev) => prev.filter((i) => i._id !== id));
+    closeDelete();
+    closeItem();
+  }
+
+  const temperatureContextValue = useMemo(() => ({ unit, setUnit }), [unit]);
 
   return (
     <CurrentUserContext.Provider value={currentUser}>
-      <CurrentTemperatureUnitContext.Provider
-        value={{ currentTemperatureUnit, handleToggleSwitchChange }}
-      >
-        <div className="page">
-          <div className="app">
-            <div className="app__content">
-              <Header onAddClick={handleAddClick} onLogout={handleLogout} />
-              <Outlet
-                context={{
-                  weatherData,
-                  clothingItems,
-                  onCardClick: handleCardClick,
-                  onDeleteClick: requestDeleteItem,
-                  isLoadingWeather,
-                  weatherError,
-                  onAddClick: handleAddClick,
-                }}
-              />
-              <Footer />
-            </div>
-          </div>
-
-        {isItemModalOpen && selectedItem && !isConfirmModalOpen && (
-          <ItemModal
-            item={selectedItem}
-            onClose={handleCloseModal}
-            onConfirmDelete={(itm) => requestDeleteItem(itm)}
-            showDelete
+      <CurrentTemperatureUnitContext.Provider value={temperatureContextValue}>
+        <div className="app">
+          <Header
+            isLoggedIn={isLoggedIn}
+            onLogin={handleSignin}
+            onRegister={handleSignup}
+            onLogout={handleLogout}
+            onAddItem={openAddItem}
+            weatherData={weatherData}
+            authError={error}
+            // If your Header reads weather via useOutletContext(), you can remove weatherData here.
           />
-        )}
 
-        {isAddModalOpen && (
-          <AddItemModal
-            isOpen={isAddModalOpen}
-            onCloseModal={handleCloseModal}
-            onAddItem={handleAddGarmentSubmit}
-          />
-        )}
+          {/* Public outlet first */}
+          <Outlet context={{ weatherData, isLoadingWeather, clothingItems, openItem, openAddItem }} />
 
-        {isConfirmModalOpen && (
-          <ConfirmDeleteModal
-            isOpen={isConfirmModalOpen}
-            onClose={handleCloseModal}
-            onCancel={handleCloseModal}
-            onConfirm={handleConfirmDelete}
-          />
-        )}
+          {/* Example of a protected area (wrap specific routes/pages, not the whole app) */}
+          {/* 
+          <ProtectedRoute redirectTo="/">
+            <Profile />
+          </ProtectedRoute>
+          */}
+
+          <Footer />
+
+          {isItemModalOpen && (
+            <ItemModal item={selectedItem} onClose={closeItem} onDelete={openDelete} />
+          )}
+
+          {isAddItemOpen && (
+            <AddItemModal onClose={closeAddItem} onSubmit={handleAddItem} />
+          )}
+
+          {isDeleteOpen && (
+            <ConfirmDeleteModal
+              onClose={closeDelete}
+              onConfirm={() => handleDeleteItem(selectedItem?._id)}
+            />
+          )}
         </div>
       </CurrentTemperatureUnitContext.Provider>
     </CurrentUserContext.Provider>
   );
 }
-
-export default App;
