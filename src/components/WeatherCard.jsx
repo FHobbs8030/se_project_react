@@ -1,46 +1,45 @@
-import PropTypes from "prop-types";
-import "../blocks/WeatherCard.css"; 
+import { useContext } from "react";
+import { CurrentTemperatureUnitContext } from "../contextStore/CurrentTemperatureUnitContext.jsx";
+import getBackgroundImage from "../utils/getBackgroundImage.js";
+import weatherImages from "../utils/weatherImages.js";
+import "../blocks/WeatherCard.css";
 
-export default function WeatherCard({
-  temperature,
-  unit = "F",
-  isDay,               
-  icon,                
-  timestamp, sunrise, sunset, 
-}) {
-  const tempNum = typeof temperature === "number" ? temperature : Number(temperature);
-
-  let dayFlag = isDay;
-  if (typeof dayFlag !== "boolean" && sunrise && sunset && timestamp) {
-    dayFlag = timestamp > sunrise && timestamp < sunset;
-  }
-
-  if (!Number.isFinite(tempNum)) {
-    return (
-      <section className="weather-card weather-card--empty" aria-live="polite">
-        <p>Weather data is unavailable.</p>
-      </section>
-    );
-  }
-
-  return (
-    <section className="weather-card">{/* or: style={{ backgroundImage: `url(${bg})` }} */}
-      <div className={`weather-card__overlay ${dayFlag ? "day" : "night"}`}>
-        <div className="weather-card__temp">{Math.round(tempNum)}°{unit}</div>
-        {icon && <img className="weather-card__icon" src={icon} alt="" aria-hidden="true" />}
-      </div>
-    </section>
+const FALLBACK =
+  "data:image/svg+xml;utf8," +
+  encodeURIComponent(
+    '<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="64"><defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="0"><stop stop-color="#3b82f6" offset="0"/><stop stop-color="#06b6d4" offset="1"/></linearGradient></defs><rect width="1200" height="64" rx="10" fill="url(#g)"/></svg>'
   );
+
+function pickImage(type, isDay) {
+  if (typeof getBackgroundImage === "function") {
+    const src = getBackgroundImage(type, isDay);
+    if (src) return src;
+  }
+  const table = weatherImages?.[isDay ? "day" : "night"];
+  if (table?.[type]) return table[type];
+  if (table?.default) return table.default;
+  const first = table ? Object.values(table)[0] : null;
+  return first || FALLBACK;
 }
 
-WeatherCard.propTypes = {
-  temperature: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
-  unit: PropTypes.string,
-  isDay: PropTypes.bool,
-  icon: PropTypes.string,
-  timestamp: PropTypes.number,
-  sunrise: PropTypes.number,
-  sunset: PropTypes.number,
-};
+export default function WeatherCard({ weatherData }) {
+  const { unit } = useContext(CurrentTemperatureUnitContext);
+  const temp = Number.isFinite(weatherData?.temp) ? weatherData.temp : null;
+  const type = weatherData?.type || null;
+  const hour = new Date().getHours();
+  const isDay = hour >= 6 && hour < 18;
+  const iconSrc = pickImage(type, isDay);
 
-
+  return (
+    <div className="weather-card">
+      <div className={`weather-card__overlay ${isDay ? "day" : "night"}`}>
+        <p className="weather-card__temp">{temp != null ? `${temp}°${unit || "F"}` : "—"}</p>
+      </div>
+      <img
+        className="weather-card__icon"
+        src={iconSrc}
+        alt={type ? `${type} weather` : "weather"}
+      />
+    </div>
+  );
+}

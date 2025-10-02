@@ -1,34 +1,30 @@
-// src/utils/http.js
-const BASE = (import.meta.env.VITE_API_BASE_URL || "").replace(/\/$/, "");
+const API_BASE = import.meta.env.VITE_API_BASE_URL || "http://localhost:3001";
 
-function buildUrl(path) {
-  if (/^https?:\/\//i.test(path)) return path;
-  return `${BASE}${path.startsWith("/") ? "" : "/"}${path}`;
-}
-
-export async function api(path, opts = {}) {
-  const { body, headers, ...rest } = opts;
-
-  let finalBody = body;
-  let finalHeaders = { ...(headers || {}) };
-
-  if (body && !(body instanceof FormData)) {
-    finalHeaders["Content-Type"] = "application/json";
-    finalBody = JSON.stringify(body);
-  }
-
-  const res = await fetch(buildUrl(path), {
+export async function api(path, { method = "GET", headers = {}, body } = {}) {
+  const opts = {
+    method,
+    headers: { "Content-Type": "application/json", ...headers },
     credentials: "include",
-    headers: finalHeaders,
-    body: finalBody,
-    ...rest,
-  });
+  };
+  if (body !== undefined) opts.body = JSON.stringify(body);
+
+  const res = await fetch(`${API_BASE}${path}`, opts);
+
+  let data = null;
+  try {
+    data = await res.json();
+  } catch (e) {
+    data = null;
+  }
 
   if (!res.ok) {
-    const text = await res.text().catch(() => "");
-    throw new Error(text || `HTTP ${res.status}`);
+    const msg = (data && data.message) || res.statusText || "Request failed";
+    const err = new Error(msg);
+    err.status = res.status;
+    throw err;
   }
 
-  const ct = res.headers.get("content-type") || "";
-  return ct.includes("application/json") ? res.json() : res.text();
+  return data;
 }
+
+export const http = api;

@@ -1,10 +1,18 @@
-import { api } from "./http";
+import { api } from "./http.js";
 
-export const signup = (payload) => api("/signup", { method: "POST", body: payload });
+export function getMe() {
+  return api("/users/me");
+}
 
-export const signin = (email, password) =>
-  api("/signin", { method: "POST", body: { email, password } });
+export async function signin({ email, password }) {
+  await api("/signin", { method: "POST", body: { email, password } });
+  return getMe();
+}
 
-export const getMe = () => api("/users/me");
+export function signup({ name, email, password }) {
+  return api("/signup", { method: "POST", body: { name, email, password } });
+}
 
-export const signout = () => api("/signout", { method: "POST" });
+export function signout() {
+  return api("/signout", { method: "POST" });
+}

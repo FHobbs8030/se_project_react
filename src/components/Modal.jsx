@@ -1,34 +1,19 @@
-import { useEffect } from "react";
+import PropTypes from "prop-types";
 import "../blocks/Modal.css";
 
-export const Modal = ({ name, onClose, children }) => {
-  useEffect(() => {
-    const handleEscape = (e) => {
-      if (e.key === "Escape") {
-        onClose();
-      }
-    };
-
-    document.addEventListener("keydown", handleEscape);
-    return () => document.removeEventListener("keydown", handleEscape);
-  }, [onClose]);
-
-  const handleOverlay = (e) => {
-    if (e.target === e.currentTarget) {
-      onClose();
-    }
-  };
-
+export default function Modal({ isOpen, onClose, children }) {
   return (
-    <div className={`modal modal_type_${name}`} onClick={handleOverlay}>
-      <div className="modal__container">
+    <div className={`modal ${isOpen ? "modal_opened" : ""}`} onClick={onClose}>
+      <div className="modal__container" onClick={(e) => e.stopPropagation()}>
+        <button className="modal__close" type="button" aria-label="Close" onClick={onClose} />
         {children}
-        <button className="modal__close" type="button" onClick={onClose}>
-          &times;
-        </button>
       </div>
     </div>
   );
+}
+
+Modal.propTypes = {
+  isOpen: PropTypes.bool.isRequired,
+  onClose: PropTypes.func.isRequired,
+  children: PropTypes.node,
 };
-
-

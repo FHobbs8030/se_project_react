@@ -1,25 +1,35 @@
-import { memo } from 'react';
-import PropTypes from 'prop-types';
-import ItemCard from './ItemCard';
-import '../blocks/Cards.css';
-import '../blocks/ClothesSection.css';
+import { memo } from "react";
+import PropTypes from "prop-types";
+import { useOutletContext } from "react-router-dom";
+import ItemCard from "./ItemCard";
+import "../blocks/Cards.css";
+import "../blocks/ClothesSection.css";
 
 const ClothesSection = memo(function ClothesSection({
   clothingItems = [],
   onCardClick,
   onDeleteItem,
-  title = 'Recommended items',
+  title = "Recommended items",
   showMessage = true,
   showDelete = false,
 }) {
-  const hasItems = Array.isArray(clothingItems) && clothingItems.length > 0;
+  const { clothingItems: ctxItems = [], weatherData } = useOutletContext() || {};
+  const sourceItems = clothingItems.length ? clothingItems : ctxItems;
+  const type = weatherData?.type ?? null;
+
+  const filtered =
+    Array.isArray(sourceItems) && type
+      ? sourceItems.filter((i) => i.weather === type)
+      : [];
+
+  const hasItems = filtered.length > 0;
 
   return (
     <section className="clothes-section" aria-label="Clothing suggestions">
       {showMessage && <p className="clothes-section__title">{title}</p>}
       <div className="main__cards">
         {hasItems ? (
-          clothingItems.map((item, idx) => (
+          filtered.map((item, idx) => (
             <ItemCard
               key={item._id ?? item.id ?? item.name ?? `item-${idx}`}
               item={item}
