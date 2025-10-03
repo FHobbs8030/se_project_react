@@ -1,74 +1,45 @@
-// src/components/ItemModal.jsx
-import { useContext, useEffect } from 'react';
-import { CurrentUserContext } from '../contextStore/CurrentUserContext';
-import '../blocks/ItemModal.css';
+import { useContext } from "react";
+import PropTypes from "prop-types";
+import ModalWithForm from "./ModalWithForm.jsx";
+import { CurrentUserContext } from "../contextStore/CurrentUserContext.jsx";
 
-function ItemModal({ item, onClose, onConfirmDelete, showDelete = false }) {
+export default function ItemModal({ item, isOpen, onClose, onConfirmDelete }) {
   const currentUser = useContext(CurrentUserContext);
+  if (!isOpen || !item) return null;
 
-  useEffect(() => {
-    if (!item) return;
-    const onKey = (e) => e.key === 'Escape' && onClose();
-    document.addEventListener('keydown', onKey);
-    return () => document.removeEventListener('keydown', onKey);
-  }, [onClose, item]);
-
-  if (!item) return null;
-
-  const userId =
-    currentUser?.data?._id || currentUser?._id || currentUser?.id || null;
-
-  const ownerId =
-    (typeof item?.owner === 'object'
-      ? item?.owner?._id || item?.owner?.id
-      : item?.owner) || null;
-
-  const canDelete = !!(userId && ownerId && String(ownerId) === String(userId));
-
-  const imgSrc = item.imageUrl || item.link || item.image || '';
-  const name = item.name || 'Clothing item';
+  const ownerId = item?.owner?._id || item?.owner || null;
+  const canDelete = Boolean(currentUser?._id) && currentUser._id === ownerId;
 
   return (
-    <div className="item-modal" onClick={onClose}>
-      <div
-        className="item-modal__content"
-        onClick={(e) => e.stopPropagation()}
-        role="dialog"
-        aria-modal="true"
-      >
-        <button
-          className="item-modal__close"
-          type="button"
-          aria-label="Close"
-          onClick={onClose}
-        >
-          ×
-        </button>
-
-        <img className="item-modal__image" src={imgSrc} alt={name} />
-
-        <div className="item-modal__footer">
-          <div className="item-modal__text-group">
-            <p className="item-modal__caption">{name}</p>
-            <p className="item-modal__weather">Weather: {item.weather}</p>
-          </div>
-
-          {showDelete && canDelete && (
-            <button
-              type="button"
-              className="item-modal__delete-button"
-              onClick={(e) => {
-                e.stopPropagation();
-                onConfirmDelete(item);
-              }}
-            >
-              Delete item
-            </button>
-          )}
-        </div>
+    <ModalWithForm isOpen={isOpen} onClose={onClose} title={item?.name || "Item"}>
+      <div className="item-modal__body">
+        {item?.imageUrl && (
+          <img
+            className="item-modal__image"
+            src={item.imageUrl}
+            alt={item?.name || "Item"}
+          />
+        )}
+        {item?.weather && (
+          <div className="item-modal__meta">Weather: {item.weather}</div>
+        )}
       </div>
-    </div>
+      {canDelete ? (
+        <button
+          type="button"
+          className="item-modal__delete"
+          onClick={() => onConfirmDelete(item)}
+        >
+          Delete
+        </button>
+      ) : null}
+    </ModalWithForm>
   );
 }
 
-export default ItemModal;
+ItemModal.propTypes = {
+  item: PropTypes.any,
+  isOpen: PropTypes.bool.isRequired,
+  onClose: PropTypes.func.isRequired,
+  onConfirmDelete: PropTypes.func.isRequired,
+};

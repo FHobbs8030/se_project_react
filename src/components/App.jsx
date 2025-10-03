@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState, useCallback } from "react";
-import { Routes, Route, Outlet, useSearchParams } from "react-router-dom";
+import { Routes, Route, Outlet } from "react-router-dom";
+
 import Header from "./Header.jsx";
 import Footer from "./Footer.jsx";
 import Main from "./Main.jsx";
@@ -9,32 +10,39 @@ import ProtectedRoute from "./ProtectedRoute.jsx";
 import LoginModal from "./LoginModal.jsx";
 import RegisterModal from "./RegisterModal.jsx";
 import ItemModal from "./ItemModal.jsx";
-import ConfirmDeleteModal from "./ConfirmDeleteModal.jsx";
 import AddItemModal from "./AddItemModal.jsx";
-import { CurrentUserContext } from "../contextStore/CurrentUserContext.jsx";
-import { CurrentTemperatureUnitContext } from "../contextStore/CurrentTemperatureUnitContext.jsx";
-import { getMe, signin, signup, signout } from "../utils/authApi.js";
-import { getClothingItems, addClothingItem, deleteClothingItem } from "../utils/clothingApi.js";
+import ConfirmDeleteModal from "./ConfirmDeleteModal.jsx";
+
+import { getMe } from "../utils/authApi.js";
 import { getWeather } from "../utils/weatherApi.js";
+import {
+  getClothingItems,
+  addClothingItem,
+  deleteClothingItem,
+} from "../utils/clothingApi.js";
+import { removeToken } from "../utils/token.js";
+
+import { CurrentTemperatureUnitContext } from "../contextStore/CurrentTemperatureUnitContext.jsx";
+import { CurrentUserContext } from "../contextStore/CurrentUserContext.jsx";
+import "../blocks/App.css";
 
 function Shell({ outletContext, headerProps }) {
   return (
     <>
       <Header {...headerProps} />
-      <Outlet context={outletContext} />
+      <main className="page__content">
+        <Outlet context={outletContext} />
+      </main>
       <Footer />
     </>
   );
 }
 
 export default function App() {
-  const [searchParams, setSearchParams] = useSearchParams();
-
   const [currentUser, setCurrentUser] = useState(null);
   const [isLoadingUser, setIsLoadingUser] = useState(true);
 
   const [unit, setUnit] = useState("F");
-
   const [weatherData, setWeatherData] = useState(null);
   const [isLoadingWeather, setIsLoadingWeather] = useState(false);
 
@@ -44,94 +52,77 @@ export default function App() {
   const [isLoginOpen, setLoginOpen] = useState(false);
   const [isRegisterOpen, setRegisterOpen] = useState(false);
   const [isAddOpen, setAddOpen] = useState(false);
+
   const [selectedItem, setSelectedItem] = useState(null);
-  const [isConfirmDeleteOpen, setConfirmDeleteOpen] = useState(false);
+  const [isItemOpen, setItemOpen] = useState(false);
+  const [isConfirmOpen, setConfirmOpen] = useState(false);
 
   useEffect(() => {
-    const auth = searchParams.get("auth");
-    if (auth === "login") setLoginOpen(true);
-    if (auth === "register") setRegisterOpen(true);
-  }, [searchParams]);
-
-  useEffect(() => {
-    let mounted = true;
+    let cancelled = false;
     (async () => {
-      setIsLoadingUser(true);
       try {
         const me = await getMe();
-        if (mounted) setCurrentUser(me);
-      } catch {
-        if (mounted) setCurrentUser(null);
+        if (!cancelled) setCurrentUser(me);
+      } catch (e) {
+        if (!cancelled) setCurrentUser(null);
       } finally {
-        if (mounted) setIsLoadingUser(false);
+        if (!cancelled) setIsLoadingUser(false);
       }
     })();
     return () => {
-      mounted = false;
+      cancelled = true;
     };
   }, []);
 
   useEffect(() => {
-    let mounted = true;
+    let cancelled = false;
     (async () => {
-      setIsLoadingWeather(true);
       try {
-        const wx = await getWeather();
-        if (mounted) setWeatherData(wx);
-      } catch {
-        if (mounted) setWeatherData(null);
+        setIsLoadingWeather(true);
+        const w = await getWeather();
+        if (!cancelled) setWeatherData(w);
       } finally {
-        if (mounted) setIsLoadingWeather(false);
+        if (!cancelled) setIsLoadingWeather(false);
       }
     })();
     return () => {
-      mounted = false;
+      cancelled = true;
     };
   }, []);
 
   useEffect(() => {
-    let mounted = true;
+    let cancelled = false;
     (async () => {
-      setIsLoadingItems(true);
       try {
+        setIsLoadingItems(true);
         const items = await getClothingItems();
-        if (mounted) setClothingItems(items || []);
-      } catch {
-        if (mounted) setClothingItems([]);
+        if (!cancelled) setClothingItems(items || []);
       } finally {
-        if (mounted) setIsLoadingItems(false);
+        if (!cancelled) setIsLoadingItems(false);
       }
     })();
     return () => {
-      mounted = false;
+      cancelled = true;
     };
   }, []);
 
-  const handleLogin = useCallback(async ({ email, password }) => {
-    await signin({ email, password });
-    const me = await getMe();
-    setCurrentUser(me);
-    setLoginOpen(false);
-    if (searchParams.get("auth")) {
-      searchParams.delete("auth");
-      setSearchParams(searchParams, { replace: true });
-    }
-  }, [searchParams, setSearchParams]);
-
-  const handleRegister = useCallback(async ({ name, email, password }) => {
-    await signup({ name, email, password });
-    const me = await getMe();
-    setCurrentUser(me);
-    setRegisterOpen(false);
-    if (searchParams.get("auth")) {
-      searchParams.delete("auth");
-      setSearchParams(searchParams, { replace: true });
-    }
-  }, [searchParams, setSearchParams]);
-
-  const handleLogout = useCallback(async () => {
-    await signout();
+  const handleLogout = useCallback(() => {
+    removeToken();
     setCurrentUser(null);
+    setSelectedItem(null);
+    setItemOpen(false);
+    setConfirmOpen(false);
+    setAddOpen(false);
+  }, []);
+
+  const handleLogin = useCallback((user) => {
+    setCurrentUser(user);
+    setLoginOpen(false);
+  }, []);
+
+  const handleRegister = useCallback((user) => {
+    setCurrentUser(user);
+    setRegisterOpen(false);
   }, []);
 
   const handleAddItem = useCallback(async ({ name, weather, imageUrl }) => {
@@ -140,21 +131,70 @@ export default function App() {
     setAddOpen(false);
   }, []);
 
-  const openItem = useCallback((item) => setSelectedItem(item), []);
-  const closeItem = useCallback(() => setSelectedItem(null), []);
+  const openItem = useCallback((item) => {
+    setAddOpen(false);
+    setConfirmOpen(false);
+    setSelectedItem(item);
+    setItemOpen(true);
+  }, []);
 
-  const requestDeleteItem = useCallback(() => {
-    if (!selectedItem) return;
-    setConfirmDeleteOpen(true);
-  }, [selectedItem]);
+  const closeItem = useCallback(() => {
+    setItemOpen(false);
+    setSelectedItem(null);
+  }, []);
 
-  const confirmDeleteItem = useCallback(async () => {
-    if (!selectedItem) return;
+  const requestDeleteItem = useCallback(
+    (itemArg) => {
+      const target = itemArg || selectedItem;
+      if (!currentUser) {
+        setLoginOpen(true);
+        return;
+      }
+      if (!target?._id) return;
+      setAddOpen(false);
+      setSelectedItem(target);
+      setConfirmOpen(true);
+    },
+    [currentUser, selectedItem]
+  );
+
+  const handleDeleteItem = useCallback(async () => {
+    if (!selectedItem?._id) {
+      setConfirmOpen(false);
+      return;
+    }
     await deleteClothingItem(selectedItem._id);
-    setClothingItems((prev) => prev.filter((it) => it._id !== selectedItem._id));
-    setConfirmDeleteOpen(false);
+    setClothingItems((prev) => prev.filter((i) => i._id !== selectedItem._id));
+    setConfirmOpen(false);
+    setItemOpen(false);
     setSelectedItem(null);
   }, [selectedItem]);
+
+  useEffect(() => {
+    if (isAddOpen) {
+      setItemOpen(false);
+      setConfirmOpen(false);
+      setSelectedItem(null);
+    }
+  }, [isAddOpen]);
+
+  useEffect(() => {
+    if (isItemOpen) {
+      setAddOpen(false);
+    }
+  }, [isItemOpen]);
+
+  useEffect(() => {
+    if (!currentUser && isConfirmOpen) setConfirmOpen(false);
+  }, [currentUser, isConfirmOpen]);
+
+  useEffect(() => {
+    if (!selectedItem && isConfirmOpen) setConfirmOpen(false);
+  }, [selectedItem, isConfirmOpen]);
+
+  useEffect(() => {
+    if (!isItemOpen && isConfirmOpen) setConfirmOpen(false);
+  }, [isItemOpen, isConfirmOpen]);
 
   const outletContext = useMemo(
     () => ({
@@ -166,11 +206,20 @@ export default function App() {
       onCardClick: openItem,
       onDeleteClick: requestDeleteItem,
     }),
-    [currentUser, weatherData, clothingItems, isLoadingWeather, isLoadingItems, openItem, requestDeleteItem]
+    [
+      currentUser,
+      weatherData,
+      clothingItems,
+      isLoadingWeather,
+      isLoadingItems,
+      openItem,
+      requestDeleteItem,
+    ]
   );
 
   const headerProps = useMemo(
     () => ({
+      onAddItemClick: () => setAddOpen(true),
       onLoginClick: () => setLoginOpen(true),
       onRegisterClick: () => setRegisterOpen(true),
       onLogoutClick: handleLogout,
@@ -183,9 +232,7 @@ export default function App() {
     <CurrentUserContext.Provider value={currentUser}>
       <CurrentTemperatureUnitContext.Provider value={{ unit, setUnit }}>
         <Routes>
-          <Route
-            element={<Shell outletContext={outletContext} headerProps={headerProps} />}
-          >
+          <Route element={<Shell outletContext={outletContext} headerProps={headerProps} />}>
             <Route index element={<Main />} />
             <Route
               path="/profile"
@@ -204,6 +251,7 @@ export default function App() {
           onClose={() => setLoginOpen(false)}
           onLogin={handleLogin}
         />
+
         <RegisterModal
           isOpen={isRegisterOpen}
           onClose={() => setRegisterOpen(false)}
@@ -218,15 +266,15 @@ export default function App() {
 
         <ItemModal
           item={selectedItem}
+          isOpen={isItemOpen}
           onClose={closeItem}
           onConfirmDelete={requestDeleteItem}
-          showDelete={Boolean(currentUser)}
         />
 
         <ConfirmDeleteModal
-          isOpen={isConfirmDeleteOpen}
-          onClose={() => setConfirmDeleteOpen(false)}
-          onConfirm={confirmDeleteItem}
+          isOpen={isConfirmOpen}
+          onClose={() => setConfirmOpen(false)}
+          onConfirm={handleDeleteItem}
         />
       </CurrentTemperatureUnitContext.Provider>
     </CurrentUserContext.Provider>
