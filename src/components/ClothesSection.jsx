@@ -1,59 +1,75 @@
-import { memo } from "react";
-import PropTypes from "prop-types";
+import { useEffect, useState } from "react";
 import { useOutletContext } from "react-router-dom";
-import ItemCard from "./ItemCard";
-import "../blocks/Cards.css";
-import "../blocks/ClothesSection.css";
+import { api } from "../utils/api.js";
 
-const ClothesSection = memo(function ClothesSection({
-  clothingItems = [],
-  onCardClick,
-  onDeleteItem,
-  title = "Recommended items",
-  showMessage = true,
-  showDelete = false,
-}) {
-  const { clothingItems: ctxItems = [], weatherData } = useOutletContext() || {};
-  const sourceItems = clothingItems.length ? clothingItems : ctxItems;
-  const type = weatherData?.type ?? null;
+function normalizeItems(payload) {
+  if (Array.isArray(payload)) return payload;
+  if (Array.isArray(payload?.items)) return payload.items;
+  if (Array.isArray(payload?.data)) return payload.data;
+  return [];
+}
 
-  const filtered =
-    Array.isArray(sourceItems) && type
-      ? sourceItems.filter((i) => i.weather === type)
-      : [];
+export default function ClothesSection() {
+  const { weatherData } = useOutletContext() || {};
+  const [items, setItems] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [err, setErr] = useState("");
 
-  const hasItems = filtered.length > 0;
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      try {
+        const raw = await api.getItems();
+        const normalized = normalizeItems(raw);
+        if (!cancelled) setItems(normalized);
+      } catch (e) {
+        if (!cancelled) setErr("Could not load clothes.");
+        // Optional: console.error(e);
+      } finally {
+        if (!cancelled) setLoading(false);
+      }
+    })();
+    return () => { cancelled = true; };
+  }, []);
+
+  if (loading) return <p className="muted">Loading clothes…</p>;
+  if (err) return <p className="muted">{err}</p>;
+
+  // Simple recommended logic (adjust to your schema: i.weather / i.temperature / i.isCold etc.)
+  const isCold = (weatherData?.type || "").toLowerCase().includes("cold");
+  const recommended = items.filter((i) =>
+    isCold ? i.weather === "cold" : i.weather === "warm"
+  );
 
   return (
-    <section className="clothes-section" aria-label="Clothing suggestions">
-      {showMessage && <p className="clothes-section__title">{title}</p>}
-      <div className="main__cards">
-        {hasItems ? (
-          filtered.map((item, idx) => (
-            <ItemCard
-              key={item._id ?? item.id ?? item.name ?? `item-${idx}`}
-              item={item}
-              onCardClick={onCardClick}
-              onDeleteClick={onDeleteItem}
-              showDelete={showDelete}
-              needsScaling={false}
-            />
-          ))
-        ) : (
-          <p className="clothes-section__empty">No items to show.</p>
-        )}
-      </div>
-    </section>
+    <>
+      <p className="muted">Recommended items</p>
+      {recommended.length ? (
+        <section className="cards">
+          {recommended.map((i) => (
+            <article key={i._id || i.id} className="card">
+              <span className="card__name">{i.name}</span>
+              <img src={i.imageUrl || i.image} alt={i.name} />
+            </article>
+          ))}
+        </section>
+      ) : (
+        <p className="muted">No items to show.</p>
+      )}
+
+      <p className="muted" style={{ marginTop: 16 }}>All items</p>
+      {items.length ? (
+        <section className="cards">
+          {items.map((i) => (
+            <article key={i._id || i.id} className="card">
+              <span className="card__name">{i.name}</span>
+              <img src={i.imageUrl || i.image} alt={i.name} />
+            </article>
+          ))}
+        </section>
+      ) : (
+        <p className="muted">No items in wardrobe yet.</p>
+      )}
+    </>
   );
-});
-
-ClothesSection.propTypes = {
-  clothingItems: PropTypes.arrayOf(PropTypes.object),
-  onCardClick: PropTypes.func,
-  onDeleteItem: PropTypes.func,
-  title: PropTypes.string,
-  showMessage: PropTypes.bool,
-  showDelete: PropTypes.bool,
-};
-
-export default ClothesSection;
+}

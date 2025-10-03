@@ -25,6 +25,7 @@ import { removeToken } from "../utils/token.js";
 import { CurrentTemperatureUnitContext } from "../contextStore/CurrentTemperatureUnitContext.jsx";
 import { CurrentUserContext } from "../contextStore/CurrentUserContext.jsx";
 import "../blocks/App.css";
+import "../blocks/Cards.css";
 
 function Shell({ outletContext, headerProps }) {
   return (

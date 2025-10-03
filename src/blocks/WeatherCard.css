@@ -1,54 +1,48 @@
-:root { --wx-card-h: 80px; --wx-card-radius: 10px; }
-
-.weather-card,
-.weather-card--empty {
+.weather-card {
   position: relative;
-  display: flex;
-  align-items: center;
-  max-width: 1360px;
-  height: var(--wx-card-h);
-  min-height: var(--wx-card-h);
-  margin: 0 auto;
-  border-radius: var(--wx-card-radius);
-  overflow: hidden;                  /* clip the corner icon to the rounded corner */
+  width: min(var(--container-w), 100%);
+  height: var(--wx-h);
+  margin: 0 auto var(--pad);
+  border-radius: var(--radius);
+  overflow: hidden;
+  background: #0aa4ff;
 }
-
-.weather-card__overlay {
-  position: relative;                /* stacking context for z-index */
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  width: 100%;
-  height: 100%;
-  padding: 0 16px;
-  box-sizing: border-box;
-}
-
-.weather-card__overlay.day   { background-color: #00a3ff; }
-.weather-card__overlay.night { background-color: #2d6b91; }
 
 .weather-card__temp {
-  position: relative;
-  z-index: 3;                        /* always above the corner art */
-  font-size: 32px;
+  position: absolute;
+  left: calc(var(--pad) - 4px);
+  top: 50%;
+  transform: translateY(-50%);
+  font-family: "Cabinet Grotesk","Inter",system-ui,-apple-system,sans-serif;
+  font-size: 28px;
   font-weight: 700;
   color: #fff;
-  line-height: 1;
 }
 
-/* Sun/cloud corner art */
 .weather-card__icon {
   position: absolute;
-  right: 0;
-  top: -8px;                         /* lift the sun a bit */
-  height: calc(var(--wx-card-h) + 16px); /* lets the cloud dip into the bar */
-  width: auto;
-  object-fit: contain;
-  pointer-events: none;
-  z-index: 2;                        /* below temp */
+  right: var(--pad);
+  top: 50%;
+  transform: translateY(-50%);
+  width: 112px;
+  height: 56px;
+  background: radial-gradient(circle at 80% 20%, #ffd400 30%, rgba(255,212,0,0) 31%),
+              linear-gradient(180deg, #fff 0%, #f0f3f9 100%);
+  border-radius: 999px;
 }
 
-@media (max-width: 600px) {
-  :root { --wx-card-h: 64px; }
-  .weather-card__temp { font-size: 24px; }
+.weather-card__rightArt{
+  position: absolute;
+  right: 0;                  
+  top: 40%;
+  transform: translateY(-50%);
+  width: 170px;
+  height: 64px;
+  object-fit: contain;
+  object-position: right center;
+  pointer-events: none;
+  display: block;
 }
+
+
+

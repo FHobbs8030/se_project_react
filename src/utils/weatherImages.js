@@ -1,33 +1,28 @@
-export function getWeatherIcon(
-  condition = '',
-  { isDay, timestamp, sunrise, sunset } = {}
-) {
-  const day =
-    typeof isDay === 'boolean'
-      ? isDay
-      : (Number.isFinite(timestamp) &&
-         Number.isFinite(sunrise) &&
-         Number.isFinite(sunset)
-          ? timestamp > sunrise && timestamp < sunset
-          : true);
-
-  // icons live in public/images/cards, so we can use root-relative URLs
-  const m = {
-    Clear:        { day: '/images/cards/clear-day.svg',   night: '/images/cards/clear-night.svg' },
-    Clouds:       { day: '/images/cards/cloudy-day.svg',  night: '/images/cards/cloudy-night.svg' },
-    Rain:         { day: '/images/cards/rainy-day.svg',   night: '/images/cards/rainy-night.svg' },
-    Drizzle:      { day: '/images/cards/rainy-day.svg',   night: '/images/cards/rainy-night.svg' },
-    Snow:         { day: '/images/cards/snowy-day.svg',   night: '/images/cards/snowy-night.svg' },
-    Thunderstorm: { day: '/images/cards/stormy-day.svg',  night: '/images/cards/stormy-night.svg' },
-    Mist:         { day: '/images/cards/foggy-day.svg',   night: '/images/cards/foggy-night.svg' },
-    Fog:          { day: '/images/cards/foggy-day.svg',   night: '/images/cards/foggy-night.svg' },
-    Haze:         { day: '/images/cards/foggy-day.svg',   night: '/images/cards/foggy-night.svg' },
-  };
-
-  const entry = m[condition] || m.Clear;
-  return entry[day ? 'day' : 'night'];
-}
-
-export default getWeatherIcon;
-
+// src/utils/weatherImages.js
+export const weatherImages = {
+  day: {
+    clear: "/img/wx/day_clear.svg",
+    partly_cloudy: "/img/wx/day_partly.svg",
+    cloudy: "/img/wx/day_cloudy.svg",
+    rain_light: "/img/wx/day_rain_light.svg",
+    rain: "/img/wx/day_rain.svg",
+    shower: "/img/wx/day_shower.svg",
+    thunder: "/img/wx/day_thunder.svg",
+    snow: "/img/wx/day_snow.svg",
+    fog: "/img/wx/day_fog.svg",
+    default: "/img/wx/day_default.svg",
+  },
+  night: {
+    clear: "/img/wx/night_clear.svg",
+    partly_cloudy: "/img/wx/night_partly.svg",
+    cloudy: "/img/wx/night_cloudy.svg",
+    rain_light: "/img/wx/night_rain_light.svg",
+    rain: "/img/wx/night_rain.svg",
+    shower: "/img/wx/night_shower.svg",
+    thunder: "/img/wx/night_thunder.svg",
+    snow: "/img/wx/night_snow.svg",
+    fog: "/img/wx/night_fog.svg",
+    default: "/img/wx/night_default.svg",
+  },
+};
 

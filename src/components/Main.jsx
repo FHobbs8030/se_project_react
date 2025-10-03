@@ -13,9 +13,9 @@ export default function Main() {
   return (
     <section className="main">
       <WeatherCard weatherData={weatherData} />
-      <p className="today-line">
+      <h3 className="section__title">
         Today is {temp != null ? `${temp}°${unitSymbol}` : "—"} / You may want to wear:
-      </p>
+      </h3>
       <ClothesSection />
     </section>
   );
