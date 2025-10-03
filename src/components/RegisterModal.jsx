@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import PropTypes from "prop-types";
 import ModalWithForm from "./ModalWithForm.jsx";
 
@@ -7,17 +7,25 @@ export default function RegisterModal({ isOpen, onClose, onRegister }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
+  useEffect(() => {
+    if (isOpen) {
+      setName("");
+      setEmail("");
+      setPassword("");
+    }
+  }, [isOpen]);
+
   function handleSubmit(e) {
     e.preventDefault();
-    onRegister({ name, email, password });
+    onRegister({ name: name.trim(), email: email.trim(), password });
   }
 
   return (
     <ModalWithForm
       isOpen={isOpen}
       onClose={onClose}
-      title="Sign up"
-      submitText="Sign up"
+      title="Sign Up"
+      submitText="Sign Up"
       onSubmit={handleSubmit}
     >
       <label className="modal__label">
@@ -25,10 +33,12 @@ export default function RegisterModal({ isOpen, onClose, onRegister }) {
         <input
           className="modal__input"
           type="text"
+          name="name"
           value={name}
           onChange={(e) => setName(e.target.value)}
           minLength={2}
           maxLength={30}
+          autoComplete="name"
           required
         />
       </label>
@@ -38,8 +48,10 @@ export default function RegisterModal({ isOpen, onClose, onRegister }) {
         <input
           className="modal__input"
           type="email"
+          name="email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
+          autoComplete="email"
           required
         />
       </label>
@@ -49,9 +61,11 @@ export default function RegisterModal({ isOpen, onClose, onRegister }) {
         <input
           className="modal__input"
           type="password"
+          name="password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
-          minLength={6}
+          minLength={8}
+          autoComplete="new-password"
           required
         />
       </label>

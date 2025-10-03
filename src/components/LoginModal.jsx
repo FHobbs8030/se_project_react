@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import PropTypes from "prop-types";
 import ModalWithForm from "./ModalWithForm.jsx";
 
@@ -6,17 +6,24 @@ export default function LoginModal({ isOpen, onClose, onLogin }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
+  useEffect(() => {
+    if (isOpen) {
+      setEmail("");
+      setPassword("");
+    }
+  }, [isOpen]);
+
   function handleSubmit(e) {
     e.preventDefault();
-    onLogin({ email, password });
+    onLogin({ email: email.trim(), password });
   }
 
   return (
     <ModalWithForm
       isOpen={isOpen}
       onClose={onClose}
-      title="Log in"
-      submitText="Log in"
+      title="Log In"
+      submitText="Log In"
       onSubmit={handleSubmit}
     >
       <label className="modal__label">
@@ -24,8 +31,10 @@ export default function LoginModal({ isOpen, onClose, onLogin }) {
         <input
           className="modal__input"
           type="email"
+          name="email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
+          autoComplete="email"
           required
         />
       </label>
@@ -35,9 +44,11 @@ export default function LoginModal({ isOpen, onClose, onLogin }) {
         <input
           className="modal__input"
           type="password"
+          name="password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
-          minLength={6}
+          minLength={8}
+          autoComplete="current-password"
           required
         />
       </label>
