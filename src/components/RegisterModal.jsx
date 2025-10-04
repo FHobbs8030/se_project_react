@@ -1,54 +1,70 @@
 import { useEffect, useState } from "react";
 import PropTypes from "prop-types";
 import ModalWithForm from "./ModalWithForm.jsx";
+import { signup, signin } from "../utils/authApi.js";
 
 export default function RegisterModal({ isOpen, onClose, onRegister }) {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState("");
 
   useEffect(() => {
     if (isOpen) {
       setName("");
       setEmail("");
       setPassword("");
+      setError("");
+      setSubmitting(false);
     }
   }, [isOpen]);
 
-  function handleSubmit(e) {
+  async function handleSubmit(e) {
     e.preventDefault();
-    onRegister({ name: name.trim(), email: email.trim(), password });
+    setError("");
+    setSubmitting(true);
+    try {
+      await signup({ name, email, password }); // may return token or not
+      const user = await signin({ email, password }); // ensure logged in
+      if (user) onRegister(user);
+      onClose();
+    } catch (err) {
+      setError(err?.message || "Registration failed");
+    } finally {
+      setSubmitting(false);
+    }
   }
 
   return (
     <ModalWithForm
       isOpen={isOpen}
       onClose={onClose}
-      title="Sign Up"
-      submitText="Sign Up"
+      title="Sign up"
       onSubmit={handleSubmit}
+      submitText={submitting ? "Creating..." : "Create account"}
+      disabled={submitting}
     >
-      <label className="modal__label">
+      {error && <p className="form__error" role="alert">{error}</p>}
+
+      <label className="form__label">
         Name
         <input
-          className="modal__input"
+          className="form__input"
           type="text"
-          name="name"
           value={name}
           onChange={(e) => setName(e.target.value)}
           minLength={2}
           maxLength={30}
-          autoComplete="name"
           required
         />
       </label>
 
-      <label className="modal__label">
+      <label className="form__label">
         Email
         <input
-          className="modal__input"
+          className="form__input"
           type="email"
-          name="email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           autoComplete="email"
@@ -56,12 +72,11 @@ export default function RegisterModal({ isOpen, onClose, onRegister }) {
         />
       </label>
 
-      <label className="modal__label">
+      <label className="form__label">
         Password
         <input
-          className="modal__input"
+          className="form__input"
           type="password"
-          name="password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           minLength={8}

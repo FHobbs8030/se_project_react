@@ -6,7 +6,12 @@ import { CurrentTemperatureUnitContext } from "../contextStore/CurrentTemperatur
 
 export default function Main() {
   const { unit } = useContext(CurrentTemperatureUnitContext);
-  const { weatherData } = useOutletContext() || {};
+  const {
+    weatherData = null,
+    clothingItems = [],
+    onCardClick,        // provided by App via <Outlet context={...}>
+  } = useOutletContext?.() ?? {};
+
   const temp = Number.isFinite(weatherData?.temp) ? weatherData.temp : null;
   const unitSymbol = unit || "F";
 
@@ -16,7 +21,13 @@ export default function Main() {
       <h3 className="section__title">
         Today is {temp != null ? `${temp}°${unitSymbol}` : "—"} / You may want to wear:
       </h3>
-      <ClothesSection />
+
+      <ClothesSection
+        clothingItems={clothingItems}
+        onCardClick={onCardClick}
+        title=""
+        showMessage
+      />
     </section>
   );
 }

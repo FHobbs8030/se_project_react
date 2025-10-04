@@ -64,7 +64,7 @@ export default function App() {
       try {
         const me = await getMe();
         if (!cancelled) setCurrentUser(me);
-      } catch (e) {
+      } catch {
         if (!cancelled) setCurrentUser(null);
       } finally {
         if (!cancelled) setIsLoadingUser(false);

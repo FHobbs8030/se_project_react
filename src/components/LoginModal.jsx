@@ -1,37 +1,54 @@
 import { useEffect, useState } from "react";
 import PropTypes from "prop-types";
 import ModalWithForm from "./ModalWithForm.jsx";
+import { signin } from "../utils/authApi.js";
 
 export default function LoginModal({ isOpen, onClose, onLogin }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState("");
 
   useEffect(() => {
     if (isOpen) {
       setEmail("");
       setPassword("");
+      setError("");
+      setSubmitting(false);
     }
   }, [isOpen]);
 
-  function handleSubmit(e) {
+  async function handleSubmit(e) {
     e.preventDefault();
-    onLogin({ email: email.trim(), password });
+    setError("");
+    setSubmitting(true);
+    try {
+      const user = await signin({ email, password }); // returns getMe() user
+      if (user) onLogin(user);
+      onClose();
+    } catch (err) {
+      setError(err?.message || "Login failed");
+    } finally {
+      setSubmitting(false);
+    }
   }
 
   return (
     <ModalWithForm
       isOpen={isOpen}
       onClose={onClose}
-      title="Log In"
-      submitText="Log In"
+      title="Log in"
       onSubmit={handleSubmit}
+      submitText={submitting ? "Logging in..." : "Log in"}
+      disabled={submitting}
     >
-      <label className="modal__label">
+      {error && <p className="form__error" role="alert">{error}</p>}
+
+      <label className="form__label">
         Email
         <input
-          className="modal__input"
+          className="form__input"
           type="email"
-          name="email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           autoComplete="email"
@@ -39,12 +56,11 @@ export default function LoginModal({ isOpen, onClose, onLogin }) {
         />
       </label>
 
-      <label className="modal__label">
+      <label className="form__label">
         Password
         <input
-          className="modal__input"
+          className="form__input"
           type="password"
-          name="password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           minLength={8}
