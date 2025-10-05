@@ -1,6 +1,13 @@
-export async function fetchWeather({ apiUrl, apiKey, lat, lon, units = "imperial" }) {
-  const url = `${apiUrl}?lat=${lat}&lon=${lon}&units=${units}&appid=${apiKey}`;
-  const res = await fetch(url);
-  if (!res.ok) throw new Error(`Weather error ${res.status}`);
-  return res.json();
+import { checkResponse } from "./apiUtils.js";
+
+export function fetchWeather({ apiUrl, apiKey, lat, lon, units = "imperial" }) {
+  const url = `${apiUrl}?lat=${lat}&lon=${lon}&appid=${apiKey}&units=${units}`;
+  return fetch(url)
+    .then(checkResponse)
+    .then((d) => ({
+      tempF: Math.round(d.main?.temp ?? 0),
+      description: d.weather?.[0]?.main ?? "",
+      city: d.name ?? "",
+    }));
 }
+

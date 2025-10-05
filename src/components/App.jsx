@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Routes, Route, Outlet } from "react-router-dom";
+import { Routes, Route } from "react-router-dom";
 import Header from "./Header.jsx";
 import Footer from "./Footer.jsx";
 import Main from "./Main.jsx";
@@ -50,9 +50,7 @@ export default function App() {
         if (!cancelled) setIsLoadingItems(false);
       }
     })();
-    return () => {
-      cancelled = true;
-    };
+    return () => { cancelled = true; };
   }, []);
 
   useEffect(() => {
@@ -65,16 +63,10 @@ export default function App() {
     let cancelled = false;
     setIsLoadingWeather(true);
     fetchWeather({ apiUrl, apiKey, lat, lon, units: "imperial" })
-      .then((wx) => {
-        if (!cancelled) setWeatherData(wx);
-      })
+      .then((wx) => { if (!cancelled) setWeatherData(wx); })
       .catch(() => {})
-      .finally(() => {
-        if (!cancelled) setIsLoadingWeather(false);
-      });
-    return () => {
-      cancelled = true;
-    };
+      .finally(() => { if (!cancelled) setIsLoadingWeather(false); });
+    return () => { cancelled = true; };
   }, []);
 
   const handleSignin = async (creds) => {
@@ -126,47 +118,40 @@ export default function App() {
       />
 
       <Routes>
-        <Route path="/" element={<Main />} />
+        <Route
+          path="/"
+          element={
+            <Main
+              clothingItems={clothingItems}
+              weatherData={weatherData}
+              isLoadingWeather={isLoadingWeather}
+              isLoadingItems={isLoadingItems}
+              authReady={authReady}
+            />
+          }
+        />
         <Route
           path="/profile"
           element={
             <ProtectedRoute isLoggedIn={!!currentUser}>
-              <Profile />
+              <Profile currentUser={currentUser} clothingItems={clothingItems} />
             </ProtectedRoute>
           }
         />
         <Route path="*" element={<NotFound />} />
       </Routes>
 
-      <Outlet
-        context={{
-          currentUser,
-          authReady,
-          clothingItems,
-          isLoadingItems,
-          setClothingItems,
-          weatherData,
-          isLoadingWeather,
-        }}
-      />
-
       <Footer />
 
       <LoginModal
         isOpen={isLoginOpen}
-        onClose={() => {
-          setIsLoginOpen(false);
-          setAuthError("");
-        }}
+        onClose={() => { setIsLoginOpen(false); setAuthError(""); }}
         onSubmit={handleSignin}
         error={authError}
       />
       <RegisterModal
         isOpen={isRegisterOpen}
-        onClose={() => {
-          setIsRegisterOpen(false);
-          setAuthError("");
-        }}
+        onClose={() => { setIsRegisterOpen(false); setAuthError(""); }}
         onSubmit={handleSignup}
       />
       <AddItemModal
