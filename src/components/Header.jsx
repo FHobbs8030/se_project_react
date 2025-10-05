@@ -1,9 +1,7 @@
 // src/components/Header.jsx
 import PropTypes from "prop-types";
 import ToggleSwitch from "./ToggleSwitch.jsx";
-// src/components/Header.jsx
-import "../blocks/ToggleSwitch.css";
-
+import "../blocks/Header.css";
 
 export default function Header({
   isAuthed,
@@ -15,42 +13,48 @@ export default function Header({
 }) {
   return (
     <header className="header">
-      <a className="logo" href="/">WTWR</a>
+      <div className="header__inner">
+        <div className="header__left">
+          <a className="logo" href="/">WTWR</a>
+          <ToggleSwitch />
+        </div>
 
-      <div className="header__right">
-        <ToggleSwitch /* value + onChange wired to your context */ />
-
-        {isAuthed ? (
-          <>
-            <button type="button" onClick={onAddItemClick}>+ Add clothes</button>
-            <span className="header__user">{currentUser?.name}</span>
-            <button type="button" onClick={onLogoutClick}>Log out</button>
-          </>
-        ) : (
-          <>
-            <button type="button" onClick={onRegisterClick}>Sign up</button>
-            <button type="button" onClick={onLoginClick}>Log in</button>
-          </>
-        )}
+        <div className="header__right">
+          {isAuthed ? (
+            <>
+              <button className="header__btn" onClick={onAddItemClick}>
+                + Add clothes
+              </button>
+              <span className="header__user">
+                {currentUser?.name || "User"}
+              </span>
+              <button className="header__auth-btn" onClick={onLogoutClick}>
+                Log out
+              </button>
+            </>
+          ) : (
+            <>
+              <button className="header__auth-btn" onClick={onRegisterClick}>
+                Sign up
+              </button>
+              <button className="header__auth-btn" onClick={onLoginClick}>
+                Log in
+              </button>
+            </>
+          )}
+        </div>
       </div>
     </header>
   );
 }
 
 Header.propTypes = {
-  isAuthed: PropTypes.bool,
-  currentUser: PropTypes.object,
-  onLoginClick: PropTypes.func,
-  onRegisterClick: PropTypes.func,
-  onLogoutClick: PropTypes.func,
-  onAddItemClick: PropTypes.func,
-};
-
-Header.defaultProps = {
-  isAuthed: false,
-  currentUser: null,
-  onLoginClick: () => {},
-  onRegisterClick: () => {},
-  onLogoutClick: () => {},
-  onAddItemClick: () => {},
+  isAuthed: PropTypes.bool.isRequired,
+  currentUser: PropTypes.shape({
+    name: PropTypes.string,
+  }),
+  onLoginClick: PropTypes.func.isRequired,
+  onRegisterClick: PropTypes.func.isRequired,
+  onLogoutClick: PropTypes.func.isRequired,
+  onAddItemClick: PropTypes.func.isRequired,
 };

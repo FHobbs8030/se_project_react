@@ -1,3 +1,4 @@
+import "../blocks/Cards.css";
 import ItemCard from "./ItemCard.jsx";
 
 export default function ClothesSection({ clothingItems = [], weatherData, onCardClick }) {

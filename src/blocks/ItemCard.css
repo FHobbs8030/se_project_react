@@ -1,73 +1,59 @@
 .card {
   position: relative;
-  height: var(--card-h);
-  background: #fff;
-  border: 1px solid var(--border);
+  width: 325px;
+  height: 328px;
+  border: 1px solid var(--border, #e6e6ea);
   border-radius: 12px;
-  display: grid;
-  place-items: center;
+  overflow: hidden;
+  background: #fff;
 }
 
-.card:hover {
-  box-shadow: 0 4px 16px rgba(0, 0, 0, .08);
-  transform: translateY(-1px);
+/* full-card gray backdrop (shows while image loads / on error) */
+.card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: #e9eaec;
+  z-index: 0;
 }
 
+/* image layer must cover the card */
+.card__image-container {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.card__image,
+.card__image--placeholder {
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: cover;      /* fill and crop */
+  object-position: center;
+}
+
+/* title chip stays above */
 .card__name-wrapper {
   position: absolute;
   top: 0;
   left: 0;
   right: 0;
+  z-index: 2;
   padding: 8px 0 4px;
-  z-index: 1;
   display: flex;
   justify-content: center;
   align-items: center;
 }
 
 .card__name {
-  position: absolute;
-  top: 10px;
-  left: 50%;
-  transform: translateX(-50%);
   background: #f6f7f9;
   border: 1px solid #e4e4e7;
-  color: var(--muted);
+  color: var(--muted, #6b7280);
   padding: 4px 10px;
   border-radius: 999px;
   font-size: 12px;
-}
-
-.card__image-container {
-  width: 100%;
-  height: 100%;
-  overflow: hidden;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  position: relative;
-}
-
-.card__image {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  display: block;
-}
-
-.card__image--placeholder {
-  width: 100%;
-  height: 100%;
-  background: #f1f1f1;
-}
-
-.card__weather {
-  font-size: 14px;
-  color: #444;
-}
-
-@media screen and (max-width: 360px) {
-  .card__name {
-    font-size: 13px;
-  }
 }

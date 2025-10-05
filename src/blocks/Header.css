@@ -1,114 +1,76 @@
-.header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 16px 40px;
-  margin: 0;
-  background-color: #ffffff;
-  font-family: 'Cabinet Grotesk', 'Inter', sans-serif;
-  border: none;
+:root {
+  --header-w: 1360px;
+  --header-h: 40px;
+  --gutter: 16px;
 }
 
+/* Full-width strip that holds the centered inner container */
+.header {
+  width: 100%;
+  display: block;
+  background: transparent;
+}
+
+/* The inner container: exactly 1360 × 40 on ≥1440px viewports */
+.header__inner {
+  width: var(--header-w);
+  height: var(--header-h);
+  margin: 0 auto;
+  box-sizing: border-box;
+
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+/* Left side cluster (logo, switch, etc.) */
 .header__left {
   display: flex;
   align-items: center;
-  gap: 16px;
+  gap: 12px;
+  flex: 0 0 auto;
 }
 
-.header__logo {
-  height: 32px;
-  width: auto;
-}
-
-.header__date-location {
-  font-size: 16px;
-  font-weight: 500;
-  color: #333;
-}
-
+/* Right side cluster (add clothes, user name, avatar, auth buttons) */
 .header__right {
+  margin-left: auto;           /* pins this cluster to the right edge */
   display: flex;
   align-items: center;
-  gap: 16px;
+  gap: 12px;
+  flex: 0 0 auto;
 }
 
-.header__add-button {
-  background-color: #f4f4f4;
-  color: #000;
-  font-weight: bold;
-  padding: 8px 16px;
-  border-radius: 6px;
-  border: none;
-  cursor: pointer;
-  transition: background-color 0.3s;
-}
-
-.header__add-button:hover {
-  background-color: #e0e0e0;
-}
-
-.header__user-info {
-  display: flex;
+/* Buttons/controls inside header */
+.header__btn,
+.header__auth-btn {
+  height: 28px;
+  padding: 0 10px;
+  border-radius: 8px;
+  border: 1px solid #e4e4e7;
+  background: #fff;
+  display: inline-flex;
   align-items: center;
-  text-decoration: none;
-  gap: 8px;
-}
-
-.header__user-name {
-  font-size: 16px;
-  font-weight: 600;
-  color: #000;
-  margin: 0;
-}
-
-.header__user-avatar {
-  height: 40px;
-  width: 40px;
-  border-radius: 50%;
-  object-fit: cover;
-}
-
-.unit {
-  background: transparent;
-  border: none;
-  font: inherit;
+  justify-content: center;
   cursor: pointer;
-  opacity: 0.7;
-}
-.unit--active {
-  font-weight: 700;
-  opacity: 1;
-  text-decoration: underline;
 }
 
-/* Responsive: switch to column below 868px */
-@media screen and (max-width: 868px) {
-  .header {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 12px;
-  }
+.header__user {
+  max-width: 40vw;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
 
-  .header__left,
-  .header__right {
-    width: 100%;
-    justify-content: space-between;
-  }
-
-  .header__right {
-    flex-wrap: wrap;
-    gap: 12px;
-  }
-
-  .header__user-info {
-    display: flex;
-    align-items: center;
-    gap: 8px;
+/* On smaller viewports, let the inner container fluidly shrink with side gutters */
+@media (max-width: 1400px) {
+  .header__inner {
+    width: calc(100% - var(--gutter) * 2);
+    padding: 0 var(--gutter);
   }
 }
 
-@media screen and (max-width: 340px) {
-  .header__user-info {
-    padding: 0 0 0 22px;
-  }
+@media (max-width: 640px) {
+  .header__inner { gap: 8px; }
+  .header__btn,
+  .header__auth-btn { height: 26px; padding: 0 8px; }
 }
