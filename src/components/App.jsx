@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Routes, Route, Outlet, Navigate } from "react-router-dom";
+import { Routes, Route, Outlet } from "react-router-dom";
 import Header from "./Header.jsx";
 import Footer from "./Footer.jsx";
 import Main from "./Main.jsx";
@@ -24,41 +24,36 @@ export default function App() {
   const [isLoginOpen, setIsLoginOpen] = useState(false);
   const [isRegisterOpen, setIsRegisterOpen] = useState(false);
   const [isAddItemOpen, setIsAddItemOpen] = useState(false);
+  const [authError, setAuthError] = useState("");
 
   useEffect(() => {
     const token = getToken();
     if (!token) return;
     let cancelled = false;
+    setIsLoadingItems(true);
     (async () => {
       try {
-        const me = await getMe(token);
+        const [me, items] = await Promise.all([getMe(token), getClothingItems(token)]);
         if (!cancelled) {
           setCurrentUser(me);
+          setClothingItems(items);
           setAuthReady(true);
         }
       } catch {
         removeToken();
         if (!cancelled) {
           setCurrentUser(null);
+          setClothingItems([]);
           setAuthReady(false);
         }
+      } finally {
+        if (!cancelled) setIsLoadingItems(false);
       }
     })();
-    return () => { cancelled = true; };
+    return () => {
+      cancelled = true;
+    };
   }, []);
-
-  useEffect(() => {
-    if (!authReady) return;
-    const token = getToken();
-    if (!token) return;
-    let cancelled = false;
-    setIsLoadingItems(true);
-    getClothingItems(token)
-      .then((items) => { if (!cancelled) setClothingItems(items); })
-      .catch(() => {})
-      .finally(() => { if (!cancelled) setIsLoadingItems(false); });
-    return () => { cancelled = true; };
-  }, [authReady]);
 
   useEffect(() => {
     const coords = (import.meta.env.VITE_DEFAULT_COORDS || "").split(",");
@@ -70,43 +65,54 @@ export default function App() {
     let cancelled = false;
     setIsLoadingWeather(true);
     fetchWeather({ apiUrl, apiKey, lat, lon, units: "imperial" })
-      .then((wx) => { if (!cancelled) setWeatherData(wx); })
+      .then((wx) => {
+        if (!cancelled) setWeatherData(wx);
+      })
       .catch(() => {})
-      .finally(() => { if (!cancelled) setIsLoadingWeather(false); });
-    return () => { cancelled = true; };
+      .finally(() => {
+        if (!cancelled) setIsLoadingWeather(false);
+      });
+    return () => {
+      cancelled = true;
+    };
   }, []);
 
-  const bootstrapAfterAuth = async (token) => {
-    const me = await getMe(token);
-    setCurrentUser(me);
-    setAuthReady(true);
+  const handleSignin = async (creds) => {
+    setAuthError("");
+    setIsLoadingItems(true);
+    try {
+      const { token } = await signIn(creds);
+      setToken(token);
+      setIsLoginOpen(false);
+      const [me, items] = await Promise.all([getMe(token), getClothingItems(token)]);
+      setCurrentUser(me);
+      setClothingItems(items);
+      setAuthReady(true);
+    } catch (e) {
+      setAuthError(e.message || "Login failed");
+    } finally {
+      setIsLoadingItems(false);
+    }
   };
 
-  const handleSignin = async (arg1, arg2) => {
-    const creds = typeof arg1 === "object" ? arg1 : { email: arg1, password: arg2 };
-    const { token } = await signIn(creds);
-    setToken(token);
-    setIsLoginOpen(false);
-    await bootstrapAfterAuth(token);
-  };
-
-  const handleSignup = async (payloadOrEmail, password) => {
-    const payload = typeof payloadOrEmail === "object"
-      ? payloadOrEmail
-      : { email: payloadOrEmail, password };
-    await signUp(payload);
-    await handleSignin(payload.email, payload.password);
-    setIsRegisterOpen(false);
+  const handleSignup = async (payload) => {
+    setAuthError("");
+    try {
+      await signUp(payload);
+      await handleSignin({ email: payload.email, password: payload.password });
+      setIsRegisterOpen(false);
+    } catch (e) {
+      setAuthError(e.message || "Sign up failed");
+    }
   };
 
   const handleSignOut = () => {
     removeToken();
     setCurrentUser(null);
-    setAuthReady(false);
     setClothingItems([]);
+    setAuthReady(false);
+    setAuthError("");
   };
-
-  const handleAddItem = async () => { setIsAddItemOpen(false); };
 
   return (
     <div className="app">
@@ -120,12 +126,7 @@ export default function App() {
       />
 
       <Routes>
-        <Route
-          path="/"
-          element={
-            <Main />
-          }
-        />
+        <Route path="/" element={<Main />} />
         <Route
           path="/profile"
           element={
@@ -134,7 +135,6 @@ export default function App() {
             </ProtectedRoute>
           }
         />
-        <Route path="/logout" element={<Navigate to="/" replace />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
 
@@ -154,18 +154,25 @@ export default function App() {
 
       <LoginModal
         isOpen={isLoginOpen}
-        onClose={() => setIsLoginOpen(false)}
+        onClose={() => {
+          setIsLoginOpen(false);
+          setAuthError("");
+        }}
         onSubmit={handleSignin}
+        error={authError}
       />
       <RegisterModal
         isOpen={isRegisterOpen}
-        onClose={() => setIsRegisterOpen(false)}
+        onClose={() => {
+          setIsRegisterOpen(false);
+          setAuthError("");
+        }}
         onSubmit={handleSignup}
       />
       <AddItemModal
         isOpen={isAddItemOpen}
         onClose={() => setIsAddItemOpen(false)}
-        onAddItem={handleAddItem}
+        onAddItem={() => setIsAddItemOpen(false)}
       />
     </div>
   );

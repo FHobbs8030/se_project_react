@@ -1,79 +1,39 @@
-import { useEffect, useState } from "react";
-import PropTypes from "prop-types";
-import ModalWithForm from "./ModalWithForm.jsx";
-import { signin } from "../utils/authApi.js";
+import { useState } from "react";
 
-export default function LoginModal({ isOpen, onClose, onLogin }) {
+export default function LoginModal({ isOpen, onClose, onSubmit }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [submitting, setSubmitting] = useState(false);
-  const [error, setError] = useState("");
 
-  useEffect(() => {
-    if (isOpen) {
-      setEmail("");
-      setPassword("");
-      setError("");
-      setSubmitting(false);
-    }
-  }, [isOpen]);
+  if (!isOpen) return null;
 
-  async function handleSubmit(e) {
+  const handleSubmit = (e) => {
     e.preventDefault();
-    setError("");
-    setSubmitting(true);
-    try {
-      const user = await signin({ email, password }); // returns getMe() user
-      if (user) onLogin(user);
-      onClose();
-    } catch (err) {
-      setError(err?.message || "Login failed");
-    } finally {
-      setSubmitting(false);
-    }
-  }
+    onSubmit({ email: email.trim(), password });
+  };
 
   return (
-    <ModalWithForm
-      isOpen={isOpen}
-      onClose={onClose}
-      title="Log in"
-      onSubmit={handleSubmit}
-      submitText={submitting ? "Logging in..." : "Log in"}
-      disabled={submitting}
-    >
-      {error && <p className="form__error" role="alert">{error}</p>}
-
-      <label className="form__label">
-        Email
+    <div className="modal">
+      <form className="modal__form" onSubmit={handleSubmit}>
+        <h2>Log in</h2>
         <input
-          className="form__input"
           type="email"
+          placeholder="Email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
-          autoComplete="email"
           required
         />
-      </label>
-
-      <label className="form__label">
-        Password
         <input
-          className="form__input"
           type="password"
+          placeholder="Password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
-          minLength={8}
-          autoComplete="current-password"
           required
         />
-      </label>
-    </ModalWithForm>
+        <div className="modal__actions">
+          <button type="submit">Log in</button>
+          <button type="button" onClick={onClose}>Cancel</button>
+        </div>
+      </form>
+    </div>
   );
 }
-
-LoginModal.propTypes = {
-  isOpen: PropTypes.bool.isRequired,
-  onClose: PropTypes.func.isRequired,
-  onLogin: PropTypes.func.isRequired,
-};

@@ -22,3 +22,6 @@ export const getMe = (token) =>
       Authorization: `Bearer ${token}`,
     },
   }).then(checkResponse);
+
+export const signup = signUp;
+export const signin = signIn;
