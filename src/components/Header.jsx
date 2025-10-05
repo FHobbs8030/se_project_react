@@ -1,105 +1,36 @@
-import { useContext } from "react";
+// src/components/Header.jsx
 import PropTypes from "prop-types";
-import { Link } from "react-router-dom";
-import { CurrentUserContext } from "../contextStore/CurrentUserContext.jsx";
-import { CurrentTemperatureUnitContext } from "../contextStore/CurrentTemperatureUnitContext.jsx";
-import "../blocks/Header.css";
+import ToggleSwitch from "./ToggleSwitch.jsx";
+// src/components/Header.jsx
+import "../blocks/ToggleSwitch.css";
+
 
 export default function Header({
+  isAuthed,
+  currentUser,
   onLoginClick,
   onRegisterClick,
   onLogoutClick,
   onAddItemClick,
-  isLoadingUser,
 }) {
-  const currentUser = useContext(CurrentUserContext);
-  const { unit, setUnit } = useContext(CurrentTemperatureUnitContext);
-  const isAuthed = Boolean(currentUser);
-  const initials =
-    (currentUser?.name || "")
-      .split(" ")
-      .map((s) => s[0])
-      .join("")
-      .slice(0, 2)
-      .toUpperCase() || "U";
-
   return (
     <header className="header">
-      <div className="header__left">
-        <Link to="/" className="header__brand">WTWR</Link>
-      </div>
+      <a className="logo" href="/">WTWR</a>
 
       <div className="header__right">
-        <div className="header__unit" style={{ display: "flex", alignItems: "center", gap: 8 }}>
-          <button
-            type="button"
-            aria-pressed={unit === "F"}
-            onClick={() => setUnit("F")}
-            className={unit === "F" ? "unit unit--active" : "unit"}
-            title="Show Fahrenheit"
-          >
-            °F
-          </button>
-          <span aria-hidden="true">/</span>
-          <button
-            type="button"
-            aria-pressed={unit === "C"}
-            onClick={() => setUnit("C")}
-            className={unit === "C" ? "unit unit--active" : "unit"}
-            title="Show Celsius"
-          >
-            °C
-          </button>
-        </div>
+        <ToggleSwitch /* value + onChange wired to your context */ />
 
         {isAuthed ? (
-          <div className="header__auth">
-            <button type="button" className="header__btn" onClick={onAddItemClick}>
-              Add clothes
-            </button>
-            <Link to="/profile" className="header__profile">
-              {currentUser?.avatar ? (
-                <img
-                  className="header__avatar"
-                  src={currentUser.avatar}
-                  alt={currentUser.name || "Profile"}
-                  referrerPolicy="no-referrer"
-                />
-              ) : (
-                <div className="header__avatar header__avatar--fallback" aria-hidden="true">
-                  {initials}
-                </div>
-              )}
-              <span className="header__name">{currentUser?.name || "Profile"}</span>
-            </Link>
-            <button
-              type="button"
-              className="header__btn header__btn--logout"
-              onClick={onLogoutClick}
-              disabled={isLoadingUser}
-            >
-              Log out
-            </button>
-          </div>
+          <>
+            <button type="button" onClick={onAddItemClick}>+ Add clothes</button>
+            <span className="header__user">{currentUser?.name}</span>
+            <button type="button" onClick={onLogoutClick}>Log out</button>
+          </>
         ) : (
-          <div className="header__auth">
-            <button
-              type="button"
-              className="header__btn"
-              onClick={onRegisterClick}
-              disabled={isLoadingUser}
-            >
-              Sign up
-            </button>
-            <button
-              type="button"
-              className="header__btn"
-              onClick={onLoginClick}
-              disabled={isLoadingUser}
-            >
-              Log in
-            </button>
-          </div>
+          <>
+            <button type="button" onClick={onRegisterClick}>Sign up</button>
+            <button type="button" onClick={onLoginClick}>Log in</button>
+          </>
         )}
       </div>
     </header>
@@ -107,9 +38,19 @@ export default function Header({
 }
 
 Header.propTypes = {
-  onLoginClick: PropTypes.func.isRequired,
-  onRegisterClick: PropTypes.func.isRequired,
-  onLogoutClick: PropTypes.func.isRequired,
-  onAddItemClick: PropTypes.func.isRequired,
-  isLoadingUser: PropTypes.bool,
+  isAuthed: PropTypes.bool,
+  currentUser: PropTypes.object,
+  onLoginClick: PropTypes.func,
+  onRegisterClick: PropTypes.func,
+  onLogoutClick: PropTypes.func,
+  onAddItemClick: PropTypes.func,
+};
+
+Header.defaultProps = {
+  isAuthed: false,
+  currentUser: null,
+  onLoginClick: () => {},
+  onRegisterClick: () => {},
+  onLogoutClick: () => {},
+  onAddItemClick: () => {},
 };
