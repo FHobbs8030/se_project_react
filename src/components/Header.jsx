@@ -1,4 +1,3 @@
-// src/components/Header.jsx
 import PropTypes from "prop-types";
 import ToggleSwitch from "./ToggleSwitch.jsx";
 import "../blocks/Header.css";
@@ -15,29 +14,30 @@ export default function Header({
     <header className="header">
       <div className="header__inner">
         <div className="header__left">
-          <a className="logo" href="/">WTWR</a>
-          <ToggleSwitch />
+          <a className="header__logo" href="/">WTWR</a>
         </div>
 
         <div className="header__right">
+          <ToggleSwitch />
           {isAuthed ? (
             <>
-              <button className="header__btn" onClick={onAddItemClick}>
+              <button type="button" className="header__button" onClick={onAddItemClick}>
                 + Add clothes
               </button>
-              <span className="header__user">
-                {currentUser?.name || "User"}
-              </span>
-              <button className="header__auth-btn" onClick={onLogoutClick}>
+              <span className="header__name">{currentUser?.name}</span>
+              <div className="header__avatar" aria-hidden="true">
+                {(currentUser?.name || "U").slice(0, 1)}
+              </div>
+              <button type="button" className="header__button" onClick={onLogoutClick}>
                 Log out
               </button>
             </>
           ) : (
             <>
-              <button className="header__auth-btn" onClick={onRegisterClick}>
+              <button type="button" className="header__button" onClick={onRegisterClick}>
                 Sign up
               </button>
-              <button className="header__auth-btn" onClick={onLoginClick}>
+              <button type="button" className="header__button" onClick={onLoginClick}>
                 Log in
               </button>
             </>
@@ -50,9 +50,7 @@ export default function Header({
 
 Header.propTypes = {
   isAuthed: PropTypes.bool.isRequired,
-  currentUser: PropTypes.shape({
-    name: PropTypes.string,
-  }),
+  currentUser: PropTypes.shape({ name: PropTypes.string }),
   onLoginClick: PropTypes.func.isRequired,
   onRegisterClick: PropTypes.func.isRequired,
   onLogoutClick: PropTypes.func.isRequired,

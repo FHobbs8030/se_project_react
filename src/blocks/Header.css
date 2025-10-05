@@ -1,76 +1,82 @@
-:root {
-  --header-w: 1360px;
-  --header-h: 40px;
-  --gutter: 16px;
-}
-
-/* Full-width strip that holds the centered inner container */
 .header {
-  width: 100%;
-  display: block;
-  background: transparent;
+  background: #ffffff;
+  position: sticky;
+  top: 0;
+  z-index: 20;
 }
 
-/* The inner container: exactly 1360 × 40 on ≥1440px viewports */
 .header__inner {
-  width: var(--header-w);
-  height: var(--header-h);
+  max-width: 1360px;
   margin: 0 auto;
-  box-sizing: border-box;
-
+  padding: 0 clamp(12px, 4vw, 24px);
+  min-height: 40px;
   display: flex;
   align-items: center;
-  gap: 12px;
+  justify-content: space-between;
+  gap: clamp(8px, 2vw, 16px);
 }
 
-/* Left side cluster (logo, switch, etc.) */
 .header__left {
   display: flex;
   align-items: center;
   gap: 12px;
-  flex: 0 0 auto;
 }
 
-/* Right side cluster (add clothes, user name, avatar, auth buttons) */
+.header__logo {
+  font-weight: 800;
+  letter-spacing: 0.02em;
+  color: #111827;
+  text-decoration: none;
+}
+
 .header__right {
-  margin-left: auto;           /* pins this cluster to the right edge */
   display: flex;
   align-items: center;
-  gap: 12px;
-  flex: 0 0 auto;
+  gap: clamp(8px, 2vw, 16px);
+  flex-wrap: wrap;
 }
 
-/* Buttons/controls inside header */
-.header__btn,
-.header__auth-btn {
-  height: 28px;
-  padding: 0 10px;
-  border-radius: 8px;
-  border: 1px solid #e4e4e7;
-  background: #fff;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
+.header__button {
+  padding: 8px 12px;
+  border: 1px solid #e5e7eb;
+  border-radius: 999px;
+  background: #ffffff;
+  font-weight: 600;
+  line-height: 1;
   cursor: pointer;
 }
 
-.header__user {
-  max-width: 40vw;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+.header__button:hover {
+  background: #f8fafc;
 }
 
-/* On smaller viewports, let the inner container fluidly shrink with side gutters */
-@media (max-width: 1400px) {
-  .header__inner {
-    width: calc(100% - var(--gutter) * 2);
-    padding: 0 var(--gutter);
-  }
+.header__name {
+  font-weight: 700;
+}
+
+.header__avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 999px;
+  background: #111827;
+  color: #ffffff;
+  display: grid;
+  place-items: center;
+  font-weight: 800;
+  letter-spacing: 0.02em;
 }
 
 @media (max-width: 640px) {
-  .header__inner { gap: 8px; }
-  .header__btn,
-  .header__auth-btn { height: 26px; padding: 0 8px; }
+  .header__inner {
+    flex-wrap: wrap;
+    row-gap: 12px;
+  }
+  .header__right {
+    order: 2;
+    width: 100%;
+    justify-content: flex-end;
+  }
+  .header__left {
+    order: 1;
+  }
 }

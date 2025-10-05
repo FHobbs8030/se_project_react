@@ -1,6 +1,6 @@
 :root {
   --tt-h: 28px;
-  --tt-w: 72px;
+  --tt-w: 56px;
   --tt-pad: 4px;
   --tt-radius: 999px;
   --tt-bg: #efefef;
@@ -8,7 +8,11 @@
   --tt-hover-shift: 2px;
   --tt-dur: 160ms;
 }
-.temp-toggle { display: inline-block; }
+
+.temp-toggle {
+  display: inline-block;
+}
+
 .temp-toggle__button {
   position: relative;
   width: var(--tt-w);
@@ -24,6 +28,7 @@
   -webkit-tap-highlight-color: transparent;
   touch-action: manipulation;
 }
+
 .temp-toggle__track {
   position: absolute;
   inset: 0;
@@ -31,6 +36,7 @@
   border-radius: var(--tt-radius);
   z-index: 0;
 }
+
 .temp-toggle__label {
   position: absolute;
   top: 50%;
@@ -44,8 +50,15 @@
   color: #222;
   z-index: 2;
 }
-.temp-toggle__label--f { left: calc(var(--tt-pad) + 10px); }
-.temp-toggle__label--c { right: calc(var(--tt-pad) + 10px); }
+
+.temp-toggle__label--f {
+  left: calc(var(--tt-pad) + 10px);
+}
+
+.temp-toggle__label--c {
+  right: calc(var(--tt-pad) + 10px);
+}
+
 .temp-toggle__knob {
   position: absolute;
   top: var(--tt-pad);
@@ -56,15 +69,43 @@
   border-radius: 50%;
   transition: transform var(--tt-dur) ease, box-shadow var(--tt-dur) ease;
   will-change: transform;
-  box-shadow: 0 0 0 1px rgba(0,0,0,0.08), 0 2px 6px rgba(0,0,0,0.15);
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.08), 0 2px 6px rgba(0, 0, 0, 0.15);
   z-index: 1;
 }
-.temp-toggle__button[data-state="F"]:hover .temp-toggle__knob { transform: translateX(var(--tt-hover-shift)); }
-.temp-toggle__button[data-state="C"] .temp-toggle__knob { transform: translateX(calc(var(--tt-w) - var(--tt-h))); }
-.temp-toggle__button[data-state="C"]:hover .temp-toggle__knob { transform: translateX(calc(var(--tt-w) - var(--tt-h) + var(--tt-hover-shift))); }
-.temp-toggle__button:focus-visible .temp-toggle__track { box-shadow: 0 0 0 3px rgba(0,112,243,0.35); }
-.temp-toggle__button[disabled] { opacity: 0.6; cursor: not-allowed; }
-.temp-toggle__button[data-state="F"] .temp-toggle__label--f { color: #ffffff; }
-.temp-toggle__button[data-state="C"] .temp-toggle__label--c { color: #ffffff; }
-.temp-toggle__button[data-state="F"] .temp-toggle__label--c { color: #666666; }
-.temp-toggle__button[data-state="C"] .temp-toggle__label--f { color: #666666; }
+
+.temp-toggle__button[data-state="F"]:hover .temp-toggle__knob {
+  transform: translateX(var(--tt-hover-shift));
+}
+
+.temp-toggle__button[data-state="C"] .temp-toggle__knob {
+  transform: translateX(calc(var(--tt-w) - var(--tt-h)));
+}
+
+.temp-toggle__button[data-state="C"]:hover .temp-toggle__knob {
+  transform: translateX(calc(var(--tt-w) - var(--tt-h) + var(--tt-hover-shift)));
+}
+
+.temp-toggle__button:focus-visible .temp-toggle__track {
+  box-shadow: 0 0 0 3px rgba(0, 112, 243, 0.35);
+}
+
+.temp-toggle__button[disabled] {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.temp-toggle__button[data-state="F"] .temp-toggle__label--f {
+  color: #ffffff;
+}
+
+.temp-toggle__button[data-state="C"] .temp-toggle__label--c {
+  color: #ffffff;
+}
+
+.temp-toggle__button[data-state="F"] .temp-toggle__label--c {
+  color: #666666;
+}
+
+.temp-toggle__button[data-state="C"] .temp-toggle__label--f {
+  color: #666666;
+}
