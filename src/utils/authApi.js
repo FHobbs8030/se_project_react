@@ -1,27 +1,24 @@
-import { api } from "./http.js";
-import { setToken, removeToken } from "./token.js";
+import { checkResponse } from "./apiUtils";
+const API_BASE = import.meta.env.VITE_API_BASE_URL;
 
-export function getMe() {
-  return api("/users/me");
-}
+export const signUp = (payload) =>
+  fetch(`${API_BASE}/signup`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(payload),
+  }).then(checkResponse);
 
-export async function signin({ email, password }) {
-  const data = await api("/signin", { method: "POST", body: { email, password } });
-  if (data && data.token) setToken(data.token);
-  return getMe();
-}
+export const signIn = ({ email, password }) =>
+  fetch(`${API_BASE}/signin`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ email, password }),
+  }).then(checkResponse);
 
-export async function signup({ name, email, password }) {
-  const data = await api("/signup", { method: "POST", body: { name, email, password } });
-  if (data && data.token) setToken(data.token);
-  return data;
-}
-
-export async function signout() {
-  removeToken();
-  try {
-    await api("/signout", { method: "POST" });
-  } catch {
-    // backend may not expose /signout; ignore
-  }
-}
+export const getMe = (token) =>
+  fetch(`${API_BASE}/users/me`, {
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+  }).then(checkResponse);

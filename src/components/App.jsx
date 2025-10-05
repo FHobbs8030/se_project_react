@@ -9,10 +9,10 @@ import ProtectedRoute from "./ProtectedRoute.jsx";
 import LoginModal from "./LoginModal.jsx";
 import RegisterModal from "./RegisterModal.jsx";
 import AddItemModal from "./AddItemModal.jsx";
-import { getMe } from "../utils/authApi.js";
+import { signIn, signUp, getMe } from "../utils/authApi.js";
 import { getClothingItems } from "../utils/itemsApi.js";
 import { fetchWeather } from "../utils/weatherApi.js";
-import { getToken, removeToken } from "../utils/token.js";
+import { getToken, setToken, removeToken } from "../utils/token.js";
 
 export default function App() {
   const [currentUser, setCurrentUser] = useState(null);
@@ -27,11 +27,7 @@ export default function App() {
 
   useEffect(() => {
     const token = getToken();
-    if (!token) {
-      setCurrentUser(null);
-      setAuthReady(false);
-      return;
-    }
+    if (!token) return;
     let cancelled = false;
     (async () => {
       try {
@@ -80,6 +76,29 @@ export default function App() {
     return () => { cancelled = true; };
   }, []);
 
+  const bootstrapAfterAuth = async (token) => {
+    const me = await getMe(token);
+    setCurrentUser(me);
+    setAuthReady(true);
+  };
+
+  const handleSignin = async (arg1, arg2) => {
+    const creds = typeof arg1 === "object" ? arg1 : { email: arg1, password: arg2 };
+    const { token } = await signIn(creds);
+    setToken(token);
+    setIsLoginOpen(false);
+    await bootstrapAfterAuth(token);
+  };
+
+  const handleSignup = async (payloadOrEmail, password) => {
+    const payload = typeof payloadOrEmail === "object"
+      ? payloadOrEmail
+      : { email: payloadOrEmail, password };
+    await signUp(payload);
+    await handleSignin(payload.email, payload.password);
+    setIsRegisterOpen(false);
+  };
+
   const handleSignOut = () => {
     removeToken();
     setCurrentUser(null);
@@ -87,8 +106,6 @@ export default function App() {
     setClothingItems([]);
   };
 
-  const handleSignin = async () => { setIsLoginOpen(false); };
-  const handleSignup = async () => { setIsRegisterOpen(false); };
   const handleAddItem = async () => { setIsAddItemOpen(false); };
 
   return (
@@ -102,20 +119,13 @@ export default function App() {
         onAddItemClick={() => setIsAddItemOpen(true)}
       />
 
-      <Outlet
-        context={{
-          currentUser,
-          authReady,
-          clothingItems,
-          isLoadingItems,
-          setClothingItems,
-          weatherData,
-          isLoadingWeather,
-        }}
-      />
-
       <Routes>
-        <Route path="/" element={<Main />} />
+        <Route
+          path="/"
+          element={
+            <Main />
+          }
+        />
         <Route
           path="/profile"
           element={
@@ -127,6 +137,18 @@ export default function App() {
         <Route path="/logout" element={<Navigate to="/" replace />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
+
+      <Outlet
+        context={{
+          currentUser,
+          authReady,
+          clothingItems,
+          isLoadingItems,
+          setClothingItems,
+          weatherData,
+          isLoadingWeather,
+        }}
+      />
 
       <Footer />
 
