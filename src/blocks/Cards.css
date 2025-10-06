@@ -1,4 +1,3 @@
-/* Container grid */
 .cards__list {
   list-style: none;
   margin: 0;
@@ -9,7 +8,6 @@
   justify-content: center;
 }
 
-/* Fixed-size card with full gray background */
 .card {
   width: 325px;
   height: 328px;
@@ -21,7 +19,6 @@
   cursor: pointer;
 }
 
-/* Image layer fills the whole card; image centered inside */
 .card__img-wrap {
   position: absolute;
   inset: 0;
@@ -35,7 +32,6 @@
   object-fit: contain;
 }
 
-/* Name label inside the card, near bottom */
 .card__name {
   position: absolute;
   left: 0;
