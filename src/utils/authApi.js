@@ -1,27 +1,35 @@
-import { checkResponse } from "./apiUtils";
-const API_BASE = import.meta.env.VITE_API_BASE_URL;
+import { apiBase } from "./utils.js";
 
-export const signUp = (payload) =>
-  fetch(`${API_BASE}/signup`, {
+export const signup = async ({ name, email, password }) => {
+  const res = await fetch(`${apiBase}/signup`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(payload),
-  }).then(checkResponse);
+    body: JSON.stringify({ name, email, password }),
+  });
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({}));
+    throw new Error(err?.message || "Signup failed");
+  }
+  return res.json();
+};
 
-export const signIn = ({ email, password }) =>
-  fetch(`${API_BASE}/signin`, {
+export const signin = async ({ email, password }) => {
+  const res = await fetch(`${apiBase}/signin`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ email, password }),
-  }).then(checkResponse);
+  });
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({}));
+    throw new Error(err?.message || "Login failed");
+  }
+  return res.json();
+};
 
-export const getMe = (token) =>
-  fetch(`${API_BASE}/users/me`, {
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${token}`,
-    },
-  }).then(checkResponse);
-
-export const signup = signUp;
-export const signin = signIn;
+export const getMe = async (token) => {
+  const res = await fetch(`${apiBase}/users/me`, {
+    headers: { Authorization: `Bearer ${token}` },
+  });
+  if (!res.ok) throw new Error("Unauthorized");
+  return res.json();
+};

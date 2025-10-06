@@ -9,63 +9,40 @@ export default function Header({
   onLoginClick,
   onRegisterClick,
   onLogoutClick,
+  unit,
+  onToggleUnit,
 }) {
+  const displayName = currentUser?.name || "Guest";
+  const avatar = currentUser?.avatar || "/images/avatar-default.png";
+
   return (
     <header className="header">
       <div className="header__inner">
-        <div className="header__left">
-          <a className="logo" href="/">
-            <img className="logo__img" src="/images/Logo.svg" alt="WTWR logo" />
-          </a>
-        </div>
+        <a className="logo" href="/">
+          <img className="logo__img" src="/images/Logo.svg" alt="WTWR logo" />
+        </a>
 
         <div className="header__right">
-          <ToggleSwitch />
+          <div className="header__temp-toggle">
+            <span className={`header__unit ${unit === "F" ? "active" : ""}`}>°F</span>
+            <ToggleSwitch checked={unit === "C"} onChange={onToggleUnit} />
+            <span className={`header__unit ${unit === "C" ? "active" : ""}`}>°C</span>
+          </div>
 
           {isAuth ? (
-            <>
-              <button
-                type="button"
-                className="header__action"
-                onClick={onAddItemClick}
-              >
-                + Add clothes
-              </button>
-              <span className="header__user">{currentUser?.name}</span>
-              {currentUser?.avatar && (
-                <img
-                  className="header__avatar"
-                  src={currentUser.avatar}
-                  alt={`${currentUser?.name || "User"} avatar`}
-                  width={40}
-                  height={40}
-                />
-              )}
-              <button
-                type="button"
-                className="header__action"
-                onClick={onLogoutClick}
-              >
-                Log out
-              </button>
-            </>
+            <div className="header__authed">
+              <button className="button button_primary" onClick={onAddItemClick}>Add clothes</button>
+              <div className="header__user">
+                <img className="header__avatar" src={avatar} alt={displayName} />
+                <span className="header__name">{displayName}</span>
+                <button className="button button_link" onClick={onLogoutClick}>Log out</button>
+              </div>
+            </div>
           ) : (
-            <>
-              <button
-                type="button"
-                className="header__action"
-                onClick={onRegisterClick}
-              >
-                Sign up
-              </button>
-              <button
-                type="button"
-                className="header__action"
-                onClick={onLoginClick}
-              >
-                Log in
-              </button>
-            </>
+            <div className="header__guest">
+              <button className="button button_link" onClick={onRegisterClick}>Sign Up</button>
+              <button className="button button_primary" onClick={onLoginClick}>Log In</button>
+            </div>
           )}
         </div>
       </div>
@@ -74,13 +51,12 @@ export default function Header({
 }
 
 Header.propTypes = {
-  isAuth: PropTypes.bool,
-  currentUser: PropTypes.shape({
-    name: PropTypes.string,
-    avatar: PropTypes.string,
-  }),
-  onAddItemClick: PropTypes.func,
-  onLoginClick: PropTypes.func,
-  onRegisterClick: PropTypes.func,
-  onLogoutClick: PropTypes.func,
+  isAuth: PropTypes.bool.isRequired,
+  currentUser: PropTypes.object,
+  onAddItemClick: PropTypes.func.isRequired,
+  onLoginClick: PropTypes.func.isRequired,
+  onRegisterClick: PropTypes.func.isRequired,
+  onLogoutClick: PropTypes.func.isRequired,
+  unit: PropTypes.oneOf(["F", "C"]).isRequired,
+  onToggleUnit: PropTypes.func.isRequired,
 };

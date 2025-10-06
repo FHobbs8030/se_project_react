@@ -1,48 +1,58 @@
+:root {
+  --container-w: 1360px;
+  --wx-card-h: 80px;
+  --wx-card-radius: 10px;
+  --wx-pad: 16px;
+  --wx-icon-w: 112px;
+}
+
 .weather-card {
   position: relative;
-  width: min(var(--container-w), 100%);
-  height: var(--wx-h);
-  margin: 0 auto var(--pad);
-  border-radius: var(--radius);
+  width: min(var(--container-w), 100vw);
+  height: var(--wx-card-h);
+  margin: 0 auto;
+  border-radius: var(--wx-card-radius);
   overflow: hidden;
-  background: #0aa4ff;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  padding: 0 var(--wx-pad);
+}
+
+.weather-card_day {
+  background: linear-gradient(90deg, #c7eaff, #f0fbff);
+}
+
+.weather-card_night {
+  background: linear-gradient(90deg, #0f172a, #1e293b);
+  color: #e2e8f0;
+}
+
+.weather-card__overlay {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
 }
 
 .weather-card__temp {
-  position: absolute;
-  left: calc(var(--pad) - 4px);
-  top: 50%;
-  transform: translateY(-50%);
-  font-family: "Cabinet Grotesk","Inter",system-ui,-apple-system,sans-serif;
   font-size: 28px;
   font-weight: 700;
-  color: #fff;
+}
+
+.weather-card__meta {
+  margin-left: 12px;
+  font-size: 14px;
+  opacity: 0.8;
 }
 
 .weather-card__icon {
   position: absolute;
-  right: var(--pad);
-  top: 50%;
-  transform: translateY(-50%);
-  width: 112px;
-  height: 56px;
-  background: radial-gradient(circle at 80% 20%, #ffd400 30%, rgba(255,212,0,0) 31%),
-              linear-gradient(180deg, #fff 0%, #f0f3f9 100%);
-  border-radius: 999px;
+  right: 8px;
+  width: var(--wx-icon-w);
+  height: auto;
 }
 
-.weather-card__rightArt{
-  position: absolute;
-  right: 0;                  
-  top: 40%;
-  transform: translateY(-50%);
-  width: 170px;
-  height: 64px;
-  object-fit: contain;
-  object-position: right center;
-  pointer-events: none;
-  display: block;
+@media (max-width: 480px) {
+  .weather-card__temp { font-size: 24px; }
 }
-
-
-

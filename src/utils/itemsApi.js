@@ -1,28 +1,32 @@
-// src/utils/itemsApi.js
-import { checkResponse } from "./apiUtils.js";
+import { apiBase } from "./utils.js";
 
-const API_BASE = import.meta.env.VITE_API_BASE_URL;
+export const getItems = async () => {
+  const res = await fetch(`${apiBase}/items`);
+  if (!res.ok) throw new Error("Failed to load items");
+  return res.json();
+};
 
-export function getClothingItems(token) {
-  return fetch(`${API_BASE}/items`, {
-    headers: { Authorization: `Bearer ${token}` },
-  }).then(checkResponse);
-}
-
-export function addItem(data, token) {
-  return fetch(`${API_BASE}/items`, {
+export const addItem = async (data, token) => {
+  const res = await fetch(`${apiBase}/items`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
       Authorization: `Bearer ${token}`,
     },
     body: JSON.stringify(data),
-  }).then(checkResponse);
-}
+  });
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({}));
+    throw new Error(err?.message || "Failed to add item");
+  }
+  return res.json();
+};
 
-export function deleteItem(id, token) {
-  return fetch(`${API_BASE}/items/${id}`, {
+export const deleteItem = async (id, token) => {
+  const res = await fetch(`${apiBase}/items/${id}`, {
     method: "DELETE",
     headers: { Authorization: `Bearer ${token}` },
-  }).then(checkResponse);
-}
+  });
+  if (!res.ok) throw new Error("Failed to delete item");
+  return res.json();
+};
