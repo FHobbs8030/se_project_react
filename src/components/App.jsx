@@ -109,7 +109,7 @@ export default function App() {
   return (
     <div className="app">
       <Header
-        isAuthed={!!currentUser}
+        isAuth={!!currentUser}   
         currentUser={currentUser}
         onLoginClick={() => setIsLoginOpen(true)}
         onRegisterClick={() => setIsRegisterOpen(true)}

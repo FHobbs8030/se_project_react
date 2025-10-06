@@ -9,9 +9,7 @@
   --tt-dur: 160ms;
 }
 
-.temp-toggle {
-  display: inline-block;
-}
+.temp-toggle { display: inline-block; }
 
 .temp-toggle__button {
   position: relative;
@@ -24,6 +22,8 @@
   outline: none;
   border-radius: var(--tt-radius);
   -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
   user-select: none;
   -webkit-tap-highlight-color: transparent;
   touch-action: manipulation;
@@ -44,20 +44,13 @@
   font: 700 12px/1 ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial;
   letter-spacing: 0.02em;
   pointer-events: none;
-  -webkit-user-select: none;
-  user-select: none;
-  text-transform: uppercase;
   color: #222;
   z-index: 2;
+  text-transform: uppercase;
 }
 
-.temp-toggle__label--f {
-  left: calc(var(--tt-pad) + 10px);
-}
-
-.temp-toggle__label--c {
-  right: calc(var(--tt-pad) + 10px);
-}
+.temp-toggle__label--f { left: calc(var(--tt-pad) + 10px); }
+.temp-toggle__label--c { right: calc(var(--tt-pad) + 10px); }
 
 .temp-toggle__knob {
   position: absolute;
@@ -69,9 +62,14 @@
   border-radius: 50%;
   transition: transform var(--tt-dur) ease, box-shadow var(--tt-dur) ease;
   will-change: transform;
-  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.08), 0 2px 6px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 0 0 1px rgba(0,0,0,0.08), 0 2px 6px rgba(0,0,0,0.15);
   z-index: 1;
 }
+
+.temp-toggle__button[data-state="F"] .temp-toggle__label--f { color: #ffffff; }
+.temp-toggle__button[data-state="C"] .temp-toggle__label--c { color: #ffffff; }
+.temp-toggle__button[data-state="F"] .temp-toggle__label--c { color: #666666; }
+.temp-toggle__button[data-state="C"] .temp-toggle__label--f { color: #666666; }
 
 .temp-toggle__button[data-state="F"]:hover .temp-toggle__knob {
   transform: translateX(var(--tt-hover-shift));
@@ -86,26 +84,10 @@
 }
 
 .temp-toggle__button:focus-visible .temp-toggle__track {
-  box-shadow: 0 0 0 3px rgba(0, 112, 243, 0.35);
+  box-shadow: 0 0 0 3px rgba(0,112,243,0.35);
 }
 
 .temp-toggle__button[disabled] {
   opacity: 0.6;
   cursor: not-allowed;
-}
-
-.temp-toggle__button[data-state="F"] .temp-toggle__label--f {
-  color: #ffffff;
-}
-
-.temp-toggle__button[data-state="C"] .temp-toggle__label--c {
-  color: #ffffff;
-}
-
-.temp-toggle__button[data-state="F"] .temp-toggle__label--c {
-  color: #666666;
-}
-
-.temp-toggle__button[data-state="C"] .temp-toggle__label--f {
-  color: #666666;
 }
