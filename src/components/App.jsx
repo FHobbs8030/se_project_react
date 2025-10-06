@@ -24,6 +24,7 @@ export default function App() {
 
   const [isAuth, setIsAuth] = useState(false);
   const [currentUser, setCurrentUser] = useState(null);
+
   const [weatherData, setWeatherData] = useState(null);
   const [clothingItems, setClothingItems] = useState([]);
   const [isLoadingWeather, setIsLoadingWeather] = useState(false);
@@ -54,11 +55,6 @@ export default function App() {
   }, []);
 
   const loadItems = useCallback(async () => {
-    const token = getToken();
-    if (!token) {
-      setClothingItems([]);
-      return;
-    }
     setIsLoadingItems(true);
     try {
       const data = await api.getItems();
@@ -104,28 +100,37 @@ export default function App() {
     }
   }, [selectedItem]);
 
-  const handleAddItem = useCallback(async (values) => {
-    const created = await api.addItem(values);
-    setClothingItems((prev) => [created, ...prev]);
-    setAddItemOpen(false);
-  }, []);
+  const handleAddItem = useCallback(
+    async (values) => {
+      const created = await api.addItem(values);
+      setClothingItems((prev) => [created, ...prev]);
+      setAddItemOpen(false);
+    },
+    []
+  );
 
-  const handleLogin = useCallback(async ({ email, password }) => {
-    const { token } = await api.signin({ email, password });
-    setToken(token);
-    await loadMe();
-    setLoginOpen(false);
-    await loadItems();
-  }, [loadMe, loadItems]);
+  const handleLogin = useCallback(
+    async ({ email, password }) => {
+      const { token } = await api.signin({ email, password });
+      setToken(token);
+      await loadMe();
+      setLoginOpen(false);
+      await loadItems();
+    },
+    [loadMe, loadItems]
+  );
 
-  const handleRegister = useCallback(async ({ name, email, password }) => {
-    await api.signup({ name, email, password });
-    const { token } = await api.signin({ email, password });
-    setToken(token);
-    await loadMe();
-    setRegisterOpen(false);
-    await loadItems();
-  }, [loadMe, loadItems]);
+  const handleRegister = useCallback(
+    async ({ name, email, password }) => {
+      await api.signup({ name, email, password });
+      const { token } = await api.signin({ email, password });
+      setToken(token);
+      await loadMe();
+      setRegisterOpen(false);
+      await loadItems();
+    },
+    [loadMe, loadItems]
+  );
 
   const handleLogout = useCallback(() => {
     removeToken();
@@ -134,15 +139,26 @@ export default function App() {
     setClothingItems([]);
   }, []);
 
-  const outletContext = useMemo(() => ({
-    currentUser,
-    weatherData,
-    clothingItems,
-    onCardClick: openItem,
-    onDeleteClick: requestDeleteItem,
-    isLoadingWeather,
-    isLoadingItems,
-  }), [currentUser, weatherData, clothingItems, openItem, requestDeleteItem, isLoadingWeather, isLoadingItems]);
+  const outletContext = useMemo(
+    () => ({
+      currentUser,
+      weatherData,
+      clothingItems,
+      onCardClick: openItem,
+      onDeleteClick: requestDeleteItem,
+      isLoadingWeather,
+      isLoadingItems,
+    }),
+    [
+      currentUser,
+      weatherData,
+      clothingItems,
+      openItem,
+      requestDeleteItem,
+      isLoadingWeather,
+      isLoadingItems,
+    ]
+  );
 
   return (
     <div className="app">
