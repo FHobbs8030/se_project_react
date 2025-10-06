@@ -9,40 +9,36 @@ export default function Header({
   onLoginClick,
   onRegisterClick,
   onLogoutClick,
-  unit,
-  onToggleUnit,
+  locationName,
 }) {
-  const displayName = currentUser?.name || "Guest";
-  const avatar = currentUser?.avatar || "/images/avatar-default.png";
+  const dateStr = new Intl.DateTimeFormat("en-US", { month: "long", day: "numeric" }).format(new Date());
 
   return (
     <header className="header">
       <div className="header__inner">
-        <a className="logo" href="/">
-          <img className="logo__img" src="/images/Logo.svg" alt="WTWR logo" />
-        </a>
+        <div className="header__left">
+          <a className="logo" href="/">
+            <img className="logo__img" src="/images/Logo.svg" alt="WTWR" />
+          </a>
+          <div className="header__meta">{dateStr}, {locationName}</div>
+        </div>
 
         <div className="header__right">
-          <div className="header__temp-toggle">
-            <span className={`header__unit ${unit === "F" ? "active" : ""}`}>°F</span>
-            <ToggleSwitch checked={unit === "C"} onChange={onToggleUnit} />
-            <span className={`header__unit ${unit === "C" ? "active" : ""}`}>°C</span>
-          </div>
-
+          <ToggleSwitch />
           {isAuth ? (
-            <div className="header__authed">
-              <button className="button button_primary" onClick={onAddItemClick}>Add clothes</button>
+            <>
+              <button className="header__action" onClick={onAddItemClick}>+ Add clothes</button>
               <div className="header__user">
-                <img className="header__avatar" src={avatar} alt={displayName} />
-                <span className="header__name">{displayName}</span>
-                <button className="button button_link" onClick={onLogoutClick}>Log out</button>
+                <span className="header__name">{currentUser?.name || "User"}</span>
+                {currentUser?.avatar && <img className="header__avatar" src={currentUser.avatar} alt="Avatar" />}
               </div>
-            </div>
+              <button className="header__action" onClick={onLogoutClick}>Log Out</button>
+            </>
           ) : (
-            <div className="header__guest">
-              <button className="button button_link" onClick={onRegisterClick}>Sign Up</button>
-              <button className="button button_primary" onClick={onLoginClick}>Log In</button>
-            </div>
+            <>
+              <button className="header__action" onClick={onRegisterClick}>Sign Up</button>
+              <button className="header__action" onClick={onLoginClick}>Log In</button>
+            </>
           )}
         </div>
       </div>
@@ -51,12 +47,11 @@ export default function Header({
 }
 
 Header.propTypes = {
-  isAuth: PropTypes.bool.isRequired,
+  isAuth: PropTypes.bool,
   currentUser: PropTypes.object,
-  onAddItemClick: PropTypes.func.isRequired,
-  onLoginClick: PropTypes.func.isRequired,
-  onRegisterClick: PropTypes.func.isRequired,
-  onLogoutClick: PropTypes.func.isRequired,
-  unit: PropTypes.oneOf(["F", "C"]).isRequired,
-  onToggleUnit: PropTypes.func.isRequired,
+  onAddItemClick: PropTypes.func,
+  onLoginClick: PropTypes.func,
+  onRegisterClick: PropTypes.func,
+  onLogoutClick: PropTypes.func,
+  locationName: PropTypes.string,
 };

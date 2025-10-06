@@ -1,42 +1,34 @@
 import { useState } from "react";
+import PropTypes from "prop-types";
 import ModalWithForm from "./ModalWithForm.jsx";
 
-export default function LoginModal({ isOpen, onClose, onSubmit, error }) {
+export default function LoginModal({ isOpen, onClose, onSubmit }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    onSubmit({ email, password });
-  };
+  const handleSubmit = (e) => { e.preventDefault(); onSubmit({ email, password }); };
 
   return (
     <ModalWithForm
       isOpen={isOpen}
+      title="Log In"
       onClose={onClose}
-      title="Log in"
       onSubmit={handleSubmit}
-      submitText="Log in"
+      submitText="Log In"
     >
-      {error ? <div className="modal__error">{error}</div> : null}
-      <label className="modal__field">
+      <label className="modal__label">
         Email
-        <input
-          type="email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          required
-        />
+        <input className="modal__input" type="email" value={email} onChange={(e) => setEmail(e.target.value)} required />
       </label>
-      <label className="modal__field">
+      <label className="modal__label">
         Password
-        <input
-          type="password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          required
-        />
+        <input className="modal__input" type="password" value={password} onChange={(e) => setPassword(e.target.value)} required />
       </label>
     </ModalWithForm>
   );
 }
+
+LoginModal.propTypes = {
+  isOpen: PropTypes.bool.isRequired,
+  onClose: PropTypes.func.isRequired,
+  onSubmit: PropTypes.func.isRequired,
+};

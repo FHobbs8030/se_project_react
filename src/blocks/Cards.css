@@ -1,37 +1,46 @@
-.cards {
-  max-width: 1360px;
-  width: 100%;
-  margin: 0 auto 24px;
-  padding: 0 clamp(12px, 4vw, 24px);
-}
-
-.cards__list,
-.main__cards {
-  display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 21px;
-  margin: 16px 40px;
-  padding: 0;
+/* Container grid */
+.cards__list {
   list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 24px;
+  grid-template-columns: repeat(auto-fill, 325px);
+  justify-content: center;
 }
 
-@media (max-width: 1280px) {
-  .cards__list,
-  .main__cards {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-  }
+/* Fixed-size card with full gray background */
+.card {
+  width: 325px;
+  height: 328px;
+  background: #f2f4f7;
+  border: 1px solid #e6e8ec;
+  border-radius: 12px;
+  position: relative;
+  overflow: hidden;
+  cursor: pointer;
 }
 
-@media (max-width: 860px) {
-  .cards__list,
-  .main__cards {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
+/* Image layer fills the whole card; image centered inside */
+.card__img-wrap {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
 }
 
-@media (max-width: 420px) {
-  .cards__list,
-  .main__cards {
-    grid-template-columns: 1fr;
-  }
+.card__img {
+  width: 70%;
+  height: 70%;
+  object-fit: contain;
+}
+
+/* Name label inside the card, near bottom */
+.card__name {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 12px;
+  text-align: center;
+  font-weight: 600;
 }

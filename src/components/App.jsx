@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState, useCallback } from "react";
-import { Routes, Route, Navigate } from "react-router-dom";
+import { Routes, Route, Outlet } from "react-router-dom";
 
 import Header from "./Header.jsx";
 import Footer from "./Footer.jsx";
@@ -13,205 +13,200 @@ import ItemModal from "./ItemModal.jsx";
 import AddItemModal from "./AddItemModal.jsx";
 import ConfirmDeleteModal from "./ConfirmDeleteModal.jsx";
 
-import { getMe, signin, signup } from "../utils/authApi.js";
-import { getItems, addItem, deleteItem as apiDeleteItem } from "../utils/itemsApi.js";
-import { getWeather } from "../utils/weatherApi.js";
+import * as authModule from "../utils/authApi.js";
 import { getToken, setToken, removeToken } from "../utils/token.js";
-import { CurrentUserContext } from "../contextStore/CurrentUserContext.jsx";
+import { getWeather } from "../utils/weatherApi.js";
+
+const api = authModule.default || authModule;
 
 export default function App() {
-  const [currentUser, setCurrentUser] = useState(null);
+  const locationName = import.meta.env.VITE_LOCATION_NAME || "Carson City";
+
   const [isAuth, setIsAuth] = useState(false);
-
-  const [isLoginOpen, setIsLoginOpen] = useState(false);
-  const [isRegisterOpen, setIsRegisterOpen] = useState(false);
-  const [isAddItemOpen, setIsAddItemOpen] = useState(false);
-  const [isConfirmDeleteOpen, setIsConfirmDeleteOpen] = useState(false);
-  const [selectedItem, setSelectedItem] = useState(null);
-  const [pendingDeleteId, setPendingDeleteId] = useState(null);
-
+  const [currentUser, setCurrentUser] = useState(null);
+  const [weatherData, setWeatherData] = useState(null);
   const [clothingItems, setClothingItems] = useState([]);
+  const [isLoadingWeather, setIsLoadingWeather] = useState(false);
   const [isLoadingItems, setIsLoadingItems] = useState(false);
 
-  const [weatherData, setWeatherData] = useState({ tempF: null, isDay: true, icon: "", city: "" });
+  const [isLoginOpen, setLoginOpen] = useState(false);
+  const [isRegisterOpen, setRegisterOpen] = useState(false);
+  const [isAddItemOpen, setAddItemOpen] = useState(false);
+  const [isConfirmDeleteOpen, setConfirmDeleteOpen] = useState(false);
+  const [selectedItem, setSelectedItem] = useState(null);
 
-  const [authError, setAuthError] = useState("");
-  const [unit, setUnit] = useState(localStorage.getItem("unit") || "F");
-
-  const fetchProfile = useCallback(async () => {
-    const token = getToken();
-    if (!token) {
-      setIsAuth(false);
-      setCurrentUser(null);
-      return;
-    }
+  const loadMe = useCallback(async () => {
     try {
-      const me = await getMe(token);
+      const token = getToken();
+      if (!token) {
+        setIsAuth(false);
+        setCurrentUser(null);
+        return;
+      }
+      const me = await api.getMe();
       setCurrentUser(me);
       setIsAuth(true);
     } catch {
-      removeToken();
       setIsAuth(false);
       setCurrentUser(null);
+      removeToken();
     }
   }, []);
 
-  const fetchItems = useCallback(async () => {
+  const loadItems = useCallback(async () => {
+    const token = getToken();
+    if (!token) {
+      setClothingItems([]);
+      return;
+    }
     setIsLoadingItems(true);
     try {
-      const items = await getItems();
-      setClothingItems(items);
+      const data = await api.getItems();
+      setClothingItems(Array.isArray(data) ? data : []);
+    } catch {
+      setClothingItems([]);
     } finally {
       setIsLoadingItems(false);
     }
   }, []);
 
-  const fetchWeather = useCallback(async () => {
+  const loadWeather = useCallback(async () => {
+    setIsLoadingWeather(true);
     try {
       const w = await getWeather();
       setWeatherData(w);
-    } catch {
-      // swallow for now
+    } finally {
+      setIsLoadingWeather(false);
     }
   }, []);
 
   useEffect(() => {
-    fetchProfile();
-    fetchItems();
-    fetchWeather();
-  }, [fetchProfile, fetchItems, fetchWeather]);
+    loadMe();
+    loadItems();
+    loadWeather();
+  }, [loadMe, loadItems, loadWeather]);
 
-  const openLogin = () => { setAuthError(""); setIsLoginOpen(true); };
-  const openRegister = () => { setAuthError(""); setIsRegisterOpen(true); };
-  const closeAllModals = () => {
-    setIsLoginOpen(false);
-    setIsRegisterOpen(false);
-    setIsAddItemOpen(false);
-    setIsConfirmDeleteOpen(false);
-    setSelectedItem(null);
-    setPendingDeleteId(null);
-  };
+  const openItem = useCallback((item) => setSelectedItem(item), []);
+  const closeItem = useCallback(() => setSelectedItem(null), []);
+  const requestDeleteItem = useCallback((item) => {
+    setSelectedItem(item);
+    setConfirmDeleteOpen(true);
+  }, []);
 
-  const handleSignin = async (form) => {
-    setAuthError("");
+  const handleDeleteItem = useCallback(async () => {
+    if (!selectedItem) return;
     try {
-      const { token } = await signin(form);
-      setToken(token);
-      await fetchProfile();
-      closeAllModals();
-    } catch (e) {
-      setAuthError(e?.message || "Login failed");
+      await api.deleteItem(selectedItem._id);
+      setClothingItems((prev) => prev.filter((i) => i._id !== selectedItem._id));
+    } finally {
+      setConfirmDeleteOpen(false);
+      setSelectedItem(null);
     }
-  };
+  }, [selectedItem]);
 
-  const handleSignup = async (form) => {
-    setAuthError("");
-    try {
-      await signup(form);
-      const { token } = await signin({ email: form.email, password: form.password });
-      setToken(token);
-      await fetchProfile();
-      closeAllModals();
-    } catch (e) {
-      setAuthError(e?.message || "Signup failed");
-    }
-  };
+  const handleAddItem = useCallback(async (values) => {
+    const created = await api.addItem(values);
+    setClothingItems((prev) => [created, ...prev]);
+    setAddItemOpen(false);
+  }, []);
 
-  const handleLogout = () => {
+  const handleLogin = useCallback(async ({ email, password }) => {
+    const { token } = await api.signin({ email, password });
+    setToken(token);
+    await loadMe();
+    setLoginOpen(false);
+    await loadItems();
+  }, [loadMe, loadItems]);
+
+  const handleRegister = useCallback(async ({ name, email, password }) => {
+    await api.signup({ name, email, password });
+    const { token } = await api.signin({ email, password });
+    setToken(token);
+    await loadMe();
+    setRegisterOpen(false);
+    await loadItems();
+  }, [loadMe, loadItems]);
+
+  const handleLogout = useCallback(() => {
     removeToken();
     setIsAuth(false);
     setCurrentUser(null);
-  };
+    setClothingItems([]);
+  }, []);
 
-  const openItem = (item) => setSelectedItem(item);
-  const requestDeleteItem = (id) => { setPendingDeleteId(id); setIsConfirmDeleteOpen(true); };
-
-  const handleDeleteItem = async () => {
-    if (!pendingDeleteId) return;
-    const token = getToken();
-    await apiDeleteItem(pendingDeleteId, token);
-    setClothingItems((prev) => prev.filter((i) => i._id !== pendingDeleteId));
-    closeAllModals();
-  };
-
-  const handleAddItem = async (form) => {
-    const token = getToken();
-    const created = await addItem(form, token);
-    setClothingItems((prev) => [created, ...prev]);
-    setIsAddItemOpen(false);
-  };
-
-  const toC = (f) => Math.round((f - 32) * 5 / 9);
-  const shownTemp = useMemo(() => {
-    if (weatherData.tempF == null) return "";
-    return unit === "C" ? `${toC(weatherData.tempF)}°C` : `${Math.round(weatherData.tempF)}°F`;
-  }, [weatherData.tempF, unit]);
-
-  const handleToggleUnit = () => {
-    const next = unit === "F" ? "C" : "F";
-    setUnit(next);
-    localStorage.setItem("unit", next);
-  };
+  const outletContext = useMemo(() => ({
+    currentUser,
+    weatherData,
+    clothingItems,
+    onCardClick: openItem,
+    onDeleteClick: requestDeleteItem,
+    isLoadingWeather,
+    isLoadingItems,
+  }), [currentUser, weatherData, clothingItems, openItem, requestDeleteItem, isLoadingWeather, isLoadingItems]);
 
   return (
-    <CurrentUserContext.Provider value={currentUser}>
-      <div className="app">
-        <Header
-          isAuth={isAuth}
-          currentUser={currentUser}
-          onAddItemClick={() => setIsAddItemOpen(true)}
-          onLoginClick={openLogin}
-          onRegisterClick={openRegister}
-          onLogoutClick={handleLogout}
-          unit={unit}
-          onToggleUnit={handleToggleUnit}
-        />
+    <div className="app">
+      <Header
+        isAuth={isAuth}
+        currentUser={currentUser}
+        onAddItemClick={() => setAddItemOpen(true)}
+        onLoginClick={() => setLoginOpen(true)}
+        onRegisterClick={() => setRegisterOpen(true)}
+        onLogoutClick={handleLogout}
+        locationName={locationName}
+      />
 
-        <Routes>
-          <Route
-            path="/"
-            element={
-              <Main
-                weatherData={weatherData}
-                shownTemp={shownTemp}
+      <Routes>
+        <Route path="/" element={<Outlet context={outletContext} />}>
+          <Route index element={<Main />} />
+        </Route>
+
+        <Route
+          path="/profile"
+          element={
+            <ProtectedRoute isAuth={isAuth}>
+              <Profile
+                currentUser={currentUser}
                 clothingItems={clothingItems}
-                isLoadingItems={isLoadingItems}
                 onCardClick={openItem}
+                onDeleteClick={requestDeleteItem}
+                isLoadingItems={isLoadingItems}
               />
-            }
-          />
-          <Route
-            path="/profile"
-            element={
-              <ProtectedRoute isLoggedIn={isAuth}>
-                <Profile
-                  currentUser={currentUser}
-                  clothingItems={clothingItems}
-                  onCardClick={openItem}
-                  onDeleteClick={requestDeleteItem}
-                  isLoadingItems={isLoadingItems}
-                />
-              </ProtectedRoute>
-            }
-          />
-          <Route path="/logout" element={<Navigate to="/" replace />} />
-          <Route path="*" element={<NotFound />} />
-        </Routes>
-
-        <Footer />
-
-        <LoginModal isOpen={isLoginOpen} onClose={closeAllModals} onSubmit={handleSignin} authError={authError} />
-        <RegisterModal isOpen={isRegisterOpen} onClose={closeAllModals} onSubmit={handleSignup} authError={authError} />
-        <AddItemModal isOpen={isAddItemOpen} onClose={closeAllModals} onAddItem={handleAddItem} />
-        <ItemModal
-          isOpen={!!selectedItem}
-          onClose={closeAllModals}
-          card={selectedItem}
-          onDelete={() => requestDeleteItem(selectedItem?._id)}
-          canDelete={isAuth && selectedItem?.owner?._id === currentUser?._id}
+            </ProtectedRoute>
+          }
         />
-        <ConfirmDeleteModal isOpen={isConfirmDeleteOpen} onClose={closeAllModals} onConfirm={handleDeleteItem} />
-      </div>
-    </CurrentUserContext.Provider>
+
+        <Route path="*" element={<NotFound />} />
+      </Routes>
+
+      <Footer />
+
+      <LoginModal
+        isOpen={isLoginOpen}
+        onClose={() => setLoginOpen(false)}
+        onSubmit={handleLogin}
+      />
+      <RegisterModal
+        isOpen={isRegisterOpen}
+        onClose={() => setRegisterOpen(false)}
+        onSubmit={handleRegister}
+      />
+      <AddItemModal
+        isOpen={isAddItemOpen}
+        onClose={() => setAddItemOpen(false)}
+        onAddItem={handleAddItem}
+      />
+      <ConfirmDeleteModal
+        isOpen={isConfirmDeleteOpen}
+        onClose={() => setConfirmDeleteOpen(false)}
+        onConfirm={handleDeleteItem}
+      />
+      <ItemModal
+        isOpen={!!selectedItem}
+        item={selectedItem}
+        onClose={closeItem}
+        onConfirmDelete={requestDeleteItem}
+      />
+    </div>
   );
 }
