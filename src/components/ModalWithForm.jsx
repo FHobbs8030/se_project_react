@@ -6,7 +6,7 @@ export default function ModalWithForm({
   title,
   onClose,
   onSubmit,
-  submitText,
+  submitText = "Submit",   // <-- default parameter instead of defaultProps
   children,
 }) {
   if (!isOpen) return null;
@@ -44,10 +44,6 @@ ModalWithForm.propTypes = {
   title: PropTypes.string.isRequired,
   onClose: PropTypes.func.isRequired,
   onSubmit: PropTypes.func.isRequired,
-  submitText: PropTypes.string.isRequired,
+  submitText: PropTypes.string,     
   children: PropTypes.node,
-};
-
-ModalWithForm.defaultProps = {
-  submitText: "Submit",
 };
