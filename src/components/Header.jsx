@@ -13,31 +13,56 @@ export default function Header({
   return (
     <header className="header">
       <div className="header__inner">
-        <a className="header__brand" href="/">
-          <img src="/images/Logo.svg" alt="WTWR" className="header__logo" />
-        </a>
+        <div className="header__left">
+          <a className="logo" href="/">
+            <img className="logo__img" src="/images/Logo.svg" alt="WTWR logo" />
+          </a>
+        </div>
 
         <div className="header__right">
           <ToggleSwitch />
+
           {isAuth ? (
             <>
-              <button type="button" className="header__action" onClick={onAddItemClick}>
+              <button
+                type="button"
+                className="header__action"
+                onClick={onAddItemClick}
+              >
                 + Add clothes
               </button>
               <span className="header__user">{currentUser?.name}</span>
               {currentUser?.avatar && (
-                <img className="header__avatar" src={currentUser.avatar} alt="" />
+                <img
+                  className="header__avatar"
+                  src={currentUser.avatar}
+                  alt={`${currentUser?.name || "User"} avatar`}
+                  width={40}
+                  height={40}
+                />
               )}
-              <button type="button" className="header__action" onClick={onLogoutClick}>
+              <button
+                type="button"
+                className="header__action"
+                onClick={onLogoutClick}
+              >
                 Log out
               </button>
             </>
           ) : (
             <>
-              <button type="button" className="header__action" onClick={onRegisterClick}>
+              <button
+                type="button"
+                className="header__action"
+                onClick={onRegisterClick}
+              >
                 Sign up
               </button>
-              <button type="button" className="header__action" onClick={onLoginClick}>
+              <button
+                type="button"
+                className="header__action"
+                onClick={onLoginClick}
+              >
                 Log in
               </button>
             </>
