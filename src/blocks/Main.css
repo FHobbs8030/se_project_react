@@ -1,9 +1,7 @@
 .main {
-  width: 100%;
-  max-width: 1120px;
+  max-width: 1360px;
   margin: 0 auto;
-  padding: 0 40px;
-  box-sizing: border-box;
+  padding: 16px;
 }
 
 .main__intro {

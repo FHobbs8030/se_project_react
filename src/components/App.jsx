@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState, useCallback } from "react";
-import { Routes, Route, Outlet } from "react-router-dom";
+import { Routes, Route } from "react-router-dom";
 
 import Header from "./Header.jsx";
 import Footer from "./Footer.jsx";
@@ -13,124 +13,86 @@ import ItemModal from "./ItemModal.jsx";
 import AddItemModal from "./AddItemModal.jsx";
 import ConfirmDeleteModal from "./ConfirmDeleteModal.jsx";
 
-import * as authModule from "../utils/authApi.js";
+import * as authApi from "../utils/authApi.js";
+import * as api from "../utils/api.js";
 import { getToken, setToken, removeToken } from "../utils/token.js";
-import { getWeather } from "../utils/weatherApi.js";
+import { getWeather } from "../utils/weather.js";
 
-const api = authModule.default || authModule;
+import { CurrentUserContext } from "../contextStore/CurrentUserContext.jsx";
+import { WeatherContext } from "../contextStore/WeatherContext.js";
+import { CurrentTemperatureUnitContext } from "../contextStore/CurrentTemperatureUnitContext.jsx";
 
 export default function App() {
-  const locationName = import.meta.env.VITE_LOCATION_NAME || "Carson City";
+  const [useCelsius, setUseCelsius] = useState(false);
 
   const [isAuth, setIsAuth] = useState(false);
   const [currentUser, setCurrentUser] = useState(null);
 
-  const [weatherData, setWeatherData] = useState(null);
   const [clothingItems, setClothingItems] = useState([]);
-  const [isLoadingWeather, setIsLoadingWeather] = useState(false);
   const [isLoadingItems, setIsLoadingItems] = useState(false);
 
-  const [isLoginOpen, setLoginOpen] = useState(false);
-  const [isRegisterOpen, setRegisterOpen] = useState(false);
-  const [isAddItemOpen, setAddItemOpen] = useState(false);
-  const [isConfirmDeleteOpen, setConfirmDeleteOpen] = useState(false);
-  const [selectedItem, setSelectedItem] = useState(null);
+  const [weather, setWeather] = useState({
+    tempF: null,
+    tempC: null,
+    band: null,
+    name: import.meta.env.VITE_LOCATION_NAME || "New York",
+  });
 
-  const loadMe = useCallback(async () => {
+  const [itemOpen, setItemOpen] = useState(null);
+  const [deletePending, setDeletePending] = useState(null);
+  const [loginOpen, setLoginOpen] = useState(false);
+  const [registerOpen, setRegisterOpen] = useState(false);
+  const [addItemOpen, setAddItemOpen] = useState(false);
+
+  const userCtx = useMemo(() => ({ currentUser, setCurrentUser }), [currentUser]);
+  const weatherCtx = useMemo(
+    () => ({ ...weather }),
+    [weather]
+  );
+  const unitCtx = useMemo(() => ({ useCelsius, setUseCelsius }), [useCelsius]);
+
+  const loadMeAndItems = useCallback(async () => {
+    const token = getToken();
+    if (!token) return;
     try {
-      const token = getToken();
-      if (!token) {
-        setIsAuth(false);
-        setCurrentUser(null);
-        return;
-      }
-      const me = await api.getMe();
+      const me = await authApi.getMe(token);
       setCurrentUser(me);
       setIsAuth(true);
+      setIsLoadingItems(true);
+      const items = await api.getItems(token);
+      setClothingItems(items);
     } catch {
+      removeToken();
       setIsAuth(false);
       setCurrentUser(null);
-      removeToken();
-    }
-  }, []);
-
-  const loadItems = useCallback(async () => {
-    setIsLoadingItems(true);
-    try {
-      const data = await api.getItems();
-      setClothingItems(Array.isArray(data) ? data : []);
-    } catch {
       setClothingItems([]);
     } finally {
       setIsLoadingItems(false);
     }
   }, []);
 
-  const loadWeather = useCallback(async () => {
-    setIsLoadingWeather(true);
-    try {
-      const w = await getWeather();
-      setWeatherData(w);
-    } finally {
-      setIsLoadingWeather(false);
-    }
-  }, []);
+  useEffect(() => {
+    loadMeAndItems();
+  }, [loadMeAndItems]);
 
   useEffect(() => {
-    loadMe();
-    loadItems();
-    loadWeather();
-  }, [loadMe, loadItems, loadWeather]);
-
-  const openItem = useCallback((item) => setSelectedItem(item), []);
-  const closeItem = useCallback(() => setSelectedItem(null), []);
-  const requestDeleteItem = useCallback((item) => {
-    setSelectedItem(item);
-    setConfirmDeleteOpen(true);
+    getWeather().then(setWeather).catch(() => {});
   }, []);
 
-  const handleDeleteItem = useCallback(async () => {
-    if (!selectedItem) return;
-    try {
-      await api.deleteItem(selectedItem._id);
-      setClothingItems((prev) => prev.filter((i) => i._id !== selectedItem._id));
-    } finally {
-      setConfirmDeleteOpen(false);
-      setSelectedItem(null);
-    }
-  }, [selectedItem]);
+  const handleSignin = useCallback(async ({ email, password }) => {
+    const { token } = await authApi.signin({ email, password });
+    setToken(token);
+    await loadMeAndItems();
+    setLoginOpen(false);
+  }, [loadMeAndItems]);
 
-  const handleAddItem = useCallback(
-    async (values) => {
-      const created = await api.addItem(values);
-      setClothingItems((prev) => [created, ...prev]);
-      setAddItemOpen(false);
-    },
-    []
-  );
-
-  const handleLogin = useCallback(
-    async ({ email, password }) => {
-      const { token } = await api.signin({ email, password });
-      setToken(token);
-      await loadMe();
-      setLoginOpen(false);
-      await loadItems();
-    },
-    [loadMe, loadItems]
-  );
-
-  const handleRegister = useCallback(
-    async ({ name, email, password }) => {
-      await api.signup({ name, email, password });
-      const { token } = await api.signin({ email, password });
-      setToken(token);
-      await loadMe();
-      setRegisterOpen(false);
-      await loadItems();
-    },
-    [loadMe, loadItems]
-  );
+  const handleSignup = useCallback(async ({ name, email, password }) => {
+    await authApi.signup({ name, email, password });
+    const { token } = await authApi.signin({ email, password });
+    setToken(token);
+    await loadMeAndItems();
+    setRegisterOpen(false);
+  }, [loadMeAndItems]);
 
   const handleLogout = useCallback(() => {
     removeToken();
@@ -139,90 +101,76 @@ export default function App() {
     setClothingItems([]);
   }, []);
 
-  const outletContext = useMemo(
-    () => ({
-      currentUser,
-      weatherData,
-      clothingItems,
-      onCardClick: openItem,
-      onDeleteClick: requestDeleteItem,
-      isLoadingWeather,
-      isLoadingItems,
-    }),
-    [
-      currentUser,
-      weatherData,
-      clothingItems,
-      openItem,
-      requestDeleteItem,
-      isLoadingWeather,
-      isLoadingItems,
-    ]
-  );
+  const handleAddItem = useCallback(async (payload) => {
+    const token = getToken();
+    const created = await api.addItem(payload, token);
+    setClothingItems((prev) => [created, ...prev]);
+    setAddItemOpen(false);
+  }, []);
+
+  const handleConfirmDelete = useCallback(async () => {
+    if (!deletePending) return;
+    const token = getToken();
+    await api.deleteItem(deletePending._id, token);
+    setClothingItems((prev) => prev.filter((i) => i._id !== deletePending._id));
+    setDeletePending(null);
+  }, [deletePending]);
 
   return (
-    <div className="app">
-      <Header
-        isAuth={isAuth}
-        currentUser={currentUser}
-        onAddItemClick={() => setAddItemOpen(true)}
-        onLoginClick={() => setLoginOpen(true)}
-        onRegisterClick={() => setRegisterOpen(true)}
-        onLogoutClick={handleLogout}
-        locationName={locationName}
-      />
+    <CurrentTemperatureUnitContext.Provider value={unitCtx}>
+      <WeatherContext.Provider value={weatherCtx}>
+        <CurrentUserContext.Provider value={userCtx}>
+          <Header
+            isAuth={isAuth}
+            currentUser={currentUser}
+            onAddItemClick={() => setAddItemOpen(true)}
+            onLoginClick={() => setLoginOpen(true)}
+            onRegisterClick={() => setRegisterOpen(true)}
+            onLogoutClick={handleLogout}
+            locationName={weather.name}
+          />
 
-      <Routes>
-        <Route path="/" element={<Outlet context={outletContext} />}>
-          <Route index element={<Main />} />
-        </Route>
-
-        <Route
-          path="/profile"
-          element={
-            <ProtectedRoute isAuth={isAuth}>
-              <Profile
-                currentUser={currentUser}
-                clothingItems={clothingItems}
-                onCardClick={openItem}
-                onDeleteClick={requestDeleteItem}
-                isLoadingItems={isLoadingItems}
+          <Routes>
+            <Route
+              path="/"
+              element={
+                <Main
+                  clothingItems={clothingItems}
+                  weatherBand={weather.band}
+                  isLoadingItems={isLoadingItems}
+                  onCardClick={(i) => setItemOpen(i)}
+                />
+              }
+            />
+            <Route element={<ProtectedRoute isAuth={isAuth} />}>
+              <Route
+                path="/profile"
+                element={
+                  <Profile
+                    clothingItems={clothingItems}
+                    onCardClick={(i) => setItemOpen(i)}
+                    onDeleteClick={(i) => setDeletePending(i)}
+                  />
+                }
               />
-            </ProtectedRoute>
-          }
-        />
+            </Route>
+            <Route path="*" element={<NotFound />} />
+          </Routes>
 
-        <Route path="*" element={<NotFound />} />
-      </Routes>
+          <Footer />
 
-      <Footer />
+          <LoginModal isOpen={loginOpen} onClose={() => setLoginOpen(false)} onSubmit={handleSignin} />
+          <RegisterModal isOpen={registerOpen} onClose={() => setRegisterOpen(false)} onSubmit={handleSignup} />
+          <AddItemModal isOpen={addItemOpen} onClose={() => setAddItemOpen(false)} onSubmit={handleAddItem} />
 
-      <LoginModal
-        isOpen={isLoginOpen}
-        onClose={() => setLoginOpen(false)}
-        onSubmit={handleLogin}
-      />
-      <RegisterModal
-        isOpen={isRegisterOpen}
-        onClose={() => setRegisterOpen(false)}
-        onSubmit={handleRegister}
-      />
-      <AddItemModal
-        isOpen={isAddItemOpen}
-        onClose={() => setAddItemOpen(false)}
-        onAddItem={handleAddItem}
-      />
-      <ConfirmDeleteModal
-        isOpen={isConfirmDeleteOpen}
-        onClose={() => setConfirmDeleteOpen(false)}
-        onConfirm={handleDeleteItem}
-      />
-      <ItemModal
-        isOpen={!!selectedItem}
-        item={selectedItem}
-        onClose={closeItem}
-        onConfirmDelete={requestDeleteItem}
-      />
-    </div>
+          <ItemModal item={itemOpen} isOpen={!!itemOpen} onClose={() => setItemOpen(null)} />
+          <ConfirmDeleteModal
+            isOpen={!!deletePending}
+            onClose={() => setDeletePending(null)}
+            onConfirm={handleConfirmDelete}
+          />
+        </CurrentUserContext.Provider>
+      </WeatherContext.Provider>
+    </CurrentTemperatureUnitContext.Provider>
   );
 }

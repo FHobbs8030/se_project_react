@@ -1,4 +1,7 @@
-import PropTypes from "prop-types";
+import { useContext } from "react";
+import { Link, NavLink } from "react-router-dom";
+import { WeatherContext } from "../contextStore/WeatherContext.js";
+import { CurrentTemperatureUnitContext } from "../contextStore/CurrentTemperatureUnitContext.jsx";
 import ToggleSwitch from "./ToggleSwitch.jsx";
 import "../blocks/Header.css";
 
@@ -11,33 +14,52 @@ export default function Header({
   onLogoutClick,
   locationName,
 }) {
-  const dateStr = new Intl.DateTimeFormat("en-US", { month: "long", day: "numeric" }).format(new Date());
+  const { tempF, tempC } = useContext(WeatherContext);
+  const { useCelsius, setUseCelsius } = useContext(CurrentTemperatureUnitContext);
+
+  const now = new Date();
+  const dateStr = now.toLocaleDateString(undefined, { weekday: "long", month: "short", day: "numeric" });
+  const temp = useCelsius ? `${tempC ?? "–"}°C` : `${tempF ?? "–"}°F`;
 
   return (
     <header className="header">
-      <div className="header__inner">
-        <div className="header__left">
-          <a className="logo" href="/">
-            <img className="logo__img" src="/images/Logo.svg" alt="WTWR" />
-          </a>
-          <div className="header__meta">{dateStr}, {locationName}</div>
-        </div>
+      <div
+        className="header__inner"
+        style={{ maxWidth: 1360, margin: "0 auto", height: 40, display: "flex", alignItems: "center", justifyContent: "space-between" }}
+      >
+        <Link className="logo" to="/">
+          <img className="logo__img" src="/images/Logo.svg" alt="WTWR logo" />
+        </Link>
 
-        <div className="header__right">
-          <ToggleSwitch />
+        <nav className="header__nav" style={{ display: "flex", gap: 16, alignItems: "center" }}>
+          <NavLink to="/" className="header__link">Home</NavLink>
+          {isAuth && <NavLink to="/profile" className="header__link">Profile</NavLink>}
+        </nav>
+
+        <div className="header__meta" style={{ display: "flex", gap: 16, alignItems: "center" }}>
+          <span>{dateStr}</span>
+          <span>{locationName}</span>
+          <span>{temp}</span>
+
+          <ToggleSwitch checked={useCelsius} onChange={setUseCelsius} />
+
           {isAuth ? (
             <>
-              <button className="header__action" onClick={onAddItemClick}>+ Add clothes</button>
-              <div className="header__user">
-                <span className="header__name">{currentUser?.name || "User"}</span>
-                {currentUser?.avatar && <img className="header__avatar" src={currentUser.avatar} alt="Avatar" />}
-              </div>
-              <button className="header__action" onClick={onLogoutClick}>Log Out</button>
+              <button type="button" onClick={onAddItemClick}>Add Clothes</button>
+              <Link to="/profile" className="header__user" style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                <img
+                  src={currentUser?.avatar || "/images/avatar-default.png"}
+                  alt={currentUser?.name || "User"}
+                  style={{ width: 28, height: 28, borderRadius: "50%" }}
+                />
+                <span>{currentUser?.name || "Me"}</span>
+              </Link>
+              <button type="button" onClick={onLogoutClick}>Log Out</button>
             </>
           ) : (
             <>
-              <button className="header__action" onClick={onRegisterClick}>Sign Up</button>
-              <button className="header__action" onClick={onLoginClick}>Log In</button>
+              <button type="button" onClick={onRegisterClick}>Sign Up</button>
+              <button type="button" onClick={onLoginClick}>Log In</button>
             </>
           )}
         </div>
@@ -45,13 +67,3 @@ export default function Header({
     </header>
   );
 }
-
-Header.propTypes = {
-  isAuth: PropTypes.bool,
-  currentUser: PropTypes.object,
-  onAddItemClick: PropTypes.func,
-  onLoginClick: PropTypes.func,
-  onRegisterClick: PropTypes.func,
-  onLogoutClick: PropTypes.func,
-  locationName: PropTypes.string,
-};

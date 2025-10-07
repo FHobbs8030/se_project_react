@@ -1,14 +1,13 @@
-import "../blocks/Footer.css";
+import "../blocks/Footer.css"; 
 
-function Footer() {
+export default function Footer() {
+  const year = new Date().getFullYear();
   return (
     <footer className="footer">
-      <span className="footer__left">Developed by Fred Hobbs</span>
-      <span className="footer__right">2025</span>
+      <div className="footer__inner">
+        <span className="footer__left">Developed by Fred Hobbs</span>
+        <span className="footer__right">© {year}</span>
+      </div>
     </footer>
   );
 }
-
-export default Footer;
-
-

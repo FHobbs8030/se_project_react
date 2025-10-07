@@ -1,33 +1,16 @@
-import { useEffect, useState } from "react";
 import "../blocks/ToggleSwitch.css";
 
-export default function ToggleSwitch({ value, onChange }) {
-  const [unit, setUnit] = useState(
-    value || localStorage.getItem("tempUnit") || "F"
-  );
-
-  useEffect(() => {
-    localStorage.setItem("tempUnit", unit);
-    if (onChange) onChange(unit);
-  }, [unit, onChange]);
-
-  const handleToggle = () => setUnit((u) => (u === "F" ? "C" : "F"));
-
+export default function ToggleSwitch({ checked, onChange, labelLeft = "°F", labelRight = "°C" }) {
   return (
-    <div className="temp-toggle">
+    <div className="toggle" role="group" aria-label="Temperature unit toggle">
+      <span aria-hidden="true">{labelLeft}</span>
       <button
         type="button"
-        className="temp-toggle__button"
-        data-state={unit}
-        aria-pressed={unit === "C"}
-        aria-label={`Switch to ${unit === "F" ? "Celsius" : "Fahrenheit"}`}
-        onClick={handleToggle}
-      >
-        <span className="temp-toggle__track" />
-        <span className="temp-toggle__label temp-toggle__label--f">F</span>
-        <span className="temp-toggle__label temp-toggle__label--c">C</span>
-        <span className="temp-toggle__knob" />
-      </button>
+        className="toggle__thumb"
+        aria-pressed={checked}
+        onClick={() => onChange(!checked)}
+      />
+      <span aria-hidden="true">{labelRight}</span>
     </div>
   );
 }

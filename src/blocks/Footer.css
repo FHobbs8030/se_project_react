@@ -1,28 +1,18 @@
+/* src/blocks/Footer.css */
 .footer {
-  width: min(var(--container-w), 100%);
-  margin: 0 auto;
-  padding: var(--pad);
+  max-width: 1360px;
+  margin: 24px auto;
+  padding: 12px 0;
+}
+.footer__inner {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  gap: 16px;
+  opacity: 0.9;
 }
-
 .footer__left,
 .footer__right {
-  margin: 0;
-}
-
-.footer__container {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 0 32px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-@media screen and (max-width: 600px) {
-  .footer {
-    padding: 16px 19px; 
-  }
+  font-size: 14px;
+  line-height: 1;
 }
