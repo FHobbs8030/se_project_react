@@ -34,18 +34,14 @@
 }
 
 .header__dateloc {
+  position: relative;
+  top: 4px;
   font-family: Cabinet Grotesk;
   font-weight: 700;
   font-style: Bold;
   font-size: 20px;
   line-height: 24px;
   white-space: nowrap;
-}
-
-.header__dateloc-text {
-  white-space: nowrap;
-  position: relative;
-  top: 4px;
 }
 
 .header__meta {
