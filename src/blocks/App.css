@@ -1,14 +1,3 @@
-:root {
-  --container-w: 1360px;
-  --wx-h: 80px;
-  --radius: 10px;
-  --pad: 24px;
-  --card-w: 323px;
-  --card-h: 326px;
-  --muted: #6b7280;
-  --border: #e6e6e6;
-}
-
 .page__content {
   width: min(var(--container-w), 100%);
   margin: 0 auto;

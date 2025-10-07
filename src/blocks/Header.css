@@ -1,51 +1,68 @@
 .header {
-  background: #fff;
+  padding: 8px 0;
 }
+
 .header__inner {
-  width: min(1360px, 100%);
-  margin: 0 auto;
-  padding: 16px;
+  max-width: 1360px;
+  margin: 32px 40px 28px 40px;
+  height: 40px;
   display: flex;
   align-items: center;
   justify-content: space-between;
+  padding: 0;
 }
-.logo__img {
-  height: 20px;
-  display: block;
-}
+
 .header__left {
   display: flex;
   align-items: center;
-  gap: 16px;
-}
-.header__meta {
-  color: #111;
-  font-size: 16px;
+  gap: 12px;
+  height: 40px;
 }
 
-.header__right {
+.logo {
   display: flex;
   align-items: center;
-  gap: 12px;
+  width: 89px;
+  height: 40px;
 }
-.header__action {
-  background: #f4f6f8;
-  border: 1px solid #e6e8ec;
-  border-radius: 999px;
-  padding: 6px 12px;
-  font-size: 14px;
+
+.logo__img {
+  display: block;
+  width: 89px;
+  height: 40px;
+  object-fit: contain;
 }
+
+.header__dateloc {
+  font-family: Cabinet Grotesk;
+  font-weight: 700;
+  font-style: Bold;
+  font-size: 20px;
+  line-height: 24px;
+  white-space: nowrap;
+}
+
+.header__dateloc-text {
+  white-space: nowrap;
+  position: relative;
+  top: 4px;
+}
+
+.header__meta {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+}
+
 .header__user {
   display: flex;
-  align-items: center;
   gap: 8px;
+  align-items: center;
+  text-decoration: none;
 }
-.header__name {
-  font-weight: 600;
-}
-.header__avatar {
+
+.header__user img {
   width: 28px;
   height: 28px;
   border-radius: 50%;
-  object-fit: cover;
 }
