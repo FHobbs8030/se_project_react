@@ -1,27 +1,27 @@
 // src/components/App.jsx
-import { useState, useEffect, useMemo, useCallback } from "react";
-import { Routes, Route, Outlet } from "react-router-dom";
+import { useState, useEffect, useMemo, useCallback } from 'react';
+import { Routes, Route, Outlet } from 'react-router-dom';
 
-import Header from "./Header.jsx";
-import Footer from "./Footer.jsx";
-import Main from "./Main.jsx";
-import Profile from "./Profile.jsx";
-import NotFound from "./NotFound.jsx";
-import ProtectedRoute from "./ProtectedRoute.jsx";
+import Header from './Header.jsx';
+import Footer from './Footer.jsx';
+import Main from './Main.jsx';
+import Profile from './Profile.jsx';
+import NotFound from './NotFound.jsx';
+import ProtectedRoute from './ProtectedRoute.jsx';
 
-import LoginModal from "./LoginModal.jsx";
-import RegisterModal from "./RegisterModal.jsx";
-import AddItemModal from "./AddItemModal.jsx";
-import ItemModal from "./ItemModal.jsx";
-import ConfirmDeleteModal from "./ConfirmDeleteModal.jsx";
+import LoginModal from './LoginModal.jsx';
+import RegisterModal from './RegisterModal.jsx';
+import AddItemModal from './AddItemModal.jsx';
+import ItemModal from './ItemModal.jsx';
+import ConfirmDeleteModal from './ConfirmDeleteModal.jsx';
 
-import { CurrentUserContext } from "../contexts/CurrentUserContext.jsx";
-import { WeatherContext } from "../contexts/WeatherContext.js";
-import { CurrentTemperatureUnitContext } from "../contexts/CurrentTemperatureUnitContext.jsx";
+import { CurrentUserContext } from '../contexts/CurrentUserContext.jsx';
+import { WeatherContext } from '../contexts/WeatherContext.js';
+import { CurrentTemperatureUnitContext } from '../contexts/CurrentTemperatureUnitContext.jsx';
 
-import { getToken, setToken, removeToken } from "../utils/token.js";
-import * as authApi from "../utils/authApi.js";
-import { getWeather } from "../utils/weather.js";
+import { getToken, setToken, removeToken } from '../utils/token.js';
+import * as authApi from '../utils/authApi.js';
+import { getWeather } from '../utils/weather.js';
 
 export default function App() {
   const [currentUser, setCurrentUser] = useState(null);
@@ -32,7 +32,7 @@ export default function App() {
   const [weatherData, setWeatherData] = useState(null);
   const [isLoadingWeather, setIsLoadingWeather] = useState(true);
 
-  const [currentTemperatureUnit, setCurrentTemperatureUnit] = useState("F");
+  const [currentTemperatureUnit, setCurrentTemperatureUnit] = useState('F');
 
   const [addItemOpen, setAddItemOpen] = useState(false);
   const [loginOpen, setLoginOpen] = useState(false);
@@ -41,7 +41,7 @@ export default function App() {
   const [confirmOpen, setConfirmOpen] = useState(false);
   const [activeItem, setActiveItem] = useState(null);
 
-  const locationName = import.meta.env.VITE_LOCATION_NAME || "New York";
+  const locationName = import.meta.env.VITE_LOCATION_NAME || 'New York';
 
   const loadMeAndItems = useCallback(async () => {
     try {
@@ -71,38 +71,44 @@ export default function App() {
     if (getToken()) loadMeAndItems();
   }, [loadMeAndItems]);
 
-  const handleSignin = useCallback(async ({ email, password }) => {
-    const { token } = await authApi.signin({ email, password });
-    setToken(token);
-    await loadMeAndItems();
-    setLoginOpen(false);
-  }, [loadMeAndItems]);
+  const handleSignin = useCallback(
+    async ({ email, password }) => {
+      const { token } = await authApi.signin({ email, password });
+      setToken(token);
+      await loadMeAndItems();
+      setLoginOpen(false);
+    },
+    [loadMeAndItems]
+  );
 
-  const handleSignup = useCallback(async ({ name, email, password }) => {
-    await authApi.signup({ name, email, password });
-    const { token } = await authApi.signin({ email, password });
-    setToken(token);
-    await loadMeAndItems();
-    setRegisterOpen(false);
-  }, [loadMeAndItems]);
+  const handleSignup = useCallback(
+    async ({ name, email, password }) => {
+      await authApi.signup({ name, email, password });
+      const { token } = await authApi.signin({ email, password });
+      setToken(token);
+      await loadMeAndItems();
+      setRegisterOpen(false);
+    },
+    [loadMeAndItems]
+  );
 
   const handleLogout = useCallback(() => {
     removeToken();
     setCurrentUser(null);
   }, []);
 
-  const handleAddItem = useCallback(async (values) => {
+  const handleAddItem = useCallback(async values => {
     const created = await authApi.addItem(values);
     setClothingItems(prev => [created, ...prev]);
     setAddItemOpen(false);
   }, []);
 
-  const openItem = useCallback((item) => {
+  const openItem = useCallback(item => {
     setActiveItem(item);
     setItemOpen(true);
   }, []);
 
-  const requestDeleteItem = useCallback((item) => {
+  const requestDeleteItem = useCallback(item => {
     setActiveItem(item);
     setConfirmOpen(true);
   }, []);
@@ -162,7 +168,7 @@ export default function App() {
               <Route
                 path="profile"
                 element={
-                  <ProtectedRoute isLoggedIn={!!currentUser}>
+                  <ProtectedRoute isAuth={!!currentUser}>
                     <Profile />
                   </ProtectedRoute>
                 }

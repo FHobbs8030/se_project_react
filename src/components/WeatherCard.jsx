@@ -11,8 +11,8 @@ function mapIconName(code, main) {
     if (id >= 300 && id < 600) return "rain";
     if (id >= 600 && id < 700) return "snowy";
     if (id >= 700 && id < 800) return "foggy";
-    if (id === 800)            return "clear";
-    if (id > 800)              return "cloudy";
+    if (id === 800) return "clear";
+    if (id > 800) return "cloudy";
   }
   const m = (main || "").toLowerCase();
   if (/thunder/.test(m)) return "stormy";
@@ -24,17 +24,18 @@ function mapIconName(code, main) {
   return "clear";
 }
 
-const toF = (t) => {
-  if (t == null) return null;
-  if (t > 200) return Math.round((t - 273.15) * 9/5 + 32); // Kelvin → F
-  if (t <= 60)  return Math.round(t * 9/5 + 32);          // likely C → F
-  return Math.round(t);                                    // already F
+const toF = (t, units) => {
+  if (t == null || typeof t !== "number") return null;
+  if (units === "imperial") return Math.round(t);
+  if (units === "metric") return Math.round((t * 9) / 5 + 32);
+  if (units === "standard") return Math.round(((t - 273.15) * 9) / 5 + 32);
+  if (t > 170) return Math.round(((t - 273.15) * 9) / 5 + 32);
+  return Math.round(t);
 };
 
 export default function WeatherCard() {
   const { weatherData, isLoadingWeather } = useContext(WeatherContext) || {};
-  const { currentTemperatureUnit = "F" } =
-    useContext(CurrentTemperatureUnitContext) || {};
+  const { currentTemperatureUnit = "F" } = useContext(CurrentTemperatureUnitContext) || {};
 
   const isDay = useMemo(() => {
     const s = (weatherData?.sys?.sunrise ?? 0) * 1000;
@@ -44,13 +45,12 @@ export default function WeatherCard() {
     return now >= s && now < e;
   }, [weatherData]);
 
-  const baseF = useMemo(() => toF(weatherData?.main?.temp), [weatherData]);
+  const units = weatherData?.units || weatherData?.unit || null;
+  const baseF = useMemo(() => toF(weatherData?.main?.temp, units), [weatherData, units]);
 
   const displayTemp = useMemo(() => {
     if (baseF == null) return "—";
-    return currentTemperatureUnit === "C"
-      ? Math.round((baseF - 32) * 5/9)
-      : baseF;
+    return currentTemperatureUnit === "C" ? Math.round((baseF - 32) * 5/9) : baseF;
   }, [baseF, currentTemperatureUnit]);
 
   const w0 = weatherData?.weather?.[0] || {};

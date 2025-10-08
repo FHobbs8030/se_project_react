@@ -1,70 +1,31 @@
 :root {
   --container-w: 1360px;
-  --card-w: 325px;
-  --card-h: 328px;
-  --gap: 20px; /* 4*325 + 3*20 = 1360 exactly */
+  --page-pad: clamp(12px, 4vw, 24px);
+  /* Desktop target size, but allow shrinking on smaller screens */
+  --card-w: clamp(240px, 30vw, 325px);
+  --card-gap: 21px;
+  --card-radius: 12px;
+  --card-bg: #e5e7eb;
+  --card-border: #cbd5e1;
 }
 
-/* Outer wrapper that centers the grid in the page */
-.cards-wrap {
+.cards-wrapper {
   width: 100%;
   max-width: var(--container-w);
-  margin: 24px auto 40px;
+  margin: 0 auto 48px;
+  padding: 0 var(--page-pad);
   box-sizing: border-box;
 }
 
-/* The grid itself */
 .cards {
   list-style: none;
-  padding: 0;
   margin: 0;
-
+  padding: 0;
   display: grid;
-  grid-template-columns: repeat(4, var(--card-w));
-  grid-auto-rows: var(--card-h);
-  gap: var(--gap);
-
-  /* makes 4x325 + 3x20 = 1360 fit perfectly */
-  justify-content: space-between;
+  /* Auto-fit columns; each column may shrink down to 240px on small screens */
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, var(--card-w)), 1fr));
+  gap: var(--card-gap);
+  align-items: start;
 }
 
-/* Base (works everywhere, no blur) */
-.card__title {
-  position: relative;
-  z-index: 1;
-  width: 100%;
-  padding: 8px 10px;
-  font-size: 12px;
-  color: #222;
-  background: rgba(255, 255, 255, 0.7);
-}
-
-/* Enhance where supported (adds blur + slight saturation) */
-@supports (-webkit-backdrop-filter: blur(2px)) or (backdrop-filter: blur(2px)) {
-  .card__title {
-    /* prefix FIRST, then standard */
-    -webkit-backdrop-filter: saturate(120%) blur(2px);
-    backdrop-filter: saturate(120%) blur(2px);
-    background: rgba(255, 255, 255, 0.6);
-  }
-}
-
-/* breakpoints: step down columns on smaller screens */
-@media (max-width: 1200px) {
-  .cards {
-    grid-template-columns: repeat(3, var(--card-w));
-    justify-content: center;
-  }
-}
-@media (max-width: 900px) {
-  .cards {
-    grid-template-columns: repeat(2, minmax(260px, 1fr));
-    grid-auto-rows: var(--card-h);
-  }
-}
-@media (max-width: 520px) {
-  .cards {
-    grid-template-columns: 1fr;
-    grid-auto-rows: auto;
-  }
-}
+.cards__item { width: 100%; }

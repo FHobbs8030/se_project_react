@@ -1,61 +1,37 @@
-:root {
-  --container-w: 1360px;
-  --wx-card-h: 80px;
-  --wx-pad: 16px;
-  ----wx-icon-w: 76px;
-  --wx-night-from: #224463;
-  --wx-night-to: #2b5578;
-}
-
 .weather-card {
-  width: 100%;
-  max-width: var(--container-w);
-  height: var(--wx-card-h);
-  margin: 12px auto 24px;
-  padding: 12px calc(var(--wx-icon-w) + 24px) 12px var(--wx-pad);
-  border-radius: 10px;
-  display: flex;
-  align-items: center;
+  width: auto;
+  max-width: calc(var(--container-w) - 80px);
+  margin: 12px 40px 24px;
   position: relative;
-  overflow: hidden;
+  padding: var(--wx-pad-y) calc(var(--page-pad) + var(--wx-icon)) var(--wx-pad-y) var(--page-pad);
   box-sizing: border-box;
 }
 
 .weather-card_day {
-  background: #00A3FF;
+  background: #00a3ff;
   color: #fff;
 }
 
 .weather-card_night {
-  background: linear-gradient(90deg, var(--wx-night-from), var(--wx-night-to));
-  color: #e6f0fa;
+  background: #286897;
+  color: #e2e8f0;
 }
 
 .weather-card__left {
   display: flex;
-  flex-direction: column;
-  gap: 4px;
-  position: relative;
-  z-index: 2;
+  align-items: center;
 }
 
 .weather-card__temp {
-  font-family: "Cabinet Grotesk", system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
-  font-size: 48px;
+  font-size: clamp(28px, 6vw, 42px);
   font-weight: 700;
   line-height: 1;
-  letter-spacing: 0;
-  margin: 0;
-  color: inherit;
 }
 
-.weather-card_day .weather-card__temp { color: #fff; }
-.weather-card_night .weather-card__temp { color: #e6f0fa; }
-
 .weather-card__deg {
-  font-size: 0.6em;
-  vertical-align: super;
-  margin-left: 2px;
+  margin-left: 4px;
+  font-size: clamp(14px, 3.2vw, 18px);
+  font-weight: 600;
 }
 
 .weather-card__city {
@@ -64,14 +40,12 @@
 
 .weather-card__icon {
   position: absolute;
-  right: 0;
-  top: 50%;
-  width: var(--wx-icon-w);
-  height: var(--wx-icon-w);
-  transform: translateY(-50%);
+  top: calc(-1 * var(--wx-pad-y, 12px) + var(--wx-icon-nudge-y, 0px));
+  right: calc(-1 * var(--page-pad, 40px) + var(--wx-icon-nudge-x, 0px));
+  width: var(--wx-icon, 60px);
+  height: var(--wx-icon, 60px);
   object-fit: contain;
   pointer-events: none;
-  z-index: 2;
 }
 
 .weather-card__overlay {
@@ -79,14 +53,4 @@
   inset: 0;
   z-index: 0;
   pointer-events: none;
-}
-
-@media (max-width: 600px) {
-  :root {
-    --wx-icon-w: 56px;
-  }
-}
-
-@media (max-width: 480px) {
-  .weather-card__temp { font-size: 24px; }
 }

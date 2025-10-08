@@ -1,22 +1,33 @@
 .header {
   width: 100%;
-  background: #fff;
+  max-width: var(--container-w);
+  margin: 0 auto;
+  padding: 0 var(--page-pad);
+  box-sizing: border-box;
 }
 
-.header__inner {
-  max-width: 1360px;
-  margin: 32px 40px 28px 40px;
+.header__inner{
+  width: 100%;
+  max-width: var(--container-w);
+  margin: 32px auto 28px;         /* center + top/bottom spacing */
+  padding-inline: var(--page-pad);/* <— 40px left/right “margins” as padding */
+  box-sizing: border-box;
   height: 40px;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0;
 }
 
 .header__left {
   display: flex;
   align-items: center;
   gap: 16px;
+}
+
+.header__brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
 }
 
 .logo__img {
@@ -26,13 +37,15 @@
 }
 
 .header__meta {
+  display: inline-flex;
   position: relative;
   top: 4px;
   font-family: Cabinet Grotesk;
   font-weight: 700;
   font-style: Bold;
   font-size: 20px;
-  line-height: 24px;
+  align-items: center;
+  line-height: 40px;
   white-space: nowrap;
 }
 

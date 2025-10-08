@@ -1,122 +1,45 @@
-.item-modal {
-  position: fixed;
-  inset: 0;
-  background-color: rgba(0, 0, 0, 0.6);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 1000;
-  padding: 20px;
-  box-sizing: border-box;
-}
-
-.item-modal__container {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  min-height: 100vh;
-  width: 100%;
-}
-
-.item-modal__content {
-  --modal-size: 498px;
-  background-color: #ffffff;
-  border-radius: 20px;
-  width: var(--modal-size);
-  display: grid;
-  grid-template-rows: var(--modal-size) auto;
+/* Container variant for item view */
+.modal__container_item {
+  width: 520px;
+  max-width: calc(100vw - 32px);
+  background: #fff;
+  border-radius: 16px;
+  padding: 16px;
   position: relative;
-  overflow: hidden;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-  padding: 0;
   box-sizing: border-box;
 }
 
-.item-modal__close {
-  position: absolute;
-  top: 16px;
-  right: 20px;
-  background: none;
-  border: none;
-  font-size: 24px;
-  font-weight: 700;
-  color: #333;
-  z-index: 2;
-  cursor: pointer;
-  transition: color 0.2s ease, transform 0.2s ease;
-}
-
-.item-modal__close:hover {
-  color: #000;
-  transform: scale(1.1);
-}
-
+/* Big image */
 .item-modal__image {
-  width: var(--modal-size);
-  height: var(--modal-size);
+  width: 100%;
+  height: 360px;
   display: block;
   object-fit: cover;
+  border-radius: 12px;
+  background: #e5e7eb;
 }
 
-.item-modal__footer {
+/* Text block */
+.item-modal__meta {
+  margin-top: 12px;
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+}
+.item-modal__title { font-size: 18px; font-weight: 700; color: #0f172a; }
+.item-modal__weather { font-size: 14px; color: #475569; }
+
+/* Bottom-right delete button */
+.item-modal__delete {
+  position: absolute;
+  right: 16px;
+  bottom: 16px;
+  padding: 8px 12px;
   background: #fff;
-  display: flex;
-  align-items: center;
-  padding: 12px 32px 24px 32px;
-  margin: 0;
-  width: 100%;
-  box-sizing: border-box;
-  gap: 16px;
-  border-top: 1px solid #eee;
-}
-
-.item-modal__text-group {
-  display: flex;
-  flex-direction: column;
-  line-height: 1.2;
-  gap: 4px;
-  flex: 1 1 auto;
-  min-width: 0;
-}
-
-.item-modal__caption {
-  font-family: 'Cabinet Grotesk', 'Inter', sans-serif;
-  font-weight: 700;
-  font-size: 20px;
-  line-height: 24px;
-  color: #000;
-  margin: 0;
-}
-
-.item-modal__weather {
-  font-family: 'Cabinet Grotesk', 'Inter', sans-serif;
-  font-weight: 700;
-  font-size: 20px;
-  line-height: 24px;
-  color: #000;
-  margin: 0;
-}
-
-.item-modal__delete-button {
-  font-family: 'Cabinet Grotesk', 'Inter', sans-serif;
-  font-weight: 700;
-  font-size: 20px;
-  line-height: 24px;
-  color: #ff3b30;
-  background: none;
-  border: none;
+  border: 1px solid #e2e8f0;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 600;
   cursor: pointer;
-  margin-left: auto;
-  padding: 0 0 8px 0;
 }
-
-.item-modal__delete-button:hover {
-  color: #d60000;
-  text-decoration: underline;
-}
-
-@media (max-width: 540px) {
-  .item-modal__content {
-    --modal-size: min(498px, calc(100vw - 32px));
-  }
-}
+.item-modal__delete:hover { box-shadow: 0 0 0 2px rgba(0,0,0,0.05); }
