@@ -1,5 +1,6 @@
 .header {
-  padding: 8px 0;
+  width: 100%;
+  background: #fff;
 }
 
 .header__inner {
@@ -15,25 +16,16 @@
 .header__left {
   display: flex;
   align-items: center;
-  gap: 12px;
-  height: 40px;
-}
-
-.logo {
-  display: flex;
-  align-items: center;
-  width: 89px;
-  height: 40px;
+  gap: 16px;
 }
 
 .logo__img {
-  display: block;
   width: 89px;
   height: 40px;
-  object-fit: contain;
+  display: block;
 }
 
-.header__dateloc {
+.header__meta {
   position: relative;
   top: 4px;
   font-family: Cabinet Grotesk;
@@ -44,21 +36,36 @@
   white-space: nowrap;
 }
 
-.header__meta {
+.header__right {
   display: flex;
-  gap: 16px;
   align-items: center;
+  gap: 12px;
+}
+
+.header__add,
+.header__cta,
+.header__logout {
+  border: 1px solid #cfcfcf;
+  background: #fff;
+  padding: 6px 10px;
+  border-radius: 6px;
+  font-size: 14px;
+  cursor: pointer;
 }
 
 .header__user {
   display: flex;
-  gap: 8px;
   align-items: center;
-  text-decoration: none;
+  gap: 8px;
 }
 
-.header__user img {
+.header__name {
+  font-size: 14px;
+}
+
+.header__avatar {
   width: 28px;
   height: 28px;
   border-radius: 50%;
+  object-fit: cover;
 }

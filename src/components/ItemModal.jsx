@@ -1,7 +1,7 @@
 import { useContext } from "react";
 import PropTypes from "prop-types";
 import ModalWithForm from "./ModalWithForm.jsx";
-import { CurrentUserContext } from "../contextStore/CurrentUserContext.jsx";
+import { CurrentUserContext } from "../contexts/CurrentUserContext.jsx";
 
 export default function ItemModal({ item, isOpen, onClose, onConfirmDelete }) {
   const currentUser = useContext(CurrentUserContext);

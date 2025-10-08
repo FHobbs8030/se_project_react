@@ -1,40 +1,42 @@
-import { useContext, useMemo } from "react";
+// src/components/Main.jsx
+import PropTypes from "prop-types";
+import { useOutletContext } from "react-router-dom";
 import WeatherCard from "./WeatherCard.jsx";
-import { WeatherContext } from "../contextStore/WeatherContext.js";
-import { CurrentTemperatureUnitContext } from "../contextStore/CurrentTemperatureUnitContext.jsx";
+import "../blocks/Cards.css";
 
-export default function Main({ clothingItems = [], weatherBand, isLoadingItems, onCardClick }) {
-  const { tempF, tempC, name } = useContext(WeatherContext);
-  const { useCelsius } = useContext(CurrentTemperatureUnitContext);
+export default function Main({
+  clothingItems: clothingFromProps = [],
+  onCardClick: onCardClickFromProps = () => {},
+}) {
+  const outlet = useOutletContext() || {};
 
-  const shownTemp = useCelsius ? `${tempC ?? "–"}°C` : `${tempF ?? "–"}°F`;
-
-  const hour = new Date().getHours();
-  const isDay = hour >= 6 && hour < 18;
-  const icon = isDay ? "/images/weather/day.svg" : "/images/weather/night.svg";
-
-  const filtered = useMemo(() => {
-    if (!weatherBand) return clothingItems;
-    return clothingItems.filter((i) => (i.weather || "").toLowerCase() === weatherBand);
-  }, [clothingItems, weatherBand]);
+  const clothingItems = outlet.clothingItems ?? clothingFromProps ?? [];
+  const onCardClick = outlet.onCardClick ?? onCardClickFromProps ?? (() => {});
 
   return (
-    <main className="main">
-      <WeatherCard shownTemp={shownTemp} icon={icon} city={name || ""} isDay={isDay} />
-      {isLoadingItems ? (
-        <div className="main__loading">Loading…</div>
-      ) : (
+    <main className="content">
+      <WeatherCard />
+      <section className="cards-wrap">
         <ul className="cards">
-          {filtered.map((item) => (
-            <li key={item._id} className="cards__item">
-              <button type="button" className="card" onClick={() => onCardClick(item)}>
+          {clothingItems.map((item) => (
+            <li
+              className="card"
+              key={item._id || item.id || item.name}
+              onClick={() => onCardClick(item)}
+            >
+              <div className="card__imgbox">
                 <img className="card__img" src={item.imageUrl} alt={item.name} />
-                <span className="card__title">{item.name}</span>
-              </button>
+              </div>
+              <div className="card__title">{item.name}</div>
             </li>
           ))}
         </ul>
-      )}
+      </section>
     </main>
   );
 }
+
+Main.propTypes = {
+  clothingItems: PropTypes.array,
+  onCardClick: PropTypes.func,
+};
