@@ -11,7 +11,7 @@
 .header__inner {
   width: min(100%, 1360px);
   height: 40px;
-  margin: 0 auto;          /* center the fixed-width row */
+  margin: 0 auto; /* center the fixed-width row */
   padding: 0;
   display: flex;
   align-items: center;
@@ -33,10 +33,12 @@
 
 .header__meta {
   white-space: nowrap;
-  line-height: 40px;
   position: relative;
   top: 0.5px;
-  font-size: 16px;
+  font-family: Cabinet Grotesk; 
+  font-weight: 700;
+  font-size: 20px;
+  line-height: 24px;
 }
 
 .header__spacer {
@@ -92,12 +94,22 @@
 
 /* Responsive polish */
 @media (max-width: 1024px) {
-  .header__meta { font-size: 15px; }
-  .header__auth { gap: 8px; }
+  .header__meta {
+    font-size: 15px;
+  }
+  .header__auth {
+    gap: 8px;
+  }
 }
 
 @media (max-width: 768px) {
-  .header__outer { padding: 20px 16px; }
-  .header__meta { font-size: 14px; }
-  .header__username { display: none; }
+  .header__outer {
+    padding: 20px 16px;
+  }
+  .header__meta {
+    font-size: 14px;
+  }
+  .header__username {
+    display: none;
+  }
 }

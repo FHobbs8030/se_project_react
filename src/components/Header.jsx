@@ -13,7 +13,6 @@ export default function Header({
 }) {
   const now = new Date();
   const formattedDate = new Intl.DateTimeFormat("en-US", {
-    weekday: "short",
     month: "short",
     day: "numeric",
   }).format(now);
