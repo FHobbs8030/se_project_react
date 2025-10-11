@@ -1,4 +1,3 @@
-// src/components/WeatherCard.jsx
 import { useContext, useMemo } from "react";
 import { WeatherContext } from "../contexts/WeatherContext.js";
 import { CurrentTemperatureUnitContext } from "../contexts/CurrentTemperatureUnitContext.jsx";
@@ -35,7 +34,8 @@ const toF = (t, units) => {
 
 export default function WeatherCard() {
   const { weatherData, isLoadingWeather } = useContext(WeatherContext) || {};
-  const { currentTemperatureUnit = "F" } = useContext(CurrentTemperatureUnitContext) || {};
+  const { currentTemperatureUnit = "F" } =
+    useContext(CurrentTemperatureUnitContext) || {};
 
   const isDay = useMemo(() => {
     const s = (weatherData?.sys?.sunrise ?? 0) * 1000;
@@ -46,11 +46,16 @@ export default function WeatherCard() {
   }, [weatherData]);
 
   const units = weatherData?.units || weatherData?.unit || null;
-  const baseF = useMemo(() => toF(weatherData?.main?.temp, units), [weatherData, units]);
+  const baseF = useMemo(
+    () => toF(weatherData?.main?.temp, units),
+    [weatherData, units]
+  );
 
   const displayTemp = useMemo(() => {
     if (baseF == null) return "—";
-    return currentTemperatureUnit === "C" ? Math.round((baseF - 32) * 5/9) : baseF;
+    return currentTemperatureUnit === "C"
+      ? Math.round((baseF - 32) * 5 / 9)
+      : baseF;
   }, [baseF, currentTemperatureUnit]);
 
   const w0 = weatherData?.weather?.[0] || {};
@@ -58,14 +63,21 @@ export default function WeatherCard() {
   const iconPath = `/images/icons/${isDay ? "day" : "night"}/${iconName}.svg`;
 
   return (
-    <section className={`weather-card ${isDay ? "weather-card_day" : "weather-card_night"}`}>
-      <div className="weather-card__left">
-        <div className="weather-card__temp">
-          {isLoadingWeather ? "…" : displayTemp}
-          <span className="weather-card__deg">°{currentTemperatureUnit}</span>
+    <section className="weather-card__outer">
+      <div
+        className={`weather-card ${
+          isDay ? "weather-card_day" : "weather-card_night"
+        }`}
+      >
+        <div className="weather-card__left">
+          <div className="weather-card__temp">
+            {isLoadingWeather ? "…" : displayTemp}
+            <span className="weather-card__deg">°{currentTemperatureUnit}</span>
+          </div>
         </div>
+
+        <img className="weather-card__icon" src={iconPath} alt="" />
       </div>
-      <img className="weather-card__icon" src={iconPath} alt="" />
     </section>
   );
 }

@@ -1,4 +1,3 @@
-// src/components/App.jsx
 import { useState, useEffect, useMemo, useCallback } from 'react';
 import { Routes, Route, Outlet } from 'react-router-dom';
 

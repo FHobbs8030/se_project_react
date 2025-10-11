@@ -1,84 +1,103 @@
 .header {
   width: 100%;
-  max-width: var(--container-w);
-  margin: 0 auto;
-  padding: 0 var(--page-pad);
-  box-sizing: border-box;
 }
 
-.header__inner{
+.header__outer {
   width: 100%;
-  max-width: var(--container-w);
-  margin: 32px auto 28px;         /* center + top/bottom spacing */
-  padding-inline: var(--page-pad);/* <— 40px left/right “margins” as padding */
+  padding: 32px 40px 28px 40px; /* Figma spacing lives here */
   box-sizing: border-box;
-  height: 40px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
 }
 
-.header__left {
+.header__inner {
+  width: min(100%, 1360px);
+  height: 40px;
+  margin: 0 auto;          /* center the fixed-width row */
+  padding: 0;
   display: flex;
   align-items: center;
-  gap: 16px;
+  gap: 12px;
+  box-sizing: border-box;
 }
 
 .header__brand {
   display: inline-flex;
   align-items: center;
-  gap: 12px;
+  text-decoration: none;
 }
 
-.logo__img {
+.header__logo {
+  display: block;
   width: 89px;
   height: 40px;
-  display: block;
 }
 
 .header__meta {
-  display: inline-flex;
-  position: relative;
-  top: 4px;
-  font-family: Cabinet Grotesk;
-  font-weight: 700;
-  font-style: Bold;
-  font-size: 20px;
-  align-items: center;
-  line-height: 40px;
   white-space: nowrap;
+  line-height: 40px;
+  position: relative;
+  top: 0.5px;
+  font-size: 16px;
 }
 
-.header__right {
-  display: flex;
+.header__spacer {
+  flex: 1;
+  min-width: 8px;
+}
+
+.header__auth {
+  display: inline-flex;
   align-items: center;
   gap: 12px;
 }
 
-.header__add,
-.header__cta,
-.header__logout {
-  border: 1px solid #cfcfcf;
-  background: #fff;
-  padding: 6px 10px;
-  border-radius: 6px;
-  font-size: 14px;
+.header__btn {
+  border: none;
+  background: transparent;
+  font: inherit;
   cursor: pointer;
+  padding: 6px 10px;
+  border-radius: 8px;
+}
+
+.header__btn_add {
+  background: #111827;
+  color: #fff;
+}
+
+.header__btn_out {
+  background: #f3f4f6;
 }
 
 .header__user {
-  display: flex;
+  display: inline-flex;
   align-items: center;
   gap: 8px;
 }
 
-.header__name {
+.header__username {
   font-size: 14px;
 }
 
 .header__avatar {
-  width: 28px;
-  height: 28px;
+  width: 32px;
+  height: 32px;
   border-radius: 50%;
+  display: block;
   object-fit: cover;
+}
+
+.header__avatar_placeholder {
+  background: #e5e7eb;
+}
+
+/* Responsive polish */
+@media (max-width: 1024px) {
+  .header__meta { font-size: 15px; }
+  .header__auth { gap: 8px; }
+}
+
+@media (max-width: 768px) {
+  .header__outer { padding: 20px 16px; }
+  .header__meta { font-size: 14px; }
+  .header__username { display: none; }
 }
