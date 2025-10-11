@@ -1,6 +1,6 @@
-import PropTypes from "prop-types";
-import ToggleSwitch from "./ToggleSwitch.jsx";
-import "../blocks/Header.css";
+import PropTypes from 'prop-types';
+import ToggleSwitch from './ToggleSwitch.jsx';
+import '../blocks/Header.css';
 
 export default function Header({
   isAuth,
@@ -12,10 +12,11 @@ export default function Header({
   locationName,
 }) {
   const now = new Date();
-  const formattedDate = new Intl.DateTimeFormat("en-US", {
-    month: "short",
-    day: "numeric",
+  const dateNoComma = new Intl.DateTimeFormat('en-US', {
+    month: 'short',
+    day: 'numeric',
   }).format(now);
+  const formattedDate = `${dateNoComma},`;
 
   return (
     <header className="header">
@@ -37,57 +38,31 @@ export default function Header({
 
           <div className="header__spacer" />
 
-          <ToggleSwitch />
-
-          {isAuth ? (
-            <div className="header__auth">
-              <button
-                type="button"
-                className="header__btn header__btn_add"
-                onClick={onAddItemClick}
-              >
-                + Add clothes
-              </button>
-              <div className="header__user">
-                <span className="header__username">
-                  {currentUser?.name || "User"}
-                </span>
-                {currentUser?.avatar ? (
-                  <img
-                    className="header__avatar"
-                    src={currentUser.avatar}
-                    alt="User avatar"
-                  />
-                ) : (
-                  <div className="header__avatar header__avatar_placeholder" />
+          <div className="header__controls">
+            <ToggleSwitch />
+            {isAuth ? (
+              <>
+                <button className="header__btn" onClick={onAddItemClick}>
+                  Add Clothes
+                </button>
+                <button className="header__btn" onClick={onLogoutClick}>
+                  Logout
+                </button>
+                {currentUser?.name && (
+                  <span className="header__user">{currentUser.name}</span>
                 )}
-              </div>
-              <button
-                type="button"
-                className="header__btn header__btn_out"
-                onClick={onLogoutClick}
-              >
-                Log out
-              </button>
-            </div>
-          ) : (
-            <div className="header__auth">
-              <button
-                type="button"
-                className="header__btn"
-                onClick={onRegisterClick}
-              >
-                Sign up
-              </button>
-              <button
-                type="button"
-                className="header__btn"
-                onClick={onLoginClick}
-              >
-                Log in
-              </button>
-            </div>
-          )}
+              </>
+            ) : (
+              <>
+                <button className="header__btn" onClick={onRegisterClick}>
+                  Sign Up
+                </button>
+                <button className="header__btn" onClick={onLoginClick}>
+                  Log In
+                </button>
+              </>
+            )}
+          </div>
         </div>
       </div>
     </header>
@@ -102,14 +77,4 @@ Header.propTypes = {
   onRegisterClick: PropTypes.func,
   onLogoutClick: PropTypes.func,
   locationName: PropTypes.string,
-};
-
-Header.defaultProps = {
-  isAuth: false,
-  currentUser: null,
-  onAddItemClick: () => {},
-  onLoginClick: () => {},
-  onRegisterClick: () => {},
-  onLogoutClick: () => {},
-  locationName: "New York",
 };

@@ -1,42 +1,30 @@
-// src/components/ItemModal.jsx
 import PropTypes from "prop-types";
-import { useOutletContext } from "react-router-dom";
-import "../blocks/ItemModal.css";
 
-export default function ItemModal({ isOpen, onClose, card, onDelete }) {
-  const { currentUser } = useOutletContext() || {};
-  if (!isOpen || !card) return null;
-
-  const ownerId = typeof card.owner === "object" ? card.owner?._id : card.owner;
-  const canDelete = currentUser && ownerId === currentUser._id;
+export default function ItemModal({ isOpen, item, onClose, onDelete, isOwner }) {
+  if (!isOpen || !item) return null;
 
   return (
-    <div className={`modal ${isOpen ? "modal_opened" : ""}`} onClick={onClose}>
-      <div
-        className="modal__container modal__container_item"
-        onClick={(e) => e.stopPropagation()}
-      >
-        <button type="button" className="modal__close" aria-label="Close" onClick={onClose} />
+    <div className="modal modal_opened" onClick={onClose} aria-modal="true" role="dialog">
+      <div className="modal__content" onClick={(e) => e.stopPropagation()}>
+        <button className="modal__close" type="button" aria-label="Close" onClick={onClose} />
         <img
           className="item-modal__image"
-          src={card.imageUrl}
-          alt={card.name}
-          onError={(e) => { e.currentTarget.src = "/images/clothes/placeholder.png"; }}
+          src={item.imageUrl}
+          alt={item.name}
+          onError={(e) => {
+            e.currentTarget.onerror = null;
+            e.currentTarget.src = "/images/placeholder.svg";
+          }}
         />
-        <div className="item-modal__meta">
-          <h3 className="item-modal__title">{card.name}</h3>
-          <p className="item-modal__weather">Weather: {card.weather}</p>
+        <div className="item-modal__caption">
+          <div className="item-modal__name">{item.name}</div>
+          <div className="item-modal__weather">{item.weather}</div>
+          {isOwner && typeof onDelete === "function" && (
+            <button className="item-modal__delete" type="button" onClick={() => onDelete(item)}>
+              Delete
+            </button>
+          )}
         </div>
-        {canDelete && (
-          <button
-            type="button"
-            className="item-modal__delete"
-            onClick={() => onDelete(card)}
-            aria-label={`Delete ${card.name}`}
-          >
-            Delete
-          </button>
-        )}
       </div>
     </div>
   );
@@ -44,13 +32,14 @@ export default function ItemModal({ isOpen, onClose, card, onDelete }) {
 
 ItemModal.propTypes = {
   isOpen: PropTypes.bool.isRequired,
-  onClose: PropTypes.func.isRequired,
-  onDelete: PropTypes.func.isRequired,
-  card: PropTypes.shape({
+  item: PropTypes.shape({
     _id: PropTypes.string,
-    name: PropTypes.string,
-    imageUrl: PropTypes.string,
-    weather: PropTypes.oneOf(["hot", "warm", "cold"]),
-    owner: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
+    name: PropTypes.string.isRequired,
+    imageUrl: PropTypes.string.isRequired,
+    weather: PropTypes.string,
+    owner: PropTypes.object,
   }),
+  onClose: PropTypes.func.isRequired,
+  onDelete: PropTypes.func,
+  isOwner: PropTypes.bool,
 };

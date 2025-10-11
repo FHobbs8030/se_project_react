@@ -3,14 +3,11 @@ import ClothingCard from "./ClothingCard.jsx";
 import "../blocks/Cards.css";
 
 export default function ClothesSection({ clothingItems, weatherData, onCardClick }) {
-  const tempF = typeof weatherData?.tempF === "number" ? weatherData.tempF : null;
-
-  const bucket =
-    tempF == null ? null : tempF >= 86 ? "hot" : tempF >= 66 ? "warm" : "cold";
+  const tempF = typeof weatherData?.tempF === "number" ? Math.round(weatherData.tempF) : null;
+  const bucket = tempF == null ? null : tempF >= 86 ? "hot" : tempF >= 66 ? "warm" : "cold";
 
   const all = Array.isArray(clothingItems) ? clothingItems : [];
   const filtered = bucket ? all.filter((i) => i.weather === bucket) : all;
-
   const source = filtered.length > 0 ? filtered : all;
 
   const seen = new Set();
@@ -21,13 +18,14 @@ export default function ClothesSection({ clothingItems, weatherData, onCardClick
     return true;
   });
 
+  const lead = tempF == null ? "You may want to wear:" : `Today is ${tempF}°F / You may want to wear:`;
+
   return (
     <section className="cards-wrapper">
+      <p className="cards__lead">{lead}</p>
       <ul className="cards" role="list">
         {items.map((item) => (
-          <li key={item._id} className="cards__item">
-            <ClothingCard item={item} onClick={() => onCardClick(item)} />
-          </li>
+          <ClothingCard key={item._id} item={item} onCardClick={onCardClick} />
         ))}
       </ul>
     </section>
