@@ -155,7 +155,7 @@ export default function App() {
                     currentUser,
                     weatherData,
                     clothingItems,
-                    onCardClick: openItem,
+                    onCardClick: openItem, // opens ItemModal
                     onDeleteClick: requestDeleteItem,
                     isLoadingWeather,
                     isLoadingItems,

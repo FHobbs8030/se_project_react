@@ -1,83 +1,119 @@
-:root {
-  --page-pad: 0;
-  --wx-pad: 0; /* card inner padding (x & y) */
-  --wx-icon: 60px;
-  --wx-inset: 4px;
+:root{
+  --container-w:1360px;
+  --page-pad:clamp(16px,4vw,40px);
+  --wx-card-h:80px;
+
+  --wx-icon-xl-w:167.36px;
+  --wx-icon-xl-h:118px;
+  --wx-icon-lg-w:148px;
+  --wx-icon-lg-h:104px;
+  --wx-icon-md-w:128px;
+  --wx-icon-md-h:90px;
+  --wx-icon-sm-w:108px;
+  --wx-icon-sm-h:76px;
+
+  --wx-day-bg:#00A3FF;
+  --wx-day-fg:#ffffff;
+  --wx-night-bg:linear-gradient(90deg,#0f172a,#1e293b);
+  --wx-night-fg:#e2e8f0;
 }
 
-/* page margins */
-.weather-card__outer {
-  width: 100%;
-  padding: 12px var(--page-pad) 24px var(--page-pad);
-  box-sizing: border-box;
+.weather-card__outer{
+  width:100%;
+  max-width:var(--container-w);
+  margin:0 auto;
+  padding:0;                  /* match full 1360px width */
+  box-sizing:border-box;
 }
 
-.weather-card {
-  width: min(100%, 1360px);
-  height: 80px;
-  margin: 0 auto;
-  position: relative;
-  display: flex;
-  align-items: center;
-  padding: var(--wx-pad) calc(var(--wx-pad) + var(--wx-icon))
-    /* right: leave room for icon */ var(--wx-pad) var(--wx-pad);
-  box-sizing: border-box;
+.weather-card{
+  width:100%;
+  height:var(--wx-card-h);
+  margin:12px 0 24px;
+  padding:12px calc(var(--wx-icon-xl-w) + 12px) 12px 12px;
+  border-radius:10px;
+  display:flex;
+  align-items:center;
+  position:relative;
+  overflow:hidden;
+  box-sizing:border-box;
 }
 
-.weather-card_day {
-  background: #00a3ff;
-  color: #fff;
-}
-.weather-card_night {
-  background: #286897;
-  color: #e2e8f0;
+.weather-card_day{ background:var(--wx-day-bg); color:var(--wx-day-fg); }
+.weather-card_night{ background:var(--wx-night-bg); color:var(--wx-night-fg); }
+
+.weather-card__left{ display:flex; align-items:center; }
+
+.weather-card__temp{
+  font-family:Cabinet Grotesk, system-ui, sans-serif;
+  font-weight:700;
+  font-size:36px;
+  line-height:40px;
+  display:flex;
+  align-items:baseline;
 }
 
-.weather-card__left {
-  display: flex;
-  align-items: center;
-  gap: 8px;
+.weather-card__deg{
+  margin-left:6px;
+  font-size:inherit;
+  line-height:inherit;
 }
 
-.weather-card__temp {
-  font-family: Cabinet Grotesk;
-  font-weight: 700;
-  font-size: 36px;
-  line-height: 40px;
-  padding: 20px 16px;
+.weather-card__icon{
+  position:absolute;
+  top:-12px;                 /* your tweak kept */
+  right:4px;                 /* your tweak kept */
+  width:var(--wx-icon-xl-w);
+  height:var(--wx-icon-xl-h);
+  object-fit:contain;
+  z-index:2;
+  opacity:1;
+  transform:rotate(0deg);
+  mix-blend-mode:normal;
+  filter:none;
 }
 
-.weather-card__deg {
-  line-height: 1;
-  vertical-align: text-top;
+@media (max-width:1024px){
+  .weather-card{
+    height:72px;
+    padding:10px calc(var(--wx-icon-lg-w) + 10px) 10px 10px;
+  }
+  .weather-card__temp{ font-size:32px; line-height:36px; }
+  .weather-card__icon{
+    width:var(--wx-icon-lg-w);
+    height:var(--wx-icon-lg-h);
+    top:-10px;              /* your tweak kept */
+    right:2px;              /* your tweak kept */
+  }
 }
 
-.weather-card__city {
-  display: none !important;
+@media (max-width:768px){
+  .weather-card{
+    height:64px;
+    padding:10px calc(var(--wx-icon-md-w) + 10px) 10px 10px;
+  }
+  .weather-card__temp{ font-size:28px; line-height:32px; }
+  .weather-card__icon{
+    width:var(--wx-icon-md-w);
+    height:var(--wx-icon-md-h);
+  }
 }
 
-/* >>> icon <<<  — make sure your HTML uses class="weather-card__icon" */
-.weather-card__icon {
-  position: absolute;
-  top: var(--wx-pad);
-  right: var(--wx-pad);
-  width: var(--wx-icon);
-  height: var(--wx-icon);
-  display: grid;
-  place-items: center;
-  pointer-events: none;
-  z-index: 1;
+@media (max-width:480px){
+  .weather-card{
+    height:56px;
+    padding:8px calc(var(--wx-icon-sm-w) + 8px) 8px 8px;
+  }
+  .weather-card__temp{ font-size:24px; line-height:28px; }
+  .weather-card__icon{
+    width:var(--wx-icon-sm-w);
+    height:var(--wx-icon-sm-h);
+    top:-7px;               /* your tweak kept */
+    right:5px;              /* your tweak kept */
+  }
 }
 
-.weather-card__icon img {
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
-}
-
-.weather-card__overlay {
-  position: absolute;
-  inset: 0;
-  z-index: 0;
-  pointer-events: none;
+@media (max-width:360px){
+  .weather-card{ height:52px; }
+  .weather-card__temp{ font-size:22px; line-height:26px; }
 }

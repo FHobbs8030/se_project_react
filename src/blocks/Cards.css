@@ -1,72 +1,81 @@
 :root{
-  --container-w: 1360px;       /* 4*325 + 3*20 */
-  --card-w: 325px;
-  --card-h: 328px;
-  --gap: 20px;
-  --card-radius: 12px;
-  --card-bg: #eceff1;
-  --card-border: #cbd5e1;
+  --container-w:1360px;
+  --card-w:325px;
+  --card-h:328px;
+  --gap:20px;
+  --card-radius:12px;
+  --card-bg:#eceff1;
+  --card-border:#cbd5e1;
+  --page-pad:clamp(16px,4vw,40px);
 }
 
-/* 1360-wide grid at 1440 */
 .cards-wrapper{
-  max-width: var(--container-w);
-  margin: 0 auto;
-  padding: 0;
+  max-width:var(--container-w);
+  margin:0 auto;
+  padding:0 var(--page-pad);
 }
 
 .cards{
-  display: grid;
-  grid-template-columns: repeat(4, var(--card-w));
-  grid-auto-rows: var(--card-h);
-  gap: var(--gap);
-  justify-content: start;     /* keep columns flush-left */
-  list-style: none;
-  margin: 0;
-  padding: 0;
+  display:grid;
+  grid-template-columns:repeat(4,var(--card-w));
+  grid-auto-rows:var(--card-h);
+  gap:var(--gap);
+  list-style:none;
+  margin:0;
+  padding:0;
+  justify-content:start;
 }
 
-/* The card box is 325×328 including border */
 .card{
-  width: var(--card-w);
-  height: var(--card-h);
-  box-sizing: border-box;
-  background: var(--card-bg);
-  border: 1px solid var(--card-border);
-  border-radius: var(--card-radius);
-  overflow: hidden;
-  position: relative;
+  width:var(--card-w);
+  height:var(--card-h);
+  box-sizing:border-box;
+  background:var(--card-bg);
+  border:1px solid var(--card-border);
+  border-radius:var(--card-radius);
+  overflow:hidden;
+  position:relative;
+  display:flex;
+  align-items:center;
+  justify-content:center;
 }
 
-/* Image inside the card */
 .card__image{
-  display: block;
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
-  padding: 0;                 /* set to 28px to match the mock’s inner margin */
+  display:block;
+  width:100%;
+  height:100%;
+  object-fit:contain;
+  padding:0;
 }
 
-/* Responsive columns */
-@media (max-width: 1400px){ .cards{ grid-template-columns: repeat(3, minmax(240px,1fr)); } }
-@media (max-width: 1024px){ .cards{ grid-template-columns: repeat(2, minmax(240px,1fr)); } }
-@media (max-width: 640px) { .cards{ grid-template-columns: 1fr; } }
-
-/* Disable any old pseudo-labels */
-.card::before { content: none !important; }
-
-/* Pill label */
 .card__badge{
-  position: absolute;
-  top: 10px;
-  left: 50%;
-  transform: translateX(-50%);
-  padding: 4px 10px;
-  font-size: 12px;
-  line-height: 1;
-  border-radius: 9999px;
-  background: #f3f4f6;
-  color: #111827;
-  border: 1px solid #e5e7eb;
-  pointer-events: none;
+  position:absolute;
+  top:10px;
+  left:50%;
+  transform:translateX(-50%);
+  padding:4px 10px;
+  font-size:12px;
+  line-height:1;
+  border-radius:9999px;
+  background:#f3f4f6;
+  color:#111827;
+  border:1px solid #e5e7eb;
+  pointer-events:none;
+}
+
+@media (max-width:1400px){
+  .cards{ grid-template-columns:repeat(3,minmax(240px,1fr)); grid-auto-rows:300px; }
+  .card{ width:100%; height:100%; }
+}
+
+@media (max-width:1024px){
+  .cards{ grid-template-columns:repeat(2,minmax(240px,1fr)); grid-auto-rows:300px; }
+}
+
+@media (max-width:640px){
+  .cards{ grid-template-columns:1fr; grid-auto-rows:300px; }
+}
+
+@media (max-width:400px){
+  .cards{ grid-auto-rows:280px; }
 }

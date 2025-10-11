@@ -2,14 +2,42 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="description" content="Weather-based wardrobe app" />
-    <link rel="icon" href="favicon.ico" />
-    <link rel="icon" href="/wtwr.svg" type="image/svg+xml">
+
+    <!-- Hint browsers about supported color schemes -->
+    <meta name="color-scheme" content="light dark" />
+
+    <script>
+      (function () {
+        var head = document.head || document.getElementsByTagName("head")[0];
+        var meta = document.getElementById("theme-color");
+        if (!meta) {
+          meta = document.createElement("meta");
+          meta.id = "theme-color";
+          meta.name = "theme-color";
+          head.appendChild(meta);
+        }
+        function update() {
+          var mql = window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)");
+          var dark = !!(mql && mql.matches);
+          meta.setAttribute("content", dark ? "#0f172a" : "#ffffff");
+        }
+        update();
+        if (window.matchMedia) {
+          var mql = window.matchMedia("(prefers-color-scheme: dark)");
+          if (mql.addEventListener) mql.addEventListener("change", update);
+          else if (mql.addListener) mql.addListener(update);
+        }
+      })();
+    </script>
+
+    <link rel="icon" href="/favicon.ico" sizes="any" />
+    <link rel="icon" href="/wtwr.svg" type="image/svg+xml" />
     <title>WTWR</title>
   </head>
   <body>
     <div id="root"></div>
-    <script type="module" src="./src/main.jsx"></script>
+    <script type="module" src="/src/main.jsx"></script>
   </body>
 </html>

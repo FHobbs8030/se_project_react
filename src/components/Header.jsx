@@ -1,6 +1,5 @@
-import PropTypes from 'prop-types';
-import ToggleSwitch from './ToggleSwitch.jsx';
-import '../blocks/Header.css';
+import ToggleSwitch from "./ToggleSwitch.jsx";
+import "../blocks/Header.css";
 
 export default function Header({
   isAuth,
@@ -9,55 +8,61 @@ export default function Header({
   onLoginClick,
   onRegisterClick,
   onLogoutClick,
-  locationName,
+  locationName
 }) {
   const now = new Date();
-  const dateNoComma = new Intl.DateTimeFormat('en-US', {
-    month: 'short',
-    day: 'numeric',
+  const date = new Intl.DateTimeFormat("en-US", {
+    month: "long",
+    day: "numeric",
   }).format(now);
-  const formattedDate = `${dateNoComma},`;
+
+  const displayName = currentUser?.name || "Terrence";
+  const avatarSrc = currentUser?.avatar || "/images/avatar-default.png";
 
   return (
     <header className="header">
       <div className="header__outer">
         <div className="header__inner">
-          <a className="header__brand" href="/">
-            <img
-              className="header__logo"
-              src="/images/Logo.svg"
-              alt="WTWR logo"
-              width="89"
-              height="40"
-            />
-          </a>
-
-          <div className="header__meta" aria-label="date and location">
-            {formattedDate} {locationName}
+          <div className="header__brand">
+            <a href="/" className="header__brandLink">
+              <img
+                className="header__logo"
+                src="/images/Logo.svg"
+                alt="WTWR logo"
+                width="89"
+                height="40"
+              />
+            </a>
+            <div className="header__meta">{date}, {locationName}</div>
           </div>
 
-          <div className="header__spacer" />
-
-          <div className="header__controls">
+          <div className="header__right">
             <ToggleSwitch />
             {isAuth ? (
               <>
-                <button className="header__btn" onClick={onAddItemClick}>
-                  Add Clothes
+                <button type="button" className="header__btn" onClick={onAddItemClick}>
+                  + Add clothes
                 </button>
-                <button className="header__btn" onClick={onLogoutClick}>
-                  Logout
+                <div className="header__user">
+                  <span className="header__name">{displayName}</span>
+                  <img
+                    className="header__avatar"
+                    src={avatarSrc}
+                    alt={`${displayName} avatar`}
+                    width="40"
+                    height="40"
+                  />
+                </div>
+                <button type="button" className="header__btn header__btn_logout" onClick={onLogoutClick}>
+                  Log Out
                 </button>
-                {currentUser?.name && (
-                  <span className="header__user">{currentUser.name}</span>
-                )}
               </>
             ) : (
               <>
-                <button className="header__btn" onClick={onRegisterClick}>
+                <button type="button" className="header__btn" onClick={onRegisterClick}>
                   Sign Up
                 </button>
-                <button className="header__btn" onClick={onLoginClick}>
+                <button type="button" className="header__btn" onClick={onLoginClick}>
                   Log In
                 </button>
               </>
@@ -68,13 +73,3 @@ export default function Header({
     </header>
   );
 }
-
-Header.propTypes = {
-  isAuth: PropTypes.bool,
-  currentUser: PropTypes.object,
-  onAddItemClick: PropTypes.func,
-  onLoginClick: PropTypes.func,
-  onRegisterClick: PropTypes.func,
-  onLogoutClick: PropTypes.func,
-  locationName: PropTypes.string,
-};

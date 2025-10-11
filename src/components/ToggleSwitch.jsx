@@ -1,45 +1,42 @@
-import { useContext, useMemo } from "react";
+import { useEffect, useState } from "react";
 import "../blocks/ToggleSwitch.css";
-import { CurrentTemperatureUnitContext } from "../contexts/CurrentTemperatureUnitContext.jsx";
 
-export default function ToggleSwitch() {
-  const { currentTemperatureUnit, setCurrentTemperatureUnit } = useContext(
-    CurrentTemperatureUnitContext
+export default function ToggleSwitch({ value, onChange }) {
+  const [unit, setUnit] = useState(
+    value || localStorage.getItem("wtwr_unit") || "F"
   );
 
-  const isC = currentTemperatureUnit === "C";
+  useEffect(() => {
+    if (value === "F" || value === "C") setUnit(value);
+  }, [value]);
 
-  const title = useMemo(
-    () => (isC ? "Switch to °F" : "Switch to °C"),
-    [isC]
-  );
-
-  function toggle() {
-    setCurrentTemperatureUnit(isC ? "F" : "C");
-  }
-
-  function onKeyDown(e) {
-    if (e.key === "Enter" || e.key === " ") {
-      e.preventDefault();
-      toggle();
-    }
-    if (e.key === "ArrowLeft") setCurrentTemperatureUnit("F");
-    if (e.key === "ArrowRight") setCurrentTemperatureUnit("C");
-  }
+  useEffect(() => {
+    localStorage.setItem("wtwr_unit", unit);
+    if (typeof onChange === "function") onChange(unit);
+  }, [unit, onChange]);
 
   return (
-    <div className="toggle" aria-label="Temperature unit toggle">
+    <div className="toggle">
       <button
         type="button"
-        className={`toggle__track ${isC ? "toggle__track--c" : "toggle__track--f"}`}
-        role="switch"
-        aria-checked={isC}
-        title={title}
-        onClick={toggle}
-        onKeyDown={onKeyDown}
+        className={`toggle__option ${unit === "F" ? "is-active" : ""}`}
+        onClick={() => setUnit("F")}
+        aria-pressed={unit === "F"}
       >
-        <span className="toggle__thumb" />
+        F
       </button>
+      <button
+        type="button"
+        className={`toggle__option ${unit === "C" ? "is-active" : ""}`}
+        onClick={() => setUnit("C")}
+        aria-pressed={unit === "C"}
+      >
+        C
+      </button>
+      <span
+        className={`toggle__thumb ${unit === "F" ? "at-f" : "at-c"}`}
+        aria-hidden="true"
+      />
     </div>
   );
 }

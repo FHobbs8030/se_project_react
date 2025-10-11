@@ -7,20 +7,26 @@ export default function Main() {
     weatherData,
     clothingItems,
     onCardClick,
+    isLoadingWeather,
+    isLoadingItems,
   } = useOutletContext();
 
   const tempF =
-    weatherData && weatherData.main && typeof weatherData.main.temp === "number"
+    weatherData && typeof weatherData.main?.temp === "number"
       ? weatherData.main.temp
       : null;
 
   return (
     <main className="content">
-      <WeatherCard />
+      <WeatherCard
+        weatherData={weatherData}
+        isLoadingWeather={isLoadingWeather}
+      />
       <ClothesSection
         clothingItems={clothingItems}
         weatherData={{ tempF }}
         onCardClick={onCardClick}
+        isLoadingItems={isLoadingItems}
       />
     </main>
   );
