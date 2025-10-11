@@ -1,9 +1,13 @@
-/* src/blocks/Footer.css */
 .footer {
   max-width: 1360px;
+  font-family: Cabinet Grotesk;
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 20px;
   margin: 24px auto;
-  padding: 12px 0;
+  padding: 0;
 }
+
 .footer__inner {
   display: flex;
   justify-content: space-between;
@@ -11,6 +15,7 @@
   gap: 16px;
   opacity: 0.9;
 }
+
 .footer__left,
 .footer__right {
   font-size: 14px;

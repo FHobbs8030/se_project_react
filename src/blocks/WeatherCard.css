@@ -1,8 +1,8 @@
 :root {
-  --page-pad: 40px;
-  --wx-pad-y: 12px;
-  /* --wx-icon: 64px; */
-  --wx-icon: 96px;
+  --page-pad: 0;
+  --wx-pad: 0; /* card inner padding (x & y) */
+  --wx-icon: 60px;
+  --wx-inset: 4px;
 }
 
 /* page margins */
@@ -12,7 +12,6 @@
   box-sizing: border-box;
 }
 
-/* fixed inner size */
 .weather-card {
   width: min(100%, 1360px);
   height: 80px;
@@ -20,8 +19,8 @@
   position: relative;
   display: flex;
   align-items: center;
-  padding: var(--wx-pad-y) calc(var(--page-pad) + var(--wx-icon))
-    var(--wx-pad-y) var(--page-pad);
+  padding: var(--wx-pad) calc(var(--wx-pad) + var(--wx-icon))
+    /* right: leave room for icon */ var(--wx-pad) var(--wx-pad);
   box-sizing: border-box;
 }
 
@@ -29,7 +28,6 @@
   background: #00a3ff;
   color: #fff;
 }
-
 .weather-card_night {
   background: #286897;
   color: #e2e8f0;
@@ -42,11 +40,11 @@
 }
 
 .weather-card__temp {
-  width: auto;
   font-family: Cabinet Grotesk;
   font-weight: 700;
   font-size: 36px;
   line-height: 40px;
+  padding: 20px 16px;
 }
 
 .weather-card__deg {
@@ -58,15 +56,23 @@
   display: none !important;
 }
 
+/* >>> icon <<<  — make sure your HTML uses class="weather-card__icon" */
 .weather-card__icon {
   position: absolute;
-  top: 50%;
-  right: var(--page-pad);
+  top: var(--wx-pad);
+  right: var(--wx-pad);
   width: var(--wx-icon);
   height: var(--wx-icon);
-  transform: translateY(-50%);
-  object-fit: contain;
+  display: grid;
+  place-items: center;
   pointer-events: none;
+  z-index: 1;
+}
+
+.weather-card__icon img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
 }
 
 .weather-card__overlay {
