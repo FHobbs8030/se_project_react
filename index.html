@@ -4,34 +4,9 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="description" content="Weather-based wardrobe app" />
-
-    <!-- Hint browsers about supported color schemes -->
     <meta name="color-scheme" content="light dark" />
-
-    <script>
-      (function () {
-        var head = document.head || document.getElementsByTagName("head")[0];
-        var meta = document.getElementById("theme-color");
-        if (!meta) {
-          meta = document.createElement("meta");
-          meta.id = "theme-color";
-          meta.name = "theme-color";
-          head.appendChild(meta);
-        }
-        function update() {
-          var mql = window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)");
-          var dark = !!(mql && mql.matches);
-          meta.setAttribute("content", dark ? "#0f172a" : "#ffffff");
-        }
-        update();
-        if (window.matchMedia) {
-          var mql = window.matchMedia("(prefers-color-scheme: dark)");
-          if (mql.addEventListener) mql.addEventListener("change", update);
-          else if (mql.addListener) mql.addListener(update);
-        }
-      })();
-    </script>
-
+    <meta name="msapplication-TileColor" content="#0aa4ff" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
     <link rel="icon" href="/favicon.ico" sizes="any" />
     <link rel="icon" href="/wtwr.svg" type="image/svg+xml" />
     <title>WTWR</title>

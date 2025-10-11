@@ -14,7 +14,7 @@
 }
 
 .header__brand {
-  font-family: "Cabinet Grotesk","Inter",system-ui,-apple-system,sans-serif;
+  font-family: "Cabinet Grotesk", "Inter", sans-serif;
   font-size: 24px;
   font-weight: 700;
 }
@@ -34,7 +34,7 @@
   left: calc(var(--pad) - 4px);
   top: 50%;
   transform: translateY(-50%);
-  font-family: "Cabinet Grotesk","Inter",system-ui,-apple-system,sans-serif;
+  font-family: "Cabinet Grotesk", "Inter", sans-serif;
   font-size: 28px;
   font-weight: 700;
   color: #fff;
