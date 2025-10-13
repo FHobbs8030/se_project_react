@@ -64,18 +64,15 @@ export default function WeatherCard() {
 
   return (
     <section className="weather-card__outer">
-      <div
-        className={`weather-card ${
-          isDay ? "weather-card_day" : "weather-card_night"
-        }`}
-      >
+      <div className={`weather-card ${isDay ? "weather-card_day" : "weather-card_night"}`}>
         <div className="weather-card__left">
-          <div className="weather-card__temp">
-            {isLoadingWeather ? "…" : displayTemp}
+          <div className="weather-card__tempwrap">
+            <span className="weather-card__temp">
+              {isLoadingWeather ? "…" : displayTemp}
+            </span>
             <span className="weather-card__deg">°{currentTemperatureUnit}</span>
           </div>
         </div>
-
         <img className="weather-card__icon" src={iconPath} alt="" />
       </div>
     </section>

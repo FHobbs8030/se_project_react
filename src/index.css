@@ -16,6 +16,7 @@ body {
   box-sizing: border-box;
 }
 
+<<<<<<< HEAD
 :root {
   --page-bg: #ffffff;
   --page-fg: #0f172a;
@@ -30,3 +31,18 @@ html, body, #root {
 .app, .page, main {
   background: transparent;
 }
+=======
+:root{
+  --page-bg:#ffffff;
+  --page-fg:#0f172a;
+}
+
+html, body, #root{
+  min-height:100%;
+  background:var(--page-bg);
+  color:var(--page-fg);
+}
+
+/* make app wrappers transparent */
+.app, .page, main { background: transparent; }
+>>>>>>> 81529c1 (Main page looks Great!)

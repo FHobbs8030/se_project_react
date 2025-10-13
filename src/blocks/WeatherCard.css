@@ -1,5 +1,6 @@
 :root {
   --container-w: 1360px;
+<<<<<<< HEAD
   --page-pad: clamp(16px, 4vw, 40px);
   --wx-card-h: 80px;
 
@@ -12,24 +13,45 @@
   --wx-icon-sm-w: 108px;
   --wx-icon-sm-h: 76px;
 
+=======
+  --page-pad-fixed: 40px;
+
+  --wx-card-h: 80px;
+
+  --wx-icon-aspect: 1.423;
+  --wx-icon-h: var(--wx-card-h);
+  --wx-icon-w: calc(var(--wx-icon-h) * var(--wx-icon-aspect));
+
+>>>>>>> 81529c1 (Main page looks Great!)
   --wx-day-bg: #00a3ff;
   --wx-day-fg: #ffffff;
   --wx-night-bg: linear-gradient(90deg, #0f172a, #1e293b);
   --wx-night-fg: #e2e8f0;
+<<<<<<< HEAD
 
   --wx-icon-inset: 8px;
+=======
+>>>>>>> 81529c1 (Main page looks Great!)
 }
 
 .weather-card__outer {
   width: 100%;
+<<<<<<< HEAD
   max-width: 1360px;
   max-width: var(--container-w);
   margin: 0 auto;
   padding: 0;
+=======
+  max-width: 100vw;
+  margin: 0 auto;
+  padding-left: var(--page-pad-fixed);
+  padding-right: var(--page-pad-fixed);
+>>>>>>> 81529c1 (Main page looks Great!)
   box-sizing: border-box;
 }
 
 .weather-card {
+<<<<<<< HEAD
   width: 100%;
   height: var(--wx-card-h);
   margin: 12px 0 24px;
@@ -38,10 +60,21 @@
   display: flex;
   align-items: center;
   position: relative;
+=======
+  position: relative;
+  width: min(100%, var(--container-w));
+  height: var(--wx-card-h);
+  margin: 12px auto 24px;
+  padding: 0 calc(var(--wx-icon-w) + 12px) 0 0;
+  border-radius: 10px;
+  display: flex;
+  align-items: stretch;
+>>>>>>> 81529c1 (Main page looks Great!)
   overflow: hidden;
   box-sizing: border-box;
 }
 
+<<<<<<< HEAD
 .weather-card_day { background: var(--wx-day-bg); color: var(--wx-day-fg); }
 .weather-card_night { background: var(--wx-night-bg); color: var(--wx-night-fg); }
 
@@ -187,4 +220,58 @@
 @media (max-width: 360px) {
   .weather-card { height: 52px; }
   .weather-card__value { font-size: 22px; line-height: 26px; }
+=======
+.weather-card_day {
+  background: var(--wx-day-bg);
+  color: var(--wx-day-fg);
+}
+
+.weather-card_night {
+  background: var(--wx-night-bg);
+  color: var(--wx-night-fg);
+}
+
+.weather-card__left {
+  display: flex;
+  align-items: flex-start;
+  width: 100%;
+}
+
+.weather-card__tempwrap {
+  width: 69px;
+  height: 40px;
+  margin: 20px 0 20px 16px;
+  display: flex;
+  align-items: baseline;
+  justify-content: flex-start;
+  white-space: nowrap;
+}
+
+.weather-card__temp {
+  font-family: Cabinet Grotesk, system-ui, sans-serif;
+  font-weight: 700;
+  font-size: 36px;
+  line-height: 40px;
+  height: 40px;
+  display: inline-flex;
+  align-items: baseline;
+}
+
+.weather-card__deg {
+  margin-left: 4px;
+  font-size: 36px;
+  line-height: 40px;
+  height: 40px;
+}
+
+.weather-card__icon {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  right: 0;
+  height: 100%;
+  width: auto;
+  object-fit: contain;
+  z-index: 2;
+>>>>>>> 81529c1 (Main page looks Great!)
 }
