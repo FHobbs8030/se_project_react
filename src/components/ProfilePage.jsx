@@ -1,7 +1,7 @@
 import { useOutletContext } from "react-router-dom";
 import "../blocks/Profile.css";
 
-export default function Profile() {
+export default function ProfilePage() {
   const {
     currentUser,
     clothingItems,
@@ -47,11 +47,7 @@ export default function Profile() {
                   className="profile__thumb"
                   onClick={() => onCardClick?.(it)}
                 >
-                  <img
-                    src={it.imageUrl}
-                    alt={it.name}
-                    className="profile__img"
-                  />
+                  <img src={it.imageUrl} alt={it.name} className="profile__img" />
                 </button>
                 <div className="profile__cardRow">
                   <div className="profile__cardName">{it.name}</div>

@@ -8,7 +8,9 @@ export default function Header({
   onLoginClick,
   onRegisterClick,
   onLogoutClick,
-  locationName
+  locationName,
+  tempUnit,
+  onTempUnitChange,
 }) {
   const now = new Date();
   const date = new Intl.DateTimeFormat("en-US", {
@@ -33,11 +35,13 @@ export default function Header({
                 height="40"
               />
             </a>
-            <div className="header__meta">{date}, {locationName}</div>
+            <div className="header__meta">
+              {date}, {locationName}
+            </div>
           </div>
 
           <div className="header__right">
-            <ToggleSwitch />
+            <ToggleSwitch value={tempUnit} onChange={onTempUnitChange} />
             {isAuth ? (
               <>
                 <button type="button" className="header__btn" onClick={onAddItemClick}>

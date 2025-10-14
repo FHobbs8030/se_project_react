@@ -1,33 +1,17 @@
-import { useOutletContext } from "react-router-dom";
+import { useContext } from "react";
+import { WeatherContext } from "../contexts/WeatherContext.jsx";
+import { CurrentTemperatureUnitContext } from "../contexts/CurrentTemperatureUnitContext.jsx";
 import WeatherCard from "./WeatherCard.jsx";
 import ClothesSection from "./ClothesSection.jsx";
 
 export default function Main() {
-  const {
-    weatherData,
-    clothingItems,
-    onCardClick,
-    isLoadingWeather,
-    isLoadingItems,
-  } = useOutletContext();
-
-  const tempF =
-    weatherData && typeof weatherData.main?.temp === "number"
-      ? weatherData.main.temp
-      : null;
+  const { weatherData } = useContext(WeatherContext);
+  const { tempUnit } = useContext(CurrentTemperatureUnitContext);
 
   return (
     <main className="content">
-      <WeatherCard
-        weatherData={weatherData}
-        isLoadingWeather={isLoadingWeather}
-      />
-      <ClothesSection
-        clothingItems={clothingItems}
-        weatherData={{ tempF }}
-        onCardClick={onCardClick}
-        isLoadingItems={isLoadingItems}
-      />
+      <WeatherCard weatherData={weatherData} tempUnit={tempUnit} />
+      <ClothesSection tempUnit={tempUnit} />
     </main>
   );
 }
