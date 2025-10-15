@@ -1,65 +1,91 @@
-import { useState, useCallback, useEffect } from "react";
-import PropTypes from "prop-types";
-import ModalWithForm from "./ModalWithForm.jsx";
+import { useState } from "react";
+import { useLocation, useNavigate, useOutletContext } from "react-router-dom";
+import { SIGNIN, USERS_ME } from "../api";
+import { normalizeUser } from "../utils/normalizeUser";
 
-export default function LoginModal({ isOpen, onClose, onSubmit }) {
+
+export default function LoginModal() {
+  const { setCurrentUser } = useOutletContext() || {};
+  const navigate = useNavigate();
+  const location = useLocation();
+  const from = location.state?.from?.pathname || "/profile";
+
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
 
-  useEffect(() => {
-    if (isOpen) {
-      setEmail("");
-      setPassword("");
+  const onClose = () => {
+    if (location.state?.background) navigate(-1);
+    else navigate("/");
+  };
+
+  async function handleSubmit(e) {
+    e.preventDefault();
+    setError("");
+    setLoading(true);
+    try {
+      const res = await fetch(SIGNIN, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: email.trim(), password }),
+      });
+      if (!res.ok) throw new Error(await res.text());
+      const { token } = await res.json();
+      localStorage.setItem("jwt", token);
+
+      const meRes = await fetch(USERS_ME, {
+        headers: { Authorization: `Bearer ${token}` },
+        cache: "no-store",
+      });
+      if (!meRes.ok) throw new Error(await meRes.text());
+      const raw = await meRes.json();
+      const user = normalizeUser(raw);
+      if (user._id && setCurrentUser) setCurrentUser(user);
+
+      navigate(from, { replace: true });
+    } catch {
+      setError("Login failed");
+    } finally {
+      setLoading(false);
     }
-  }, [isOpen]);
-
-  const handleSubmit = useCallback(
-    async (e) => {
-      e.preventDefault();
-      await onSubmit({ email, password });
-    },
-    [email, password, onSubmit]
-  );
+  }
 
   return (
-    <ModalWithForm
-      isOpen={isOpen}
-      onClose={onClose}
-      title="Log in"
-      submitText="Log in"
-      onSubmit={handleSubmit}
-    >
-      <label className="modal__label">
-        Email
-        <input
-          className="modal__input"
-          type="email"
-          name="email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          required
-          autoComplete="email"
-        />
-      </label>
-      <label className="modal__label">
-        Password
-        <input
-          className="modal__input"
-          type="password"
-          name="password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          required
-          minLength={8}
-          autoComplete="current-password"
-        />
-      </label>
-    </ModalWithForm>
+    <div className="modal" role="dialog" aria-modal="true">
+      <div className="modal__backdrop" onClick={onClose} />
+      <div className="modal__content">
+        <button className="modal__close" onClick={onClose} aria-label="Close">×</button>
+        <h2 className="modal__title">Log In</h2>
+        <form onSubmit={handleSubmit} className="modal__form">
+          <label className="modal__label">
+            Email
+            <input
+              className="modal__input"
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              autoComplete="email"
+              required
+            />
+          </label>
+          <label className="modal__label">
+            Password
+            <input
+              className="modal__input"
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              autoComplete="current-password"
+              required
+            />
+          </label>
+          {error && <div className="modal__error">{error}</div>}
+          <button className="modal__submit" type="submit" disabled={loading}>
+            {loading ? "Signing in…" : "Log In"}
+          </button>
+        </form>
+      </div>
+    </div>
   );
 }
-
-LoginModal.propTypes = {
-  isOpen: PropTypes.bool.isRequired,
-  onClose: PropTypes.func.isRequired,
-  onSubmit: PropTypes.func.isRequired,
-};

@@ -1,6 +1,14 @@
 import ToggleSwitch from "./ToggleSwitch.jsx";
 import "../blocks/Header.css";
 
+function initials(name) {
+  if (!name) return "";
+  const parts = String(name).trim().split(/\s+/);
+  const a = parts[0]?.[0] || "";
+  const b = parts[1]?.[0] || "";
+  return (a + b).toUpperCase();
+}
+
 export default function Header({
   isAuth,
   currentUser,
@@ -13,65 +21,66 @@ export default function Header({
   onTempUnitChange,
 }) {
   const now = new Date();
-  const date = new Intl.DateTimeFormat("en-US", {
+  const formattedDate = new Intl.DateTimeFormat("en-US", {
+    weekday: "long",
     month: "long",
     day: "numeric",
   }).format(now);
 
-  const displayName = currentUser?.name || "Terrence";
-  const avatarSrc = currentUser?.avatar || "/images/avatar-default.png";
+  const name = currentUser?.name || "";
+  const avatar = currentUser?.avatar || "";
 
   return (
     <header className="header">
       <div className="header__outer">
         <div className="header__inner">
-          <div className="header__brand">
-            <a href="/" className="header__brandLink">
-              <img
-                className="header__logo"
-                src="/images/Logo.svg"
-                alt="WTWR logo"
-                width="89"
-                height="40"
-              />
-            </a>
-            <div className="header__meta">
-              {date}, {locationName}
-            </div>
+          <a className="header__brand" href="/">
+            <img
+              className="header__logo"
+              src="/images/Logo.svg"
+              alt="WTWR logo"
+              width="89"
+              height="40"
+            />
+          </a>
+
+          <div className="header__meta">
+            {formattedDate}, {locationName}
           </div>
 
-          <div className="header__right">
-            <ToggleSwitch value={tempUnit} onChange={onTempUnitChange} />
-            {isAuth ? (
-              <>
-                <button type="button" className="header__btn" onClick={onAddItemClick}>
-                  + Add clothes
-                </button>
-                <div className="header__user">
-                  <span className="header__name">{displayName}</span>
-                  <img
-                    className="header__avatar"
-                    src={avatarSrc}
-                    alt={`${displayName} avatar`}
-                    width="40"
-                    height="40"
-                  />
-                </div>
-                <button type="button" className="header__btn header__btn_logout" onClick={onLogoutClick}>
-                  Log Out
-                </button>
-              </>
-            ) : (
-              <>
-                <button type="button" className="header__btn" onClick={onRegisterClick}>
-                  Sign Up
-                </button>
-                <button type="button" className="header__btn" onClick={onLoginClick}>
-                  Log In
-                </button>
-              </>
-            )}
-          </div>
+          <div className="header__spacer" />
+
+          <ToggleSwitch value={tempUnit} onChange={onTempUnitChange} />
+
+          {isAuth ? (
+            <>
+              <button className="header__add" type="button" onClick={onAddItemClick}>
+                + Add clothes
+              </button>
+              <div className="header__user">
+                {avatar ? (
+                  <img className="header__avatar" src={avatar} alt={name || "User"} />
+                ) : (
+                  <div className="header__avatar header__avatar_initials">
+                    {initials(name)}
+                  </div>
+                )}
+                <span className="header__name">{name}</span>
+              </div>
+              <button className="header__logout" type="button" onClick={onLogoutClick}>
+                Log Out
+              </button>
+            </>
+          ) : (
+            <>
+              <button className="header__login" type="button" onClick={onLoginClick}>
+                Log In
+              </button>
+              <button className="header__register" type="button" onClick={onRegisterClick}>
+                Sign Up
+              </button>
+            </>
+          )}
         </div>
       </div>
     </header>

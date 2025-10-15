@@ -1,80 +1,58 @@
-import { useContext, useMemo } from "react";
-import { WeatherContext } from "../contexts/WeatherContext.jsx";
-import { CurrentTemperatureUnitContext } from "../contexts/CurrentTemperatureUnitContext.jsx";
+import { useOutletContext } from "react-router-dom";
 import "../blocks/WeatherCard.css";
 
-function mapIconName(code, main) {
-  const id = Number(code);
-  if (Number.isFinite(id)) {
-    if (id >= 200 && id < 300) return "stormy";
-    if (id >= 300 && id < 600) return "rain";
-    if (id >= 600 && id < 700) return "snowy";
-    if (id >= 700 && id < 800) return "foggy";
-    if (id === 800) return "clear";
-    if (id > 800) return "cloudy";
-  }
-  const m = (main || "").toLowerCase();
-  if (/thunder/.test(m)) return "stormy";
-  if (/drizzle|rain/.test(m)) return "rain";
-  if (/snow/.test(m)) return "snowy";
-  if (/mist|smoke|haze|dust|fog|sand|ash|squall|tornado/.test(m)) return "foggy";
-  if (/clear/.test(m)) return "clear";
-  if (/cloud/.test(m)) return "cloudy";
+
+function iconNameFromCode(code) {
+  if (!code) return "clear";
+  const n = String(code).slice(0, 2);
+  if (n === "01") return "clear";
+  if (n === "02" || n === "03") return "cloudy";
+  if (n === "04") return "stormy";
+  if (n === "09" || n === "10") return "rain";
+  if (n === "11") return "stormy";
+  if (n === "13") return "snowy";
+  if (n === "50") return "foggy";
   return "clear";
 }
 
-const toF = (t, units) => {
-  if (t == null || typeof t !== "number") return null;
-  if (units === "imperial") return Math.round(t);
-  if (units === "metric") return Math.round((t * 9) / 5 + 32);
-  if (units === "standard") return Math.round(((t - 273.15) * 9) / 5 + 32);
-  if (t > 170) return Math.round(((t - 273.15) * 9) / 5 + 32);
-  return Math.round(t);
-};
-
 export default function WeatherCard() {
-  const { weatherData, isLoadingWeather } = useContext(WeatherContext) || {};
-  const { currentTemperatureUnit = "F" } =
-    useContext(CurrentTemperatureUnitContext) || {};
+  const { weatherData, isLoadingWeather, tempUnit } = useOutletContext();
 
-  const isDay = useMemo(() => {
-    const s = (weatherData?.sys?.sunrise ?? 0) * 1000;
-    const e = (weatherData?.sys?.sunset ?? 0) * 1000;
-    if (!s || !e) return true;
-    const now = Date.now();
-    return now >= s && now < e;
-  }, [weatherData]);
+  const code = weatherData?.weather?.[0]?.icon || "";
+  const isNight = /n$/.test(code);
+  const name = iconNameFromCode(code);
+  const iconSrc = `/images/icons/${isNight ? "night" : "day"}/${name}.svg`;
 
-  const units = weatherData?.units || weatherData?.unit || null;
-  const baseF = useMemo(
-    () => toF(weatherData?.main?.temp, units),
-    [weatherData, units]
-  );
+  const temp =
+    typeof weatherData?.main?.temp === "number"
+      ? Math.round(weatherData.main.temp)
+      : null;
 
-  const displayTemp = useMemo(() => {
-    if (baseF == null) return "—";
-    return currentTemperatureUnit === "C"
-      ? Math.round((baseF - 32) * 5 / 9)
-      : baseF;
-  }, [baseF, currentTemperatureUnit]);
-
-  const w0 = weatherData?.weather?.[0] || {};
-  const iconName = mapIconName(w0.id, w0.main);
-  const iconPath = `/images/icons/${isDay ? "day" : "night"}/${iconName}.svg`;
+  const unit = tempUnit === "C" ? "°C" : "°F";
 
   return (
-    <section className="weather-card__outer">
-      <div className={`weather-card ${isDay ? "weather-card_day" : "weather-card_night"}`}>
-        <div className="weather-card__left">
-          <div className="weather-card__tempwrap">
-            <span className="weather-card__temp">
-              {isLoadingWeather ? "…" : displayTemp}
-            </span>
-            <span className="weather-card__deg">°{currentTemperatureUnit}</span>
+    <section
+      className={`weather-card ${isNight ? "weather-card_night" : "weather-card_day"}`}
+      aria-label="Current weather"
+    >
+      <div className="weather-card__left">
+        {isLoadingWeather ? (
+          <div className="weather-card__temp" aria-busy="true">…</div>
+        ) : (
+          <div className="weather-card__temp">
+            {temp !== null ? temp : "—"}
+            <span className="weather-card__deg">{unit}</span>
           </div>
-        </div>
-        <img className="weather-card__icon" src={iconPath} alt="" />
+        )}
       </div>
+      <img
+        className="weather-card__icon"
+        alt={weatherData?.weather?.[0]?.description || "Weather"}
+        src={iconSrc}
+        width="128"
+        height="90"
+        onError={(e) => { e.currentTarget.src = "/images/icons/day/clear.svg"; }}
+      />
     </section>
   );
 }

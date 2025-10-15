@@ -1,75 +1,45 @@
-// src/components/ProfilePage.jsx
 import { useOutletContext } from "react-router-dom";
-import "../blocks/Profile.css";
-
-const fallbackAvatar = new URL("../images/avatar-default.png", import.meta.url).href;
 
 export default function ProfilePage() {
-  const {
-    currentUser,
-    clothingItems,
-    onCardClick,
-    onDeleteClick,
-    isLoadingItems,
-  } = useOutletContext() || {};
+  const { currentUser, clothingItems, isLoadingItems, onCardClick } = useOutletContext();
 
-  const items = Array.isArray(clothingItems) ? clothingItems : [];
+  const mine = Array.isArray(clothingItems)
+    ? clothingItems.filter((it) => currentUser?._id && it.ownerId === currentUser._id)
+    : [];
+
+  const list = mine.length ? mine : (clothingItems || []);
 
   return (
-    <main className="profile">
-      <section className="profile__header">
-        <h1 className="profile__title">Profile</h1>
-        <div className="profile__user">
-          <img
-            className="profile__avatar"
-            src={currentUser?.avatar || fallbackAvatar}
-            alt={currentUser?.name || "User avatar"}
-            width="56"
-            height="56"
-            onError={(e) => {
-              e.currentTarget.src = fallbackAvatar;
-            }}
-          />
-          <div className="profile__info">
-            <div className="profile__name">{currentUser?.name || "User"}</div>
-            <div className="profile__email">{currentUser?.email || ""}</div>
-          </div>
-        </div>
-      </section>
+    <section className="profile">
+      <h1 className="profile__title">Profile</h1>
+      <h2 className="profile__subtitle">Your items</h2>
 
-      <section className="profile__items">
-        <h2 className="profile__subtitle">Your items</h2>
+      <div className="profile__hint" style={{ opacity: 0.6, fontSize: 12 }}>
+        fetched: {Array.isArray(clothingItems) ? clothingItems.length : 0}
+        {" · "}yours: {mine.length}
+      </div>
 
-        {isLoadingItems ? (
-          <div className="profile__loading">Loading…</div>
-        ) : items.length === 0 ? (
-          <div className="profile__empty">No items yet.</div>
-        ) : (
-          <ul className="profile__grid">
-            {items.map((it) => (
-              <li key={it._id} className="profile__card">
-                <button
-                  type="button"
-                  className="profile__thumb"
-                  onClick={() => onCardClick?.(it)}
-                >
-                  <img src={it.imageUrl} alt={it.name} className="profile__img" />
-                </button>
-                <div className="profile__cardRow">
-                  <div className="profile__cardName">{it.name}</div>
-                  <button
-                    type="button"
-                    className="profile__delete"
-                    onClick={() => onDeleteClick?.(it)}
-                  >
-                    Delete
-                  </button>
-                </div>
-              </li>
-            ))}
-          </ul>
-        )}
-      </section>
-    </main>
+      {isLoadingItems ? (
+        <div className="profile__loading">Loading…</div>
+      ) : !list.length ? (
+        <div className="profile__empty">No items yet.</div>
+      ) : (
+        <ul className="cards">
+          {list.map((item) => (
+            <li key={item._id || item.id} className="cards__item">
+              <button className="cards__button" onClick={() => onCardClick(item)}>
+                <img
+                  className="cards__image"
+                  src={item.imageUrl || "/images/placeholder.png"}
+                  alt={item.name || "Item"}
+                  onError={(e) => { e.currentTarget.src = "/images/placeholder.png"; }}
+                />
+                <div className="cards__caption">{item.name || "Item"}</div>
+              </button>
+            </li>
+          ))}
+        </ul>
+      )}
+    </section>
   );
 }

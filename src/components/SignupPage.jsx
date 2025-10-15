@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useOutletContext } from "react-router-dom";
 import { SIGNUP, SIGNIN, USERS_ME } from "../api";
 
 export default function SignupPage() {
@@ -9,14 +9,14 @@ export default function SignupPage() {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+  const { setCurrentUser } = useOutletContext() || {};
 
   async function handleSubmit(e) {
     e.preventDefault();
     setError("");
     setLoading(true);
     try {
-      const cleanEmail = (email || "").replace(/^mailto:/i, "").trim();
-
+      const cleanEmail = email.replace(/^mailto:/i, "").trim();
       const res = await fetch(SIGNUP, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -39,6 +39,8 @@ export default function SignupPage() {
         cache: "no-store",
       });
       if (!(meRes.ok || meRes.status === 304)) throw new Error(await meRes.text());
+      const me = await meRes.json();
+      if (setCurrentUser) setCurrentUser(me);
 
       navigate("/profile", { replace: true });
     } catch {
@@ -49,7 +51,7 @@ export default function SignupPage() {
   }
 
   return (
-    <main>
+    <main className="auth auth_signup">
       <h1>Sign Up</h1>
       <form onSubmit={handleSubmit}>
         <label>
