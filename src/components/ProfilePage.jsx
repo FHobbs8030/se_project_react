@@ -1,5 +1,8 @@
+// src/components/ProfilePage.jsx
 import { useOutletContext } from "react-router-dom";
 import "../blocks/Profile.css";
+
+const fallbackAvatar = new URL("../images/avatar-default.png", import.meta.url).href;
 
 export default function ProfilePage() {
   const {
@@ -19,10 +22,13 @@ export default function ProfilePage() {
         <div className="profile__user">
           <img
             className="profile__avatar"
-            src={currentUser?.avatar || "/images/avatar-default.png"}
+            src={currentUser?.avatar || fallbackAvatar}
             alt={currentUser?.name || "User avatar"}
             width="56"
             height="56"
+            onError={(e) => {
+              e.currentTarget.src = fallbackAvatar;
+            }}
           />
           <div className="profile__info">
             <div className="profile__name">{currentUser?.name || "User"}</div>

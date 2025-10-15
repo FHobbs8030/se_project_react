@@ -1,7 +1,8 @@
 import { Navigate, useLocation } from "react-router-dom";
 
-export default function RequireAuth({ isAuth, children }) {
+export default function RequireAuth({ children }) {
   const location = useLocation();
-  if (!isAuth) return <Navigate to="/login" replace state={{ from: location }} />;
+  const token = localStorage.getItem("jwt");
+  if (!token) return <Navigate to="/login" state={{ from: location }} replace />;
   return children;
 }

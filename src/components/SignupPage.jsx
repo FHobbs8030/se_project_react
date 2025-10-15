@@ -1,51 +1,93 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { SIGNUP, SIGNIN, USERS_ME } from "../api";
 
-export default function SignupPage({ onSignup }) {
+export default function SignupPage() {
   const [name, setName] = useState("");
-  const [avatar, setAvatar] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [err, setErr] = useState("");
-  const [busy, setBusy] = useState(false);
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
-  const submit = async (e) => {
+  async function handleSubmit(e) {
     e.preventDefault();
-    setErr("");
-    setBusy(true);
+    setError("");
+    setLoading(true);
     try {
-      await onSignup({ name, avatar, email, password });
+      const cleanEmail = (email || "").replace(/^mailto:/i, "").trim();
+
+      const res = await fetch(SIGNUP, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name: name.trim(), email: cleanEmail, password }),
+      });
+      if (!res.ok) throw new Error(await res.text());
+
+      const loginRes = await fetch(SIGNIN, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: cleanEmail, password }),
+      });
+      if (!loginRes.ok) throw new Error(await loginRes.text());
+
+      const { token } = await loginRes.json();
+      localStorage.setItem("jwt", token);
+
+      const meRes = await fetch(USERS_ME, {
+        headers: { Authorization: `Bearer ${token}` },
+        cache: "no-store",
+      });
+      if (!(meRes.ok || meRes.status === 304)) throw new Error(await meRes.text());
+
       navigate("/profile", { replace: true });
-    } catch (e2) {
-      setErr(e2.message || "Signup failed");
+    } catch {
+      setError("Sign up failed");
     } finally {
-      setBusy(false);
+      setLoading(false);
     }
-  };
+  }
 
   return (
-    <main className="content">
+    <main>
       <h1>Sign Up</h1>
-      <form className="form" onSubmit={submit}>
-        <label className="form__row">
-          <span>Name</span>
-          <input value={name} onChange={(e) => setName(e.target.value)} required />
+      <form onSubmit={handleSubmit}>
+        <label>
+          Name
+          <input
+            type="text"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            autoComplete="name"
+            required
+          />
         </label>
-        <label className="form__row">
-          <span>Avatar URL</span>
-          <input value={avatar} onChange={(e) => setAvatar(e.target.value)} />
+        <label>
+          Email
+          <input
+            type="email"
+            value={email}
+            onChange={(e) =>
+              setEmail(e.target.value.replace(/^mailto:/i, "").trimStart())
+            }
+            autoComplete="email"
+            required
+          />
         </label>
-        <label className="form__row">
-          <span>Email</span>
-          <input value={email} onChange={(e) => setEmail(e.target.value)} required />
+        <label>
+          Password
+          <input
+            type="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            autoComplete="new-password"
+            required
+          />
         </label>
-        <label className="form__row">
-          <span>Password</span>
-          <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} required />
-        </label>
-        {err && <div className="form__error">{err}</div>}
-        <button type="submit" disabled={busy}>{busy ? "Creating..." : "Create Account"}</button>
+        {error && <div>{error}</div>}
+        <button type="submit" disabled={loading}>
+          {loading ? "Creating…" : "Sign Up"}
+        </button>
       </form>
     </main>
   );
