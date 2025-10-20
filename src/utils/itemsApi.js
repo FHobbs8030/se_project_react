@@ -1,26 +1,29 @@
-const BASE =
+// src/utils/itemsApi.js
+const ITEMS_BASE =
+  import.meta.env.VITE_ITEMS_BASE_URL ||
   import.meta.env.VITE_API_BASE_URL ||
-  import.meta.env.VITE_API_BASE ||
   "";
 
-function authHeaders() {
-  const t = localStorage.getItem("jwt");
-  return t ? { Authorization: `Bearer ${t}` } : {};
-}
+const ITEMS_PATH = import.meta.env.VITE_ITEMS_PATH || "/items";
 
-function isAbs(url = "") {
-  return /^https?:\/\//i.test(url);
-}
-function toAbs(url = "") {
+const tokenKey = "jwt";
+
+const authHeaders = () => {
+  const t = localStorage.getItem(tokenKey);
+  return t ? { Authorization: `Bearer ${t}` } : {};
+};
+
+const isAbs = (url = "") => /^https?:\/\//i.test(url);
+const toAbs = (url = "") => {
   if (!url) return "";
   if (isAbs(url)) return url;
-  if (url.startsWith("/")) return `${BASE}${url}`;
-  return `${BASE}/${url}`;
-}
+  if (url.startsWith("/")) return `${ITEMS_BASE}${url}`;
+  return `${ITEMS_BASE}/${url}`;
+};
 
-function findFirstArrayOfObjects(input, maxDepth = 5) {
+const findFirstArrayOfObjects = (input, maxDepth = 5) => {
   const seen = new Set();
-  function dfs(node, depth) {
+  const dfs = (node, depth) => {
     if (node == null || depth > maxDepth) return null;
     if (Array.isArray(node)) {
       if (!node.length || typeof node[0] !== "object") return null;
@@ -35,11 +38,11 @@ function findFirstArrayOfObjects(input, maxDepth = 5) {
       }
     }
     return null;
-  }
+  };
   return dfs(input, 0) || [];
-}
+};
 
-function normalizeItem(raw = {}) {
+const normalizeItem = (raw = {}) => {
   const ownerObj = raw.owner ?? raw.user ?? null;
   const ownerId =
     (ownerObj && (ownerObj._id || ownerObj.id)) ||
@@ -64,10 +67,12 @@ function normalizeItem(raw = {}) {
     imageUrl: toAbs(img),
     likes,
   };
-}
+};
 
-export async function getItems() {
-  const res = await fetch(`${BASE}/items`, {
+const url = (suffix = "") => `${ITEMS_BASE}${ITEMS_PATH}${suffix}`;
+
+export const getItems = async () => {
+  const res = await fetch(url(), {
     headers: { ...authHeaders() },
     cache: "no-store",
   });
@@ -79,34 +84,34 @@ export async function getItems() {
     console.log("[/items parsed]", items.length, items.slice(0, 3));
   }
   return items;
-}
+};
 
-export async function likeItem(id) {
-  const res = await fetch(`${BASE}/items/${id}/likes`, {
+export const likeItem = async (id) => {
+  const res = await fetch(url(`/${id}/likes`), {
     method: "PUT",
     headers: { "Content-Type": "application/json", ...authHeaders() },
     cache: "no-store",
   });
   if (!res.ok) throw new Error(await res.text());
   return await res.json();
-}
+};
 
-export async function unlikeItem(id) {
-  const res = await fetch(`${BASE}/items/${id}/likes`, {
+export const unlikeItem = async (id) => {
+  const res = await fetch(url(`/${id}/likes`), {
     method: "DELETE",
     headers: { "Content-Type": "application/json", ...authHeaders() },
     cache: "no-store",
   });
   if (!res.ok) throw new Error(await res.text());
   return await res.json();
-}
+};
 
-export async function deleteItem(id) {
-  const res = await fetch(`${BASE}/items/${id}`, {
+export const deleteItem = async (id) => {
+  const res = await fetch(url(`/${id}`), {
     method: "DELETE",
     headers: { ...authHeaders() },
     cache: "no-store",
   });
   if (!res.ok) throw new Error(await res.text());
   return true;
-}
+};
