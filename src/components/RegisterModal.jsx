@@ -1,111 +1,53 @@
+import PropTypes from "prop-types";
+import ModalWithForm from "./ModalWithForm.jsx";
 import { useState } from "react";
-import { useLocation, useNavigate, useOutletContext } from "react-router-dom";
-import { SIGNUP, SIGNIN, USERS_ME } from "../api";
-import { normalizeUser } from "../utils/normalizeUser";
 
-
-export default function RegisterModal() {
-  const { setCurrentUser } = useOutletContext() || {};
-  const navigate = useNavigate();
-  const location = useLocation();
-  const from = location.state?.from?.pathname || "/profile";
-
+export default function RegisterModal({ isOpen, onClose, onSubmit }) {
   const [name, setName] = useState("");
+  const [avatar, setAvatar] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
 
-  const onClose = () => {
-    if (location.state?.background) navigate(-1);
-    else navigate("/");
+  if (!isOpen) return null;
+
+  const handle = (e) => {
+    e.preventDefault();
+    onSubmit({ name, avatar, email, password });
   };
 
-  async function handleSubmit(e) {
-    e.preventDefault();
-    setError("");
-    setLoading(true);
-    try {
-      const regRes = await fetch(SIGNUP, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name: name.trim(), email: email.trim(), password }),
-      });
-      if (!regRes.ok) throw new Error(await regRes.text());
-
-      const loginRes = await fetch(SIGNIN, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email: email.trim(), password }),
-      });
-      if (!loginRes.ok) throw new Error(await loginRes.text());
-
-      const { token } = await loginRes.json();
-      localStorage.setItem("jwt", token);
-
-      const meRes = await fetch(USERS_ME, {
-        headers: { Authorization: `Bearer ${token}` },
-        cache: "no-store",
-      });
-      if (!meRes.ok) throw new Error(await meRes.text());
-      const raw = await meRes.json();
-      const user = normalizeUser(raw);
-      if (user._id && setCurrentUser) setCurrentUser(user);
-
-      navigate(from, { replace: true });
-    } catch {
-      setError("Sign up failed");
-    } finally {
-      setLoading(false);
-    }
-  }
-
   return (
-    <div className="modal" role="dialog" aria-modal="true">
-      <div className="modal__backdrop" onClick={onClose} />
-      <div className="modal__content">
-        <button className="modal__close" onClick={onClose} aria-label="Close">×</button>
-        <h2 className="modal__title">Sign Up</h2>
-        <form onSubmit={handleSubmit} className="modal__form">
-          <label className="modal__label">
-            Name
-            <input
-              className="modal__input"
-              type="text"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              autoComplete="name"
-              required
-            />
-          </label>
-          <label className="modal__label">
-            Email
-            <input
-              className="modal__input"
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              autoComplete="email"
-              required
-            />
-          </label>
-          <label className="modal__label">
-            Password
-            <input
-              className="modal__input"
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              autoComplete="new-password"
-              required
-            />
-          </label>
-          {error && <div className="modal__error">{error}</div>}
-          <button className="modal__submit" type="submit" disabled={loading}>
-            {loading ? "Creating…" : "Create account"}
-          </button>
-        </form>
-      </div>
-    </div>
+    <ModalWithForm
+      isOpen={isOpen}
+      title="Create account"
+      onClose={onClose}
+      onSubmit={handle}
+      submitText="Create account"
+    >
+      <label className="modal__label">
+        <span className="modal__label-text">Name</span>
+        <input className="modal__input" value={name} onChange={(e) => setName(e.target.value)} placeholder="Your name" required />
+      </label>
+
+      <label className="modal__label">
+        <span className="modal__label-text">Avatar URL</span>
+        <input className="modal__input" type="url" value={avatar} onChange={(e) => setAvatar(e.target.value)} placeholder="https://..." />
+      </label>
+
+      <label className="modal__label">
+        <span className="modal__label-text">Email</span>
+        <input className="modal__input" type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="you@example.com" required />
+      </label>
+
+      <label className="modal__label">
+        <span className="modal__label-text">Password</span>
+        <input className="modal__input" type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="••••••••" required />
+      </label>
+    </ModalWithForm>
   );
 }
+
+RegisterModal.propTypes = {
+  isOpen: PropTypes.bool.isRequired,
+  onClose: PropTypes.func.isRequired,
+  onSubmit: PropTypes.func.isRequired,
+};

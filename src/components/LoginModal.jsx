@@ -1,91 +1,41 @@
+import PropTypes from "prop-types";
+import ModalWithForm from "./ModalWithForm.jsx";
 import { useState } from "react";
-import { useLocation, useNavigate, useOutletContext } from "react-router-dom";
-import { SIGNIN, USERS_ME } from "../api";
-import { normalizeUser } from "../utils/normalizeUser";
 
-
-export default function LoginModal() {
-  const { setCurrentUser } = useOutletContext() || {};
-  const navigate = useNavigate();
-  const location = useLocation();
-  const from = location.state?.from?.pathname || "/profile";
-
+export default function LoginModal({ isOpen, onClose, onSubmit }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
 
-  const onClose = () => {
-    if (location.state?.background) navigate(-1);
-    else navigate("/");
+  if (!isOpen) return null;
+
+  const handle = (e) => {
+    e.preventDefault();
+    onSubmit({ email, password });
   };
 
-  async function handleSubmit(e) {
-    e.preventDefault();
-    setError("");
-    setLoading(true);
-    try {
-      const res = await fetch(SIGNIN, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email: email.trim(), password }),
-      });
-      if (!res.ok) throw new Error(await res.text());
-      const { token } = await res.json();
-      localStorage.setItem("jwt", token);
-
-      const meRes = await fetch(USERS_ME, {
-        headers: { Authorization: `Bearer ${token}` },
-        cache: "no-store",
-      });
-      if (!meRes.ok) throw new Error(await meRes.text());
-      const raw = await meRes.json();
-      const user = normalizeUser(raw);
-      if (user._id && setCurrentUser) setCurrentUser(user);
-
-      navigate(from, { replace: true });
-    } catch {
-      setError("Login failed");
-    } finally {
-      setLoading(false);
-    }
-  }
-
   return (
-    <div className="modal" role="dialog" aria-modal="true">
-      <div className="modal__backdrop" onClick={onClose} />
-      <div className="modal__content">
-        <button className="modal__close" onClick={onClose} aria-label="Close">×</button>
-        <h2 className="modal__title">Log In</h2>
-        <form onSubmit={handleSubmit} className="modal__form">
-          <label className="modal__label">
-            Email
-            <input
-              className="modal__input"
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              autoComplete="email"
-              required
-            />
-          </label>
-          <label className="modal__label">
-            Password
-            <input
-              className="modal__input"
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              autoComplete="current-password"
-              required
-            />
-          </label>
-          {error && <div className="modal__error">{error}</div>}
-          <button className="modal__submit" type="submit" disabled={loading}>
-            {loading ? "Signing in…" : "Log In"}
-          </button>
-        </form>
-      </div>
-    </div>
+    <ModalWithForm
+      isOpen={isOpen}
+      title="Log in"
+      onClose={onClose}
+      onSubmit={handle}
+      submitText="Log in"
+    >
+      <label className="modal__label">
+        <span className="modal__label-text">Email</span>
+        <input className="modal__input" type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="you@example.com" required />
+      </label>
+
+      <label className="modal__label">
+        <span className="modal__label-text">Password</span>
+        <input className="modal__input" type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="••••••••" required />
+      </label>
+    </ModalWithForm>
   );
 }
+
+LoginModal.propTypes = {
+  isOpen: PropTypes.bool.isRequired,
+  onClose: PropTypes.func.isRequired,
+  onSubmit: PropTypes.func.isRequired,
+};

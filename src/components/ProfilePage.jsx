@@ -1,3 +1,4 @@
+import { useMemo } from "react";
 import PropTypes from "prop-types";
 
 export default function ProfilePage({
@@ -6,19 +7,18 @@ export default function ProfilePage({
   onCardClick,
   currentUser,
 }) {
-  const mine = Array.isArray(clothingItems)
-    ? clothingItems.filter((it) => {
-        const ownerId =
-          typeof it.owner === "string"
-            ? it.owner
-            : it.owner && typeof it.owner === "object" && it.owner._id
-            ? it.owner._id
-            : it.ownerId || null;
-        return currentUser?._id && ownerId === currentUser._id;
-      })
-    : [];
-
-  const list = mine;
+  const list = useMemo(() => {
+    const items = Array.isArray(clothingItems) ? clothingItems : [];
+    return items.filter((it) => {
+      const ownerId =
+        typeof it.owner === "string"
+          ? it.owner
+          : it.owner && typeof it.owner === "object" && it.owner._id
+          ? it.owner._id
+          : it.ownerId || null;
+      return currentUser?._id && ownerId === currentUser._id;
+    });
+  }, [clothingItems, currentUser]);
 
   return (
     <section className="profile">

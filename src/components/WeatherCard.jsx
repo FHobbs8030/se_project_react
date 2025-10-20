@@ -1,58 +1,49 @@
+import PropTypes from "prop-types";
 import { useOutletContext } from "react-router-dom";
 import "../blocks/WeatherCard.css";
 
-
-function iconNameFromCode(code) {
-  if (!code) return "clear";
-  const n = String(code).slice(0, 2);
-  if (n === "01") return "clear";
-  if (n === "02" || n === "03") return "cloudy";
-  if (n === "04") return "stormy";
-  if (n === "09" || n === "10") return "rain";
-  if (n === "11") return "stormy";
-  if (n === "13") return "snowy";
-  if (n === "50") return "foggy";
-  return "clear";
+function toTempF(src) {
+  if (!src) return null;
+  let v =
+    src?.main?.temp ??
+    src?.tempF ??
+    src?.current?.temp_f ??
+    null;
+  if (typeof v === "string") {
+    const n = Number(v.trim());
+    v = Number.isFinite(n) ? n : null;
+  }
+  return Number.isFinite(v) ? Math.round(v) : null;
 }
 
-export default function WeatherCard() {
-  const { weatherData, isLoadingWeather, tempUnit } = useOutletContext();
+export default function WeatherCard({ weatherData: propWD, tempF: propTempF }) {
+  const ctx = useOutletContext?.() || {};
+  const wd = propWD ?? ctx.weatherData ?? null;
 
-  const code = weatherData?.weather?.[0]?.icon || "";
-  const isNight = /n$/.test(code);
-  const name = iconNameFromCode(code);
-  const iconSrc = `/images/icons/${isNight ? "night" : "day"}/${name}.svg`;
+  let tempF = Number.isFinite(propTempF) ? Math.round(propTempF) : toTempF(wd);
 
-  const temp =
-    typeof weatherData?.main?.temp === "number"
-      ? Math.round(weatherData.main.temp)
-      : null;
-
-  const unit = tempUnit === "C" ? "°C" : "°F";
+  const icon = wd?.weather?.[0]?.icon || "";
+  const isNight = /n$/.test(icon);
 
   return (
     <section
       className={`weather-card ${isNight ? "weather-card_night" : "weather-card_day"}`}
-      aria-label="Current weather"
+      aria-label="current weather"
     >
-      <div className="weather-card__left">
-        {isLoadingWeather ? (
-          <div className="weather-card__temp" aria-busy="true">…</div>
-        ) : (
-          <div className="weather-card__temp">
-            {temp !== null ? temp : "—"}
-            <span className="weather-card__deg">{unit}</span>
-          </div>
-        )}
+      <div className="weather-card__inner">
+        <div className="weather-card__left">
+          <span className="weather-card__temp">{tempF ?? "--"}</span>
+          <span className="weather-card__deg">°F</span>
+        </div>
+        <div className="weather-card__right" aria-hidden="true">
+          <div className="weather-card__orb" />
+        </div>
       </div>
-      <img
-        className="weather-card__icon"
-        alt={weatherData?.weather?.[0]?.description || "Weather"}
-        src={iconSrc}
-        width="128"
-        height="90"
-        onError={(e) => { e.currentTarget.src = "/images/icons/day/clear.svg"; }}
-      />
     </section>
   );
 }
+
+WeatherCard.propTypes = {
+  weatherData: PropTypes.object,
+  tempF: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
+};
