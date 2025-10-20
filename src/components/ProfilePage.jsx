@@ -1,24 +1,27 @@
-import { useOutletContext } from "react-router-dom";
+import PropTypes from "prop-types";
 
-export default function ProfilePage() {
-  const { currentUser, clothingItems, isLoadingItems, onCardClick } = useOutletContext();
-
+export default function ProfilePage({
+  clothingItems = [],
+  isLoadingItems = false,
+  onCardClick,
+  currentUser,
+}) {
   const mine = Array.isArray(clothingItems)
-    ? clothingItems.filter((it) => currentUser?._id && it.ownerId === currentUser._id)
+    ? clothingItems.filter((it) => {
+        const ownerId =
+          typeof it.owner === "string"
+            ? it.owner
+            : it.owner && typeof it.owner === "object" && it.owner._id
+            ? it.owner._id
+            : it.ownerId || null;
+        return currentUser?._id && ownerId === currentUser._id;
+      })
     : [];
 
-  const list = mine.length ? mine : (clothingItems || []);
+  const list = mine;
 
   return (
     <section className="profile">
-      <h1 className="profile__title">Profile</h1>
-      <h2 className="profile__subtitle">Your items</h2>
-
-      <div className="profile__hint" style={{ opacity: 0.6, fontSize: 12 }}>
-        fetched: {Array.isArray(clothingItems) ? clothingItems.length : 0}
-        {" · "}yours: {mine.length}
-      </div>
-
       {isLoadingItems ? (
         <div className="profile__loading">Loading…</div>
       ) : !list.length ? (
@@ -31,10 +34,12 @@ export default function ProfilePage() {
                 <img
                   className="cards__image"
                   src={item.imageUrl || "/images/placeholder.png"}
-                  alt={item.name || "Item"}
-                  onError={(e) => { e.currentTarget.src = "/images/placeholder.png"; }}
+                  alt={item.name || "Clothing item"}
                 />
-                <div className="cards__caption">{item.name || "Item"}</div>
+                <div className="cards__meta">
+                  <span className="cards__name">{item.name}</span>
+                  <span className="cards__tag">{item.weather}</span>
+                </div>
               </button>
             </li>
           ))}
@@ -43,3 +48,10 @@ export default function ProfilePage() {
     </section>
   );
 }
+
+ProfilePage.propTypes = {
+  clothingItems: PropTypes.array,
+  isLoadingItems: PropTypes.bool,
+  onCardClick: PropTypes.func,
+  currentUser: PropTypes.object,
+};

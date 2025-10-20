@@ -1,11 +1,17 @@
-const base = import.meta.env.VITE_API_BASE_URL;
+const base = (import.meta.env.VITE_API_BASE_URL || "http://localhost:3001").replace(/\/$/, "");
 
-const authz = (token) => token ? { Authorization: `Bearer ${token}` } : {};
+const authz = (token) => (token ? { Authorization: `Bearer ${token}` } : {});
+
+const eatJson = async (res) => {
+  if (res.status === 204) return true;
+  const data = await res.json().catch(() => ({}));
+  if (!res.ok) throw new Error(data?.message || "Request failed");
+  return data;
+};
 
 export async function getItems(token) {
   const res = await fetch(`${base}/items`, { headers: { ...authz(token) } });
-  if (!res.ok) throw new Error("Failed to get items");
-  return res.json();
+  return eatJson(res);
 }
 
 export async function addItem(data, token) {
@@ -14,8 +20,7 @@ export async function addItem(data, token) {
     headers: { "Content-Type": "application/json", ...authz(token) },
     body: JSON.stringify(data),
   });
-  if (!res.ok) throw new Error("Failed to add item");
-  return res.json();
+  return eatJson(res);
 }
 
 export async function deleteItem(id, token) {
@@ -23,6 +28,5 @@ export async function deleteItem(id, token) {
     method: "DELETE",
     headers: { ...authz(token) },
   });
-  if (!res.ok) throw new Error("Failed to delete item");
-  return res.json();
+  return eatJson(res);
 }
