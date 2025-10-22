@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
-import { Routes, Route, Outlet, useNavigate } from "react-router-dom";
-import Header from "./Header.jsx";
+import { Routes, Route, useNavigate } from "react-router-dom";
+import Layout from "./Layout.jsx";
 import Main from "./Main.jsx";
 import Profile from "./Profile.jsx";
 import LoginModal from "./LoginModal.jsx";
@@ -109,7 +109,7 @@ export default function App() {
     );
   }
 
-  const outletCtx = useMemo(
+  const outletContext = useMemo(
     () => ({
       weatherData,
       clothingItems,
@@ -133,11 +133,11 @@ export default function App() {
               onRegisterClick={() => setIsRegisterOpen(true)}
               onLogoutClick={onLogout}
               locationName={locationName}
-              outletCtx={outletCtx}
+              outletContext={outletContext}
             />
           }
         >
-          <Route path="/" element={<Main />} />
+          <Route index element={<Main />} />
           <Route
             path="/profile"
             element={
@@ -159,14 +159,14 @@ export default function App() {
         <LoginModal
           isOpen={isLoginOpen}
           onClose={() => setIsLoginOpen(false)}
-          onLogin={onLogin}
+          onSubmit={onLogin}
         />
       )}
       {isRegisterOpen && (
         <RegisterModal
           isOpen={isRegisterOpen}
           onClose={() => setIsRegisterOpen(false)}
-          onRegister={onRegister}
+          onSubmit={onRegister}
         />
       )}
       {isAddOpen && (
@@ -184,23 +184,6 @@ export default function App() {
           onDelete={onDeleteItem}
         />
       )}
-    </>
-  );
-}
-
-function Layout(props) {
-  return (
-    <>
-      <Header
-        isAuth={props.isAuth}
-        currentUser={props.currentUser}
-        onAddItemClick={props.onAddItemClick}
-        onLoginClick={props.onLoginClick}
-        onRegisterClick={props.onRegisterClick}
-        onLogoutClick={props.onLogoutClick}
-        locationName={props.locationName}
-      />
-      <Outlet context={props.outletCtx} />
     </>
   );
 }

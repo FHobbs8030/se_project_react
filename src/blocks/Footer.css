@@ -1,20 +1,12 @@
-.footer{
-  width: 100%;
-  max-width: var(--container-w);
-  margin: 0 auto;
-  padding-inline: var(--gutter);  
-  padding-bottom: 20px;
-  box-sizing: border-box;
-
-  display: flex;
-  align-items: flex-end;
-  justify-content: space-between;
-
-  font-family: "Cabinet Grotesk","Inter",sans-serif;
-  font-weight: 500;
-  font-size: 16px;
-  line-height: 20px;
-  color: #0F172A;
+:root{
+  --container-w:1360px;
+  --page-pad:clamp(16px,4vw,40px);
+  --muted:#64748b;
 }
-.footer__left{ display:inline-flex; align-items:center; gap:8px; }
-.footer__year{ white-space:nowrap; }
+
+.footer{ width:100%; }
+.footer__outer{ max-width:var(--container-w); margin:0 auto; padding:24px var(--page-pad) 32px; }
+.footer__inner{
+  display:flex; align-items:center; justify-content:space-between;
+  color:var(--muted); font-size:12px;
+}

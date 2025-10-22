@@ -1,87 +1,83 @@
 :root{
-  --container-w:1360px;
-  --page-pad:clamp(16px, 2.8vw, 40px);
-  --gap:20px;
+  --container-w: 1360px;
+  --gap: 20px;
 
-  --card-ideal:325px;     /* target width at 1440 */
-  --card-min:300px;       /* smallest width before wrapping */
-  --card-radius:12px;
+  --card-w: 325px;
+  --card-h: 328px;
 
-  --card-bg:#eceff1;
-  --card-border:#cbd5e1;
+  --card-radius: 12px;
+  --card-bg: #eceff1;
+  --card-border: #cbd5e1;
 }
 
-/* Aligns with Weather card:
-   1440 -> (100% - 2*40px) = 1360px */
 .cards-wrapper{
-  width:calc(100% - 2*var(--page-pad));
-  max-width:var(--container-w);
-  margin:12px auto 24px;
-  padding:0;
-  box-sizing:border-box;
+  max-width: var(--container-w);
+  margin: 0 auto;
+  padding: 0;
 }
 
-/* Auto-fit responsive grid:
-   - 4 cols at 1440 (≈325px cards + 20px gaps)
-   - drops to 3/2/1 as space shrinks
-*/
 .cards{
-  display:grid;
-  grid-template-columns:repeat(auto-fit, minmax(var(--card-min), 1fr));
-  gap:var(--gap);
-  width:100%;
-  list-style:none;
-  margin:0;
-  padding:0;
+  display: grid;
+  gap: var(--gap);
+  list-style: none;
+  margin: 0;
+  padding: 0;
+
+  /* Mobile-first: fluid columns */
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  justify-items: stretch;
+  align-items: stretch;
 }
 
-/* Card scales with column; keeps perfect aspect using aspect-ratio */
+/* Base card box */
 .card{
-  width:100%;
-  aspect-ratio:325 / 328;
-  border:1px solid var(--card-border);
-  border-radius:var(--card-radius);
-  background:var(--card-bg);
-  box-sizing:border-box;
-  position:relative;
-  overflow:hidden;
+  box-sizing: border-box;
+  border-radius: var(--card-radius);
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+
+  /* Keep a nice proportion on narrow screens */
+  width: 100%;
+  aspect-ratio: 325 / 328;
+  overflow: hidden;
 }
 
-.card__image{
-  width:100%;
-  height:100%;
-  object-fit:cover;
-  display:block;
+/* Make media/content scale neatly inside the card */
+.card img, .card picture, .card video, .card canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
 }
 
-.card__badge{
-  position:absolute;
-  left:8px;
-  bottom:8px;
-  padding:4px 8px;
-  border-radius:8px;
-  background:rgba(0,0,0,.6);
-  color:#fff;
-  font-size:12px;
-  line-height:1;
+/* Exact spec at >=1440px: 4 × 325px with 3 × 20px gaps = 1360px */
+@media (min-width: 1440px){
+  .cards{
+    grid-template-columns: repeat(4, var(--card-w));
+    justify-content: space-between;
+  }
+  .card{
+    width: var(--card-w);
+    height: var(--card-h);
+    aspect-ratio: auto;
+  }
 }
 
-.card__like{
-  position:absolute;
-  top:8px;
-  right:8px;
-  width:32px;
-  height:32px;
-  border:0;
-  border-radius:50%;
-  background:#fff;
-  line-height:32px;
-  text-align:center;
-  cursor:pointer;
+/* Helpful intermediate steps (optional but smooth) */
+@media (min-width: 1024px) and (max-width: 1439.98px){
+  .cards{
+    grid-template-columns: repeat(3, minmax(280px, var(--card-w)));
+    justify-content: center;
+  }
 }
-.card__like--on{ background:#fde047; }
-
-/* Nudge the min width a bit lower on very small screens */
-@media (max-width: 560px){
-  .cards{ grid-template-columns:repeat(auto-fit, minmax(240px, 1fr)); }
+@media (min-width: 768px) and (max-width: 1023.98px){
+  .cards{
+    grid-template-columns: repeat(2, minmax(280px, var(--card-w)));
+    justify-content: center;
+  }
+}
+@media (max-width: 767.98px){
+  .cards{
+    grid-template-columns: 1fr;
+  }
 }
