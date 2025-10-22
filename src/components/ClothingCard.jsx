@@ -1,10 +1,28 @@
 import PropTypes from "prop-types";
+import { likeItem, unlikeItem } from "../utils/itemsApi.js";
 
-export default function ClothingCard({ item, onCardClick }) {
+export default function ClothingCard({ item, onCardClick, onAfterToggle }) {
+  const id = item._id || item.id;
   const name = (item?.name || "").trim();
+  const liked = Array.isArray(item.likes) && item.likes.length > 0;
+
+  async function toggleLike(e) {
+    e.stopPropagation();
+    const updated = liked ? await unlikeItem(id) : await likeItem(id);
+    if (typeof onAfterToggle === "function") onAfterToggle(updated);
+  }
 
   return (
     <li className="card" onClick={() => onCardClick(item)}>
+      <button
+        className={`card__like ${liked ? "card__like--on" : ""}`}
+        type="button"
+        aria-pressed={liked ? "true" : "false"}
+        onClick={toggleLike}
+        title={liked ? "Unlike" : "Like"}
+      >
+        ♥
+      </button>
       <span className="card__badge" aria-hidden="true">{name}</span>
       <img
         className={`card__image card__image--${name.toLowerCase().replace(/\s+/g, "-")}`}
@@ -22,10 +40,13 @@ export default function ClothingCard({ item, onCardClick }) {
 ClothingCard.propTypes = {
   item: PropTypes.shape({
     _id: PropTypes.string,
+    id: PropTypes.string,
     name: PropTypes.string.isRequired,
     imageUrl: PropTypes.string.isRequired,
     weather: PropTypes.string,
-    owner: PropTypes.object,
+    owner: PropTypes.any,
+    likes: PropTypes.array
   }).isRequired,
   onCardClick: PropTypes.func.isRequired,
+  onAfterToggle: PropTypes.func
 };

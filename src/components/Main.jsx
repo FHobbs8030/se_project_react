@@ -3,25 +3,25 @@ import WeatherCard from "./WeatherCard.jsx";
 import ClothesSection from "./ClothesSection.jsx";
 
 export default function Main() {
+  const ctx = useOutletContext() || {};
   const {
     weatherData,
     clothingItems,
     onCardClick,
-    isLoadingItems,
-  } = useOutletContext();
-
-  const tempF =
-    typeof weatherData?.main?.temp === "number"
-      ? Math.round(weatherData.main.temp)
-      : null;
+    isLoadingWeather,
+    isLoadingItems
+  } = ctx;
 
   return (
     <main className="content">
-      <WeatherCard />
+      <WeatherCard
+        weatherData={weatherData}
+        isLoadingWeather={isLoadingWeather}
+      />
       <ClothesSection
-        clothingItems={clothingItems}
-        weatherData={{ tempF }}
-        onCardClick={onCardClick}
+        clothingItems={clothingItems || []}
+        weatherData={{ tempF: weatherData?.main?.temp ?? null }}
+        onCardClick={onCardClick || (() => {})}
         isLoadingItems={isLoadingItems}
       />
     </main>

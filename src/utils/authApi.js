@@ -1,6 +1,42 @@
 import { getToken } from "./token";
 
 const BASE_URL = import.meta.env.VITE_API_BASE_URL;
+const API_BASE = import.meta.env.VITE_API_BASE_URL || "http://localhost:3001";
+
+async function http(url, options = {}) {
+  const res = await fetch(url, options);
+  if (!res.ok) {
+    const text = await res.text().catch(() => "");
+    throw new Error(`${res.status} ${res.statusText} ${text}`);
+  }
+  if (res.status === 204) return null;
+  return res.json();
+}
+
+export function register({ name, avatar, email, password }) {
+  return http(`${API_BASE}/signup`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ name, avatar, email, password })
+  });
+}
+
+export function login({ email, password }) {
+  return http(`${API_BASE}/signin`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ email, password })
+  });
+}
+
+export function getUser() {
+  const token = localStorage.getItem("jwt");
+  if (!token) return Promise.reject(new Error("No token"));
+  return http(`${API_BASE}/users/me`, {
+    method: "GET",
+    headers: { Authorization: `Bearer ${token}` }
+  });
+}
 
 async function request(path, options = {}) {
   const res = await fetch(`${BASE_URL}${path}`, options);
@@ -62,3 +98,4 @@ export function deleteItem(id) {
 }
 
 export default { signup, signin, getMe, getItems, addItem, deleteItem };
+

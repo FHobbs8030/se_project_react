@@ -1,110 +1,87 @@
-:root {
-  --container-w: 1360px;
-  --card-w: 325px;
-  --card-h: 328px;
-  --gap: 20px;
-  --card-radius: 12px;
-  --card-bg: #eceff1;
-  --card-border: #cbd5e1;
-  --page-pad: clamp(16px, 4vw, 40px);
+:root{
+  --container-w:1360px;
+  --page-pad:clamp(16px, 2.8vw, 40px);
+  --gap:20px;
+
+  --card-ideal:325px;     /* target width at 1440 */
+  --card-min:300px;       /* smallest width before wrapping */
+  --card-radius:12px;
+
+  --card-bg:#eceff1;
+  --card-border:#cbd5e1;
 }
 
-.cards-wrapper {
-  max-width: var(--container-w);
-  margin: 0 auto;
-  padding: 0 var(--page-pad);
+/* Aligns with Weather card:
+   1440 -> (100% - 2*40px) = 1360px */
+.cards-wrapper{
+  width:calc(100% - 2*var(--page-pad));
+  max-width:var(--container-w);
+  margin:12px auto 24px;
+  padding:0;
+  box-sizing:border-box;
 }
 
-.cards {
-  display: grid;
-  grid-template-columns: repeat(4, var(--card-w));
-  grid-auto-rows: var(--card-h);
-  gap: var(--gap);
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  justify-content: start;
+/* Auto-fit responsive grid:
+   - 4 cols at 1440 (≈325px cards + 20px gaps)
+   - drops to 3/2/1 as space shrinks
+*/
+.cards{
+  display:grid;
+  grid-template-columns:repeat(auto-fit, minmax(var(--card-min), 1fr));
+  gap:var(--gap);
+  width:100%;
+  list-style:none;
+  margin:0;
+  padding:0;
 }
 
-.cards__lead {
-  font-family: "Cabinet Grotesk", "Inter", sans-serif;
-  font-weight: 700;
-  font-size: 20px;
-  display: block; 
-  inline-size: 330px; 
-  block-size: 25px; 
-  line-height: 25px; 
-  margin: 20px 0; 
-  overflow: hidden; 
-  white-space: nowrap; 
-  text-overflow: ellipsis; 
-  box-sizing: border-box; 
+/* Card scales with column; keeps perfect aspect using aspect-ratio */
+.card{
+  width:100%;
+  aspect-ratio:325 / 328;
+  border:1px solid var(--card-border);
+  border-radius:var(--card-radius);
+  background:var(--card-bg);
+  box-sizing:border-box;
+  position:relative;
+  overflow:hidden;
 }
 
-.card {
-  width: var(--card-w);
-  height: var(--card-h);
-  box-sizing: border-box;
-  background: var(--card-bg);
-  border: 1px solid var(--card-border);
-  border-radius: var(--card-radius);
-  overflow: hidden;
-  position: relative;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+.card__image{
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  display:block;
 }
 
-.card__image {
-  display: block;
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
-  padding: 0;
+.card__badge{
+  position:absolute;
+  left:8px;
+  bottom:8px;
+  padding:4px 8px;
+  border-radius:8px;
+  background:rgba(0,0,0,.6);
+  color:#fff;
+  font-size:12px;
+  line-height:1;
 }
 
-.card__badge {
-  position: absolute;
-  top: 10px;
-  left: 50%;
-  transform: translateX(-50%);
-  padding: 4px 10px;
-  font-size: 12px;
-  line-height: 1;
-  border-radius: 9999px;
-  background: #f3f4f6;
-  color: #111827;
-  border: 1px solid #e5e7eb;
-  pointer-events: none;
+.card__like{
+  position:absolute;
+  top:8px;
+  right:8px;
+  width:32px;
+  height:32px;
+  border:0;
+  border-radius:50%;
+  background:#fff;
+  line-height:32px;
+  text-align:center;
+  cursor:pointer;
 }
+.card__like--on{ background:#fde047; }
 
-@media (max-width: 1400px) {
-  .cards {
-    grid-template-columns: repeat(3, minmax(240px, 1fr));
-    grid-auto-rows: 300px;
-  }
-  .card {
-    width: 100%;
-    height: 100%;
-  }
-}
-
-@media (max-width: 1024px) {
-  .cards {
-    grid-template-columns: repeat(2, minmax(240px, 1fr));
-    grid-auto-rows: 300px;
-  }
-}
-
-@media (max-width: 640px) {
-  .cards {
-    grid-template-columns: 1fr;
-    grid-auto-rows: 300px;
-  }
-}
-
-@media (max-width: 400px) {
-  .cards {
-    grid-auto-rows: 280px;
-  }
+/* Nudge the min width a bit lower on very small screens */
+@media (max-width: 560px){
+  .cards{ grid-template-columns:repeat(auto-fit, minmax(240px, 1fr)); }
 }

@@ -1,206 +1,206 @@
 import { useEffect, useMemo, useState } from "react";
-import { Routes, Route, Outlet } from "react-router-dom";
+import { Routes, Route, Outlet, useNavigate } from "react-router-dom";
 import Header from "./Header.jsx";
-import Footer from "./Footer.jsx";
 import Main from "./Main.jsx";
-import ProfilePage from "./ProfilePage.jsx";
-import AddItemModal from "./AddItemModal.jsx";
+import Profile from "./Profile.jsx";
 import LoginModal from "./LoginModal.jsx";
 import RegisterModal from "./RegisterModal.jsx";
+import AddItemModal from "./AddItemModal.jsx";
 import ItemModal from "./ItemModal.jsx";
-import { getItems, addItem, deleteItem, getMe, signin, signup } from "../utils/api.js";
-
-function AppShell({
-  isAuth,
-  currentUser,
-  onAddItemClick,
-  onLoginClick,
-  onRegisterClick,
-  onLogoutClick,
-  outletContext,
-  modals,
-  selectedItem,
-  onCloseItem,
-  onDeleteItem,
-  locationName,
-}) {
-  return (
-    <>
-      <Header
-        isAuth={isAuth}
-        currentUser={currentUser}
-        onAddItemClick={onAddItemClick}
-        onLoginClick={onLoginClick}
-        onRegisterClick={onRegisterClick}
-        onLogoutClick={onLogoutClick}
-        locationName={locationName}
-      />
-      <Outlet context={outletContext} />
-      <Footer />
-      <AddItemModal isOpen={modals.addOpen} onClose={modals.closeAdd} onSubmit={modals.submitAdd} />
-      <LoginModal isOpen={modals.loginOpen} onClose={modals.closeLogin} onSubmit={modals.submitLogin} />
-      <RegisterModal isOpen={modals.registerOpen} onClose={modals.closeRegister} onSubmit={modals.submitRegister} />
-      <ItemModal isOpen={!!selectedItem} item={selectedItem} onClose={onCloseItem} onDelete={onDeleteItem} />
-    </>
-  );
-}
+import ProtectedRoute from "./ProtectedRoute.jsx";
+import { getItems, addItem, deleteItem } from "../utils/itemsApi.js";
+import { getWeather } from "../utils/weatherApi.js";
+import { getUser, login, register } from "../utils/authApi.js";
 
 export default function App() {
-  const [isAuth, setIsAuth] = useState(false);
-  const [currentUser, setCurrentUser] = useState(null);
+  const navigate = useNavigate();
 
+  const [currentUser, setCurrentUser] = useState(null);
+  const [locationName] = useState(import.meta.env.VITE_LOCATION_NAME || "");
+  const [weatherData, setWeatherData] = useState(null);
   const [clothingItems, setClothingItems] = useState([]);
+
+  const [isLoadingWeather, setIsLoadingWeather] = useState(false);
   const [isLoadingItems, setIsLoadingItems] = useState(false);
 
-  const [weatherData, setWeatherData] = useState(null);
-  const [isLoadingWeather, setIsLoadingWeather] = useState(false);
+  const [isLoginOpen, setIsLoginOpen] = useState(false);
+  const [isRegisterOpen, setIsRegisterOpen] = useState(false);
+  const [isAddOpen, setIsAddOpen] = useState(false);
+  const [previewItem, setPreviewItem] = useState(null);
 
-  const [isAddItemOpen, setAddItemOpen] = useState(false);
-  const [isLoginOpen, setLoginOpen] = useState(false);
-  const [isRegisterOpen, setRegisterOpen] = useState(false);
-  const [selectedItem, setSelectedItem] = useState(null);
-
-  const locationName = import.meta.env.VITE_LOCATION_NAME || "New York";
+  useEffect(() => {
+    setIsLoadingItems(true);
+    getItems()
+      .then((items) => setClothingItems(items))
+      .finally(() => setIsLoadingItems(false));
+  }, []);
 
   useEffect(() => {
     const jwt = localStorage.getItem("jwt");
     if (!jwt) return;
-    getMe(jwt)
-      .then((me) => {
-        setCurrentUser(me);
-        setIsAuth(true);
-      })
+    getUser()
+      .then((user) => setCurrentUser(user))
       .catch(() => {
         localStorage.removeItem("jwt");
-        setIsAuth(false);
         setCurrentUser(null);
       });
   }, []);
 
   useEffect(() => {
-    const jwt = localStorage.getItem("jwt");
-    if (!jwt) return;
-    setIsLoadingItems(true);
-    getItems(jwt)
-      .then((items) => setClothingItems(items))
-      .finally(() => setIsLoadingItems(false));
-  }, [isAuth]);
-
-  useEffect(() => {
-    const url = import.meta.env.VITE_WEATHER_API_URL || "https://api.openweathermap.org/data/2.5/weather";
-    const key = import.meta.env.VITE_WEATHER_API_KEY || "";
-    const coords = (import.meta.env.VITE_DEFAULT_COORDS || "39.1638,-119.767").split(",");
-    const lat = coords[0]?.trim();
-    const lon = coords[1]?.trim();
-    if (!key || !lat || !lon) return;
-    setIsLoadingWeather(true);
-    fetch(`${url}?lat=${lat}&lon=${lon}&appid=${key}&units=imperial`)
-      .then((r) => r.json())
-      .then((data) => setWeatherData(data))
-      .finally(() => setIsLoadingWeather(false));
+    const coords = (import.meta.env.VITE_DEFAULT_COORDS || "").split(",");
+    const lat = parseFloat(coords[0]);
+    const lon = parseFloat(coords[1]);
+    if (Number.isFinite(lat) && Number.isFinite(lon)) {
+      setIsLoadingWeather(true);
+      getWeather({ lat, lon })
+        .then((data) => setWeatherData(data))
+        .finally(() => setIsLoadingWeather(false));
+    }
   }, []);
 
-  function onCardClick(item) {
-    setSelectedItem(item);
+  function onAddItem(values) {
+    return addItem(values).then((item) => {
+      setClothingItems((prev) => [item, ...prev]);
+      setIsAddOpen(false);
+    });
   }
 
-  async function handleAddItemSubmit(values) {
-    const jwt = localStorage.getItem("jwt");
-    const created = await addItem(values, jwt);
-    setClothingItems((prev) => [created, ...prev]);
-    setAddItemOpen(false);
+  function onDeleteItem(item) {
+    const id = item._id || item.id;
+    return deleteItem(id).then(() => {
+      setClothingItems((prev) => prev.filter((i) => (i._id || i.id) !== id));
+      setPreviewItem(null);
+    });
   }
 
-  async function handleDeleteItem(itemId) {
-    const jwt = localStorage.getItem("jwt");
-    const ok = await deleteItem(itemId, jwt);
-    if (ok) setClothingItems((prev) => prev.filter((i) => (i._id || i.id) !== itemId));
-    setSelectedItem(null);
+  function onLogin(values) {
+    return login(values).then(({ token }) => {
+      localStorage.setItem("jwt", token);
+      return getUser().then((user) => {
+        setCurrentUser(user);
+        setIsLoginOpen(false);
+        navigate("/");
+      });
+    });
   }
 
-  async function handleLogin({ email, password }) {
-    const { token } = await signin({ email, password });
-    localStorage.setItem("jwt", token);
-    const me = await getMe(token);
-    setCurrentUser(me);
-    setIsAuth(true);
-    setLoginOpen(false);
+  function onRegister(values) {
+    return register(values).then(() => {
+      setIsRegisterOpen(false);
+      setIsLoginOpen(true);
+    });
   }
 
-  async function handleRegister({ name, avatar, email, password }) {
-    await signup({ name, avatar, email, password });
-    const { token } = await signin({ email, password });
-    localStorage.setItem("jwt", token);
-    const me = await getMe(token);
-    setCurrentUser(me);
-    setIsAuth(true);
-    setRegisterOpen(false);
-  }
-
-  function handleLogout() {
+  function onLogout() {
     localStorage.removeItem("jwt");
-    setIsAuth(false);
     setCurrentUser(null);
-    setClothingItems([]);
+    navigate("/");
   }
 
-  const outletContext = useMemo(
+  function handleCardClick(item) {
+    setPreviewItem(item);
+  }
+
+  function handleAfterToggle(updatedItem) {
+    setClothingItems((prev) =>
+      prev.map((i) =>
+        (i._id || i.id) === (updatedItem._id || updatedItem.id) ? updatedItem : i
+      )
+    );
+  }
+
+  const outletCtx = useMemo(
     () => ({
       weatherData,
       clothingItems,
-      onCardClick,
+      onCardClick: handleCardClick,
       isLoadingWeather,
-      isLoadingItems,
+      isLoadingItems
     }),
     [weatherData, clothingItems, isLoadingWeather, isLoadingItems]
   );
 
-  const modals = {
-    addOpen: isAddItemOpen,
-    closeAdd: () => setAddItemOpen(false),
-    submitAdd: handleAddItemSubmit,
-    loginOpen: isLoginOpen,
-    closeLogin: () => setLoginOpen(false),
-    submitLogin: handleLogin,
-    registerOpen: isRegisterOpen,
-    closeRegister: () => setRegisterOpen(false),
-    submitRegister: handleRegister,
-  };
-
   return (
-    <Routes>
-      <Route
-        path="/"
-        element={
-          <AppShell
-            isAuth={isAuth}
-            currentUser={currentUser}
-            onAddItemClick={() => setAddItemOpen(true)}
-            onLoginClick={() => setLoginOpen(true)}
-            onRegisterClick={() => setRegisterOpen(true)}
-            onLogoutClick={handleLogout}
-            outletContext={outletContext}
-            modals={modals}
-            selectedItem={selectedItem}
-            onCloseItem={() => setSelectedItem(null)}
-            onDeleteItem={handleDeleteItem}
-            locationName={locationName}
-          />
-        }
-      >
-        <Route index element={<Main />} />
+    <>
+      <Routes>
         <Route
-          path="profile"
           element={
-            <ProfilePage
-              clothingItems={clothingItems}
-              isLoadingItems={isLoadingItems}
-              onCardClick={onCardClick}
+            <Layout
+              isAuth={!!currentUser}
               currentUser={currentUser}
+              onAddItemClick={() => setIsAddOpen(true)}
+              onLoginClick={() => setIsLoginOpen(true)}
+              onRegisterClick={() => setIsRegisterOpen(true)}
+              onLogoutClick={onLogout}
+              locationName={locationName}
+              outletCtx={outletCtx}
             />
           }
+        >
+          <Route path="/" element={<Main />} />
+          <Route
+            path="/profile"
+            element={
+              <ProtectedRoute isLoggedIn={!!currentUser}>
+                <Profile
+                  clothingItems={clothingItems}
+                  onCardClick={handleCardClick}
+                  onAfterToggle={handleAfterToggle}
+                  currentUser={currentUser}
+                />
+              </ProtectedRoute>
+            }
+          />
+          <Route path="*" element={<Main />} />
+        </Route>
+      </Routes>
+
+      {isLoginOpen && (
+        <LoginModal
+          isOpen={isLoginOpen}
+          onClose={() => setIsLoginOpen(false)}
+          onLogin={onLogin}
         />
-      </Route>
-    </Routes>
+      )}
+      {isRegisterOpen && (
+        <RegisterModal
+          isOpen={isRegisterOpen}
+          onClose={() => setIsRegisterOpen(false)}
+          onRegister={onRegister}
+        />
+      )}
+      {isAddOpen && (
+        <AddItemModal
+          isOpen={isAddOpen}
+          onClose={() => setIsAddOpen(false)}
+          onAddItem={onAddItem}
+        />
+      )}
+      {previewItem && (
+        <ItemModal
+          isOpen={!!previewItem}
+          onClose={() => setPreviewItem(null)}
+          card={previewItem}
+          onDelete={onDeleteItem}
+        />
+      )}
+    </>
+  );
+}
+
+function Layout(props) {
+  return (
+    <>
+      <Header
+        isAuth={props.isAuth}
+        currentUser={props.currentUser}
+        onAddItemClick={props.onAddItemClick}
+        onLoginClick={props.onLoginClick}
+        onRegisterClick={props.onRegisterClick}
+        onLogoutClick={props.onLogoutClick}
+        locationName={props.locationName}
+      />
+      <Outlet context={props.outletCtx} />
+    </>
   );
 }
