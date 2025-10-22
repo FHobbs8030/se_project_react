@@ -1,114 +1,104 @@
 :root{
-  --container-w:1360px;
-  --page-pad:clamp(16px,4vw,40px);
-  --wx-h:80px;
-  --wx-radius:10px;
+  --container-w: 1360px;
+  --gutter: clamp(19px, calc(1.875vw + 13px), 40px);
+  --page-pad: var(--gutter);
 
-  --wx-temp-w:69px;
-  --wx-temp-size:36px;
-  --wx-deg-size:24px;
+  --wx-h: 80px;
+  --wx-radius: 10px;
 
-  --wx-orb:96px;
+  /* temp/deg */
+  --wx-temp-size: clamp(20px, 10vw, 28px);
+  --wx-deg-size: calc(var(--wx-temp-size) * 0.7);
+  --wx-temp-w: calc(var(--wx-temp-size) + 8px);
 
-  --wx-day-bg:#0f2336;
-  --wx-day-fg:#ffffff;
-  --wx-night-bg:linear-gradient(90deg,#0f172a,#1e293b);
-  --wx-night-fg:#e2e8f0;
+  /* orb */
+  --wx-orb: 60px;
+
+  /* NEW: left inset for inner — 8px @320 → 16px @1440 */
+  --wx-left-inset: clamp(8px, calc(0.7143vw + 5.714px), 16px);
+
+  --wx-day-bg: #00a3ff;
+  --wx-day-fg: #ffffff;
+  --wx-night-bg: #286897;
+  --wx-night-fg: #e2e8f0;
 }
 
-/* Wrapper centers to 1360 with responsive padding */
 .weather-card{
-  width:100%;
-  max-width:var(--container-w);
-  margin:12px auto 24px;
-  padding:0 var(--page-pad);
-  box-sizing:border-box;
+  width: 100%;
+  max-width: var(--container-w);
+  margin: 0 auto;
+  padding-inline: var(--gutter);
+  box-sizing: border-box;
+  background: transparent;
 }
 
-/* Bar */
+.weather-card__outer{
+  width: 100%;
+  max-width: var(--container-w);
+  margin: 12px auto 24px;
+}
+
 .weather-card__inner{
-  height:var(--wx-h);
-  border-radius:var(--wx-radius);
-  position:relative;
-  overflow:hidden;
-  display:flex;
-  align-items:center;
-  justify-content:flex-start;
-  padding:0 calc(var(--page-pad) + var(--wx-orb) + 12px) 0 var(--page-pad);
-  box-sizing:border-box;
+  height: var(--wx-h);
+  border-radius: var(--wx-radius);
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  width: 100%;
+  padding-left: var(--wx-left-inset);
+  padding-right: calc(var(--wx-orb) + 16px);
+  box-sizing: border-box;
 }
 
-.weather-card_day .weather-card__inner{ background:var(--wx-day-bg); color:var(--wx-day-fg); }
-.weather-card_night .weather-card__inner{ background:var(--wx-night-bg); color:var(--wx-night-fg); }
+.weather-card_day .weather-card__inner{ background: var(--wx-day-bg); color: var(--wx-day-fg); }
+.weather-card_night .weather-card__inner{ background: var(--wx-night-bg); color: var(--wx-night-fg); }
 
-/* Left block (temp + °F) */
-.weather-card__left{
-  display:flex;
-  align-items:center;
-  gap:6px;
-}
+.weather-card__left{ display: flex; align-items: center; gap: 4px; }
 
 .weather-card__temp{
-  width:var(--wx-temp-w);
-  font-family:Cabinet Grotesk, system-ui, sans-serif;
-  font-weight:700;
-  font-size:var(--wx-temp-size);
-  line-height:40px;
-  text-align:left;
+  width: var(--wx-temp-w);
+  font-family: "Cabinet Grotesk","Inter",sans-serif;
+  font-weight: 700;
+  font-size: var(--wx-temp-size);
+  line-height: var(--wx-temp-size);
+  color: inherit;
 }
 
 .weather-card__deg{
-  font-size:var(--wx-deg-size);
-  line-height:1;
+  font-family: "Cabinet Grotesk","Inter",sans-serif;
+  font-weight: 700;
+  font-size: var(--wx-deg-size);
+  line-height: var(--wx-deg-size);
+  margin-left: 4px;
+  color: inherit;
 }
 
-/* Right decorative orb */
-.weather-card__right{
-  position:absolute;
-  inset:auto 12px auto auto;
-  height:100%;
-  display:flex;
-  align-items:center;
-}
+.weather-card__right{ position: absolute; inset: 0 0 0 auto; height: 100%; pointer-events: none; }
 
 .weather-card__orb{
-  width:var(--wx-orb);
-  height:var(--wx-orb);
-  border-radius:50%;
-  background:#ffeaa7;
+  position: absolute !important;
+  top: -6px !important;
+  right: -6px !important;
+  width: var(--wx-orb) !important;
+  height: var(--wx-orb) !important;
+  border-radius: 50% !important;
+  background: #fff8ba !important;
+  box-shadow: none !important;
+  z-index: 1 !important;
 }
 
-/* ===== Responsive tweaks ===== */
-
-@media (max-width:1280px){
-  :root{
-    --wx-h:76px;
-    --wx-temp-size:34px;
-    --wx-orb:84px;
+/* if you’re keeping the desktop stretch, keep the same left inset there too */
+@media (min-width: 1440px){
+  .weather-card__inner{
+    width: calc(100% + 2 * var(--gutter));
+    margin-inline: calc(-1 * var(--gutter));
+    padding-left: var(--wx-left-inset);
+    padding-right: calc(var(--gutter) + var(--wx-orb) + 16px);
   }
 }
 
-@media (max-width:1024px){
-  :root{
-    --wx-h:72px;
-    --wx-temp-size:32px;
-    --wx-orb:76px;
-  }
-}
-
-@media (max-width:768px){
-  :root{
-    --wx-h:68px;
-    --wx-temp-size:30px;
-    --wx-orb:64px;
-  }
-}
-
-@media (max-width:480px){
-  :root{
-    --wx-h:64px;
-    --wx-temp-size:28px;
-    --wx-orb:56px;
-    --wx-temp-w:60px;
-  }
-}
+@media (max-width: 1280px){ :root{ --wx-h: 76px; } }
+@media (max-width: 1024px){ :root{ --wx-h: 72px; } }
+@media (max-width: 768px) { :root{ --wx-h: 68px; } }
+@media (max-width: 480px) { :root{ --wx-h: 64px; } }

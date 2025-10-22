@@ -1,23 +1,32 @@
-/* src/blocks/tokens.css */
-:root {
-  /* Layout / container */
-  --container-w: 1360px;
-  --page-pad: 40px;                 /* left/right page gutter */
+:root{
+  --container-w:1360px;
 
-  /* Cards grid */
-  --card-w: clamp(240px, 30vw, 325px);
-  --grid-gap: 21px;
+  /* responsive page gutter */
+  --gutter:40px;
+  --page-pad:var(--gutter);
 
-  /* Weather card */
-  --page-pad: 40px;      /* L/R gutter */
-  --wx-icon: 60px;                  /* moon/icon size */
-  --wx-icon-nudge-x: 39px; /* +moves left, −moves further right */
-  --wx-icon-nudge-y: 11px; /* +moves down, −moves further up */
-  --wx-pad-y: 12px;                 /* top/bottom padding */
-  --wx-min-h: clamp(64px, 12vw, 96px);
+  /* cards grid */
+  --card-w:clamp(240px,30vw,325px);
+  --grid-gap:21px;
 
-  --wx-day-bg: #00A3FF;
-  --wx-night-bg: linear-gradient(90deg, #0f172a, #1e293b);
-  --wx-day-text: #fff;
-  --wx-night-text: #e2e8f0;
+  /* weather card */
+  --wx-min-h:clamp(64px,12vw,96px);
+  --wx-orb:60px;
+  --wx-orb-offset-x:-6px;
+  --wx-orb-offset-y:-6px;
+
+  --wx-day-bg:#00A3FF;
+  --wx-day-fg:#ffffff;
+  --wx-night-bg:#286897;
+  --wx-night-fg:#e2e8f0;
+}
+
+/* Tablet */
+@media (max-width:1024px){
+  :root{ --gutter:24px; }
+}
+
+/* Phone */
+@media (max-width:768px){
+  :root{ --gutter:16px; }
 }

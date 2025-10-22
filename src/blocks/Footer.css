@@ -1,48 +1,20 @@
-:root {
-  --container-w: 1360px;
-  --page-pad: clamp(16px, 4vw, 40px);
-}
-
-.footer {
-  font-family: "Cabinet Grotesk", "Inter", sans-serif;
-  width: 100%;
-  display: flex;
-  justify-content: center;
-}
-
-.footer__outer {
+.footer{
   width: 100%;
   max-width: var(--container-w);
   margin: 0 auto;
-  padding: 0; /* full 1360px bar at wide screens */
+  padding-inline: var(--gutter);  
+  padding-bottom: 20px;
   box-sizing: border-box;
-}
 
-.footer__inner {
-  width: 100%;
   display: flex;
-  align-items: center;
+  align-items: flex-end;
   justify-content: space-between;
-  gap: 12px;
-  padding: 16px 0;
-  color: #4b5563;
-  font-size: 14px;
-  line-height: 1.2;
-}
 
-/* Below 1360px, add horizontal padding so content doesn't touch edges */
-@media (max-width: 1360px) {
-  .footer__outer {
-    padding: 0 var(--page-pad);
-  }
+  font-family: "Cabinet Grotesk","Inter",sans-serif;
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 20px;
+  color: #0F172A;
 }
-
-/* Stack content on narrow phones */
-@media (max-width: 560px) {
-  .footer__inner {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 6px;
-    padding: 12px 0;
-  }
-}
+.footer__left{ display:inline-flex; align-items:center; gap:8px; }
+.footer__year{ white-space:nowrap; }
