@@ -1,0 +1,147 @@
+.modal {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  background: rgba(0, 0, 0, 0.45);
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+}
+
+.modal__card {
+  width: 496px;
+  min-height: 436px;
+  max-width: calc(100vw - 32px);
+  max-height: calc(100vh - 32px);
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+  padding: 20px 24px;
+  box-sizing: border-box;
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+}
+
+.modal__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+
+.modal__title {
+  width: 100%;
+  max-width: 95px;
+  margin: 0;
+  font-family: 'Cabinet Grotesk', 'Inter', sans-serif;
+  font-weight: 700;
+  font-size: 16px;
+  line-height: 20px;
+}
+
+.modal__close {
+  appearance: none;
+  border: 0;
+  background: transparent;
+  font-size: 22px;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.modal__body {
+  display: grid;
+  gap: 16px;
+  overflow: hidden;
+}
+
+.modal__label {
+    width: 100%;
+    max-width: 440px;
+    max-height: 52px;
+}
+
+.modal__label-text {
+  font-size: 14px;
+}
+
+.modal__input {
+  width: 100%;
+  font-size: 14px;
+  padding: 10px 12px;
+  border-radius: 6px;
+  border: 1px solid #cbd5e1;
+  background: #f5f7fa;
+  color: #111827;
+}
+
+.modal__input--underline {
+  width: 100%;
+  max-height: 24px;
+  padding: 0;
+  border: 0;
+  border-bottom: 1px solid #1f2937;
+  border-radius: 0;
+  background: transparent;
+  color: #111827;
+  box-shadow: none;
+}
+
+.modal__input--underline::placeholder {
+  color: #9ca3af;
+}
+
+.modal__input--underline:focus {
+  outline: none;
+  border-bottom: 2px solid #111827;
+}
+
+.modal__fieldset {
+  border: 0;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 8px;
+}
+
+.modal__legend {
+  font-size: 14px;
+  margin-bottom: 4px;
+}
+
+.modal__radio {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.modal__radio input:disabled + span {
+  color: #9ca3af;
+}
+
+.modal__foot {
+  margin-top: 16px;
+}
+
+.modal__submit {
+  width: 160px;
+  height: 36px;
+  border-radius: 8px;
+  border: 0;
+  background: #0ea5e9;
+  color: #fff;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.modal__submit:disabled {
+  background: #cbd5e1;
+  color: #475569;
+  cursor: default;
+}
+
+@media (max-width: 520px) {
+  .modal__card {
+    width: 100%;
+    min-height: 0;
+  }
+}

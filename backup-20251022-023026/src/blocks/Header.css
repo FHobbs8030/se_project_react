@@ -1,0 +1,56 @@
+:root{
+  --container-w:1360px;
+  --page-pad:clamp(16px,4vw,40px);
+  --page-fg:#0f172a;
+}
+
+.header{ width:100%; }
+.header__outer{ max-width:var(--container-w); margin:0 auto; padding:12px var(--page-pad) 0; }
+.header__inner{
+  display:grid;
+  grid-template-columns:auto 1fr auto;
+  align-items:center;
+  gap:16px;
+  color:var(--page-fg);
+}
+
+.header__brand{ display:inline-flex; align-items:center; text-decoration:none; }
+.header__logo{ display:block; }
+
+.header__meta{
+  justify-self:start;
+  font-size:14px;
+  line-height:16px;
+  color:#334155;
+}
+
+.header__actions{
+  display:inline-flex;
+  align-items:center;
+  gap:12px;
+}
+
+.btn{
+  appearance:none;
+  border:0;
+  background:transparent;
+  padding:6px 10px;
+  font-size:14px;
+  line-height:1;
+  cursor:pointer;
+}
+.btn--link{ color:#0f172a; text-decoration:none; }
+.btn--ghost{
+  border:1px solid #cbd5e1;
+  border-radius:10px;
+  background:#fff;
+}
+
+.header__user{ display:inline-flex; align-items:center; gap:8px; }
+.header__avatar{
+  width:28px; height:28px; border-radius:50%;
+  background:#0f172a; color:#fff;
+  display:inline-flex; align-items:center; justify-content:center;
+  font-weight:700; font-size:14px;
+}
+.header__name{ font-size:14px; }
