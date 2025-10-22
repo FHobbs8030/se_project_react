@@ -1,4 +1,5 @@
 import PropTypes from "prop-types";
+import { useNavigate } from "react-router-dom";
 import ToggleSwitch from "./ToggleSwitch.jsx";
 import "../blocks/Header.css";
 
@@ -6,7 +7,6 @@ export default function Header({
   isAuth,
   onLoginClick,
   onRegisterClick,
-  onLogoutClick,
   onAddItemClick,
   currentUser,
   locationName
@@ -17,12 +17,23 @@ export default function Header({
     day: "numeric"
   }).format(now);
 
+  const initial = (currentUser?.name || "U").charAt(0).toUpperCase();
+  const avatarUrl = currentUser?.avatar || "";
+  const navigate = useNavigate();
+  const openProfile = () => navigate("/profile");
+
   return (
     <header className="header">
       <div className="header__outer">
         <div className="header__inner">
           <a className="header__brand" href="/">
-            <img className="header__logo" src="/images/Logo.svg" alt="WTWR logo" width="89" height="40" />
+            <img
+              className="header__logo"
+              src="/images/Logo.svg"
+              alt="WTWR logo"
+              width="89"
+              height="40"
+            />
           </a>
 
           <div className="header__meta">
@@ -33,17 +44,46 @@ export default function Header({
             <ToggleSwitch />
             {isAuth ? (
               <>
-                <button type="button" className="btn btn--ghost" onClick={onAddItemClick}>+ Add clothes</button>
-                <div className="header__user">
-                  <div className="header__avatar" aria-hidden="true">{currentUser?.name?.[0] || "U"}</div>
+                <button
+                  type="button"
+                  className="btn btn--link"
+                  onClick={onAddItemClick}
+                >
+                  <span className="plus">+</span>
+                  <span>Add clothes</span>
+                </button>
+                <button
+                  type="button"
+                  className="header__user"
+                  onClick={openProfile}
+                  aria-label="Open profile"
+                >
                   <span className="header__name">{currentUser?.name || ""}</span>
-                </div>
-                <button type="button" className="btn btn--ghost" onClick={onLogoutClick}>Log Out</button>
+                  <div className="header__avatar" aria-hidden="true">
+                    {avatarUrl ? (
+                      <img src={avatarUrl} alt={currentUser?.name || "Avatar"} />
+                    ) : (
+                      initial
+                    )}
+                  </div>
+                </button>
               </>
             ) : (
               <>
-                <button type="button" className="btn btn--link" onClick={onRegisterClick}>Sign Up</button>
-                <button type="button" className="btn btn--link" onClick={onLoginClick}>Log In</button>
+                <button
+                  type="button"
+                  className="btn btn--link"
+                  onClick={onRegisterClick}
+                >
+                  Sign Up
+                </button>
+                <button
+                  type="button"
+                  className="btn btn--link"
+                  onClick={onLoginClick}
+                >
+                  Log In
+                </button>
               </>
             )}
           </div>
@@ -57,7 +97,6 @@ Header.propTypes = {
   isAuth: PropTypes.bool.isRequired,
   onLoginClick: PropTypes.func.isRequired,
   onRegisterClick: PropTypes.func.isRequired,
-  onLogoutClick: PropTypes.func,
   onAddItemClick: PropTypes.func,
   currentUser: PropTypes.object,
   locationName: PropTypes.string
