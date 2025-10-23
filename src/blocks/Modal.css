@@ -8,18 +8,20 @@
   overflow: hidden;
 }
 
-.modal__card {
+.modal__card,
+.modal_card {
   width: 496px;
-  min-height: 436px;
-  max-width: calc(100vw - 32px);
-  max-height: calc(100vh - 32px);
+  height: 304px;
+  box-sizing: border-box;
+  padding: 28px 28px 36px 28px;
   background: #fff;
   border-radius: 16px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-  padding: 20px 24px;
-  box-sizing: border-box;
+  box-shadow: 10px 30px 40px rgba(0, 0, 0, 0.2);
   display: grid;
   grid-template-rows: auto 1fr auto;
+  overflow: hidden;
+  min-height: auto;
+  max-height: none;
 }
 
 .modal__head {
@@ -30,10 +32,7 @@
 }
 
 .modal__title {
-  width: 100%;
-  max-width: 95px;
   margin: 0;
-  font-family: 'Cabinet Grotesk', 'Inter', sans-serif;
   font-weight: 700;
   font-size: 16px;
   line-height: 20px;
@@ -55,44 +54,55 @@
 }
 
 .modal__label {
-    width: 100%;
-    max-width: 440px;
-    max-height: 52px;
+  width: 100%;
+  max-width: 440px;
 }
 
 .modal__label-text {
-  font-size: 14px;
+  position: relative;
+  top: 7px;
+  left: 1px;
+  display: block;
+  margin-bottom: 8px;
+  font-weight: 700;
+  font-size: 16px;
+  line-height: 20px;
 }
 
 .modal__input {
   width: 100%;
-  font-size: 14px;
-  padding: 10px 12px;
-  border-radius: 6px;
-  border: 1px solid #cbd5e1;
-  background: #f5f7fa;
+  font-family: 'Cabinet Grotesk', "inter", sans-serif;
+  font-weight: 700;
+  font-size: 16px;
+  line-height: 20px;
   color: #111827;
+  box-sizing: border-box;
 }
 
-.modal__input--underline {
-  width: 100%;
-  max-height: 24px;
-  padding: 0;
-  border: 0;
+.modal__input.modal__input--underline {
+  background: transparent;
+  border: none;
   border-bottom: 1px solid #1f2937;
   border-radius: 0;
-  background: transparent;
-  color: #111827;
-  box-shadow: none;
+  padding: 12px 0 8px;
 }
 
-.modal__input--underline::placeholder {
-  color: #9ca3af;
-}
-
-.modal__input--underline:focus {
+.modal__input.modal__input--underline:focus {
   outline: none;
   border-bottom: 2px solid #111827;
+}
+
+.modal__input::placeholder {
+  color: #94a3b8;
+}
+
+.modal__input:-webkit-autofill,
+.modal__input:-webkit-autofill:hover,
+.modal__input:-webkit-autofill:focus {
+  -webkit-text-fill-color: #111827;
+  box-shadow: 0 0 0px 1000px transparent inset;
+  transition: background-color 9999s ease-out 0s;
+  caret-color: #111827;
 }
 
 .modal__fieldset {

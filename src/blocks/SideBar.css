@@ -1,33 +1,44 @@
-.sidebar__user-inline {
+.sidebar {
   display: flex;
-  align-items: center;
-  gap: 10px;
-  width: 229px;
-  margin: 0 0 0 40px;
+  flex-direction: column;
+  gap: 16px;
 }
 
 .sidebar__user {
   display: flex;
   align-items: center;
-  gap: 16px; 
-  width: 229px;
+  gap: 12px;
 }
-
 .sidebar__avatar {
-  width: 40px;
-  height: 40px;
+  width: 56px;
+  height: 56px;
   border-radius: 50%;
   object-fit: cover;
 }
-
 .sidebar__username {
-  font-family: "Cabinet Grotesk", "Inter", sans-serif;
-  font-weight: 700;
-  font-size: 20px;
-  line-height: 100%;
-  margin: 0;
-  white-space: nowrap;      
-  overflow: hidden;         
-  text-overflow: ellipsis;  
+  font-weight: 600;
 }
 
+.sidebar__actions {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.sidebar__btn {
+  text-align: left;
+  background: none;
+  border: 0;
+  padding: 8px 0;
+  cursor: pointer;
+  font: inherit;
+}
+
+.sidebar__btn--edit {
+  text-decoration: underline;
+}
+.sidebar__btn--logout {
+  color: #ef4444;
+}
+.sidebar__btn:hover {
+  opacity: 0.85;
+}

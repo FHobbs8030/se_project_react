@@ -1,19 +1,24 @@
-import { useMemo } from "react";
-import PropTypes from "prop-types";
+import { useMemo } from 'react';
+import PropTypes from 'prop-types';
+import SideBar from '../components/SideBar.jsx';
+import ClothesSection from '../components/ClothesSection.jsx';
+import '../pages/ProfilePage.css';
 
 export default function ProfilePage({
   clothingItems = [],
   isLoadingItems = false,
   onCardClick,
   currentUser,
+  onLogoutClick,
+  onEditProfileClick,
 }) {
-  const list = useMemo(() => {
+  const userItems = useMemo(() => {
     const items = Array.isArray(clothingItems) ? clothingItems : [];
-    return items.filter((it) => {
+    return items.filter(it => {
       const ownerId =
-        typeof it.owner === "string"
+        typeof it.owner === 'string'
           ? it.owner
-          : it.owner && typeof it.owner === "object" && it.owner._id
+          : it.owner && typeof it.owner === 'object' && it.owner._id
           ? it.owner._id
           : it.ownerId || null;
       return currentUser?._id && ownerId === currentUser._id;
@@ -21,31 +26,21 @@ export default function ProfilePage({
   }, [clothingItems, currentUser]);
 
   return (
-    <section className="profile">
-      {isLoadingItems ? (
-        <div className="profile__loading">Loading…</div>
-      ) : !list.length ? (
-        <div className="profile__empty">No items yet.</div>
-      ) : (
-        <ul className="cards">
-          {list.map((item) => (
-            <li key={item._id || item.id} className="cards__item">
-              <button className="cards__button" onClick={() => onCardClick(item)}>
-                <img
-                  className="cards__image"
-                  src={item.imageUrl || "/images/placeholder.png"}
-                  alt={item.name || "Clothing item"}
-                />
-                <div className="cards__meta">
-                  <span className="cards__name">{item.name}</span>
-                  <span className="cards__tag">{item.weather}</span>
-                </div>
-              </button>
-            </li>
-          ))}
-        </ul>
-      )}
-    </section>
+    <main className="profile">
+      <SideBar
+        currentUser={currentUser}
+        onEditProfileClick={onEditProfileClick}
+        onLogoutClick={onLogoutClick}
+      />
+      <section className="profile__content">
+        <ClothesSection
+          clothingItems={userItems}
+          onCardClick={onCardClick}
+          isLoadingItems={isLoadingItems}
+          weatherData={null}
+        />
+      </section>
+    </main>
   );
 }
 
@@ -54,4 +49,6 @@ ProfilePage.propTypes = {
   isLoadingItems: PropTypes.bool,
   onCardClick: PropTypes.func,
   currentUser: PropTypes.object,
+  onLogoutClick: PropTypes.func,
+  onEditProfileClick: PropTypes.func,
 };

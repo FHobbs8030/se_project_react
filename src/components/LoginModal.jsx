@@ -1,14 +1,14 @@
-import PropTypes from "prop-types";
-import ModalWithForm from "./ModalWithForm.jsx";
-import { useState } from "react";
+import PropTypes from 'prop-types';
+import ModalWithForm from './ModalWithForm.jsx';
+import { useState } from 'react';
 
 export default function LoginModal({ isOpen, onClose, onSubmit }) {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
 
   if (!isOpen) return null;
 
-  const handle = (e) => {
+  const handle = e => {
     e.preventDefault();
     onSubmit({ email, password });
   };
@@ -23,12 +23,26 @@ export default function LoginModal({ isOpen, onClose, onSubmit }) {
     >
       <label className="modal__label">
         <span className="modal__label-text">Email</span>
-        <input className="modal__input" type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="you@example.com" required />
+        <input
+          className="modal__input modal__input--underline"
+          type="email"
+          value={email}
+          onChange={e => setEmail(e.target.value)}
+          placeholder="Email"
+          required
+        />
       </label>
 
       <label className="modal__label">
         <span className="modal__label-text">Password</span>
-        <input className="modal__input" type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="••••••••" required />
+        <input
+          className="modal__input modal__input--underline"
+          type="password"
+          value={password}
+          onChange={e => setPassword(e.target.value)}
+          placeholder="••••••••"
+          required
+        />
       </label>
     </ModalWithForm>
   );
