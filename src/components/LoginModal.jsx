@@ -2,6 +2,8 @@ import PropTypes from 'prop-types';
 import ModalWithForm from './ModalWithForm.jsx';
 import { useState } from 'react';
 
+const isEmail = v => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(String(v).toLowerCase());
+
 export default function LoginModal({ isOpen, onClose, onSubmit }) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -10,16 +12,20 @@ export default function LoginModal({ isOpen, onClose, onSubmit }) {
 
   const handle = e => {
     e.preventDefault();
+    console.log('Submitting', { email, password }); // should appear
     onSubmit({ email, password });
   };
+
+  const isValid = isEmail(email) && password.length >= 8;
 
   return (
     <ModalWithForm
       isOpen={isOpen}
-      title="Log in"
+      title="Log In"
       onClose={onClose}
       onSubmit={handle}
-      submitText="Log in"
+      submitText="Log In"
+      submitDisabled={!isValid}
     >
       <label className="modal__label">
         <span className="modal__label-text">Email</span>
@@ -40,7 +46,8 @@ export default function LoginModal({ isOpen, onClose, onSubmit }) {
           type="password"
           value={password}
           onChange={e => setPassword(e.target.value)}
-          placeholder="••••••••"
+          placeholder="Password"
+          minLength={8}
           required
         />
       </label>

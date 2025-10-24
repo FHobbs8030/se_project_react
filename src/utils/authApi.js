@@ -1,38 +1,45 @@
-// src/utils/authApi.js
-const API_BASE = (import.meta.env.VITE_API_BASE_URL || "http://localhost:3001").replace(/\/$/, "");
+const BASE_URL = import.meta.env.VITE_API_BASE_URL || "http://localhost:3001";
 
-async function eat(res) {
+async function request(path, options = {}) {
+  const res = await fetch(`${BASE_URL}${path}`, {
+    method: "GET",
+    headers: { "Content-Type": "application/json", ...(options.headers || {}) },
+    ...options,
+  });
+
   const text = await res.text();
-  const data = text ? JSON.parse(text).catch(() => ({})) : {};
-  if (!res.ok) throw new Error(data?.message || res.statusText || "Request failed");
+  let data = null;
+  try {
+    data = text ? JSON.parse(text) : null;
+  } catch {
+    data = null;
+  }
+
+  if (!res.ok) {
+    const message = data?.message || res.statusText || "Request failed";
+    throw new Error(message);
+  }
+
   return data;
 }
 
-export async function register({ name, avatar, email, password }) {
-  const res = await fetch(`${API_BASE}/signup`, {
+export function login({ email, password }) {
+  return request("/signin", {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ name, avatar, email, password })
+    body: JSON.stringify({ email, password }),
   });
-  return eat(res);
 }
 
-export async function login({ email, password }) {
-  const res = await fetch(`${API_BASE}/signin`, {
+export function register({ name, avatar, email, password }) {
+  return request("/signup", {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ email, password })
+    body: JSON.stringify({ name, avatar, email, password }),
   });
-  return eat(res);
 }
 
-export async function getUser() {
-  const token = localStorage.getItem("jwt");
-  if (!token) throw new Error("No token");
-  const res = await fetch(`${API_BASE}/users/me`, {
-    headers: { Authorization: `Bearer ${token}` }
+export function getUser() {
+  const token = localStorage.getItem("jwt") || "";
+  return request("/users/me", {
+    headers: { Authorization: `Bearer ${token}` },
   });
-  return eat(res);
 }
-
-export default { register, login, getUser };

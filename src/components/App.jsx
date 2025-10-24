@@ -28,6 +28,8 @@ export default function App() {
   const [isAddOpen, setIsAddOpen] = useState(false);
   const [previewItem, setPreviewItem] = useState(null);
 
+  const [authError, setAuthError] = useState("");
+
   useEffect(() => {
     setIsLoadingItems(true);
     getItems()
@@ -73,22 +75,31 @@ export default function App() {
     });
   }
 
-  function onLogin(values) {
-    return login(values).then(({ token }) => {
+  async function onLogin(values) {
+    setAuthError("");
+    try {
+      const { token } = await login(values);
       localStorage.setItem("jwt", token);
-      return getUser().then((user) => {
-        setCurrentUser(user);
-        setIsLoginOpen(false);
-        navigate("/");
-      });
-    });
+      const user = await getUser();
+      setCurrentUser(user);
+      setIsLoginOpen(false);
+      navigate("/");
+    } catch (e) {
+      setAuthError("Invalid email or password");
+      console.error(e);
+    }
   }
 
-  function onRegister(values) {
-    return register(values).then(() => {
+  async function onRegister(values) {
+    setAuthError("");
+    try {
+      await register(values);
       setIsRegisterOpen(false);
       setIsLoginOpen(true);
-    });
+    } catch (e) {
+      setAuthError("Registration failed");
+      console.error(e);
+    }
   }
 
   function onLogout() {
@@ -115,7 +126,7 @@ export default function App() {
       clothingItems,
       onCardClick: handleCardClick,
       isLoadingWeather,
-      isLoadingItems
+      isLoadingItems,
     }),
     [weatherData, clothingItems, isLoadingWeather, isLoadingItems]
   );
@@ -134,6 +145,7 @@ export default function App() {
               onLogoutClick={onLogout}
               locationName={locationName}
               outletContext={outletContext}
+              authError={authError}
             />
           }
         >
