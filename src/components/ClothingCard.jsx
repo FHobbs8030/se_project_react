@@ -1,10 +1,11 @@
 import PropTypes from "prop-types";
 import { likeItem, unlikeItem } from "../utils/itemsApi.js";
 
-export default function ClothingCard({ item, onCardClick, onAfterToggle }) {
+export default function ClothingCard({ item, onCardClick, onAfterToggle, currentUser }) {
   const id = item._id || item.id;
   const name = (item?.name || "").trim();
-  const liked = Array.isArray(item.likes) && item.likes.length > 0;
+  const uid = currentUser?._id || currentUser?.id || null;
+  const liked = Array.isArray(item.likes) && uid ? item.likes.some(l => String(l) === String(uid)) : false;
 
   async function toggleLike(e) {
     e.stopPropagation();
@@ -48,5 +49,6 @@ ClothingCard.propTypes = {
     likes: PropTypes.array
   }).isRequired,
   onCardClick: PropTypes.func.isRequired,
-  onAfterToggle: PropTypes.func
+  onAfterToggle: PropTypes.func,
+  currentUser: PropTypes.object
 };

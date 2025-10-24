@@ -1,80 +1,82 @@
+import { useEffect, useMemo, useState } from "react";
 import PropTypes from "prop-types";
 import ModalWithForm from "./ModalWithForm.jsx";
-import { useMemo, useState } from "react";
 
-export default function AddItemModal({ isOpen, onClose, onSubmit }) {
+export default function AddItemModal({ isOpen, onClose, onAddItem }) {
   const [name, setName] = useState("");
-  const [imageUrl, setImageUrl] = useState("");
-  const [weather, setWeather] = useState("hot");
+  const [image, setImage] = useState("");
+  const [submitting, setSubmitting] = useState(false);
 
-  const validUrl = (v) => {
-    try { new URL(v); return true; } catch { return false; }
-  };
+  useEffect(() => {
+    if (isOpen) {
+      setName("");
+      setImage("");
+      setSubmitting(false);
+    }
+  }, [isOpen]);
 
-  const disabled = useMemo(() => {
-    const n = name.trim().length > 0;
-    const u = imageUrl.trim().length > 0 && validUrl(imageUrl.trim());
-    return !(n && u);
-  }, [name, imageUrl]);
+  const isValid = useMemo(() => {
+    const hasName = name.trim().length >= 2;
+    const val = image.trim();
+    const looksHttp = /^https?:\/\/.+/i.test(val);
+    const looksRelative = /^\/[A-Za-z0-9/_\-.]+$/.test(val);
+    return hasName && (looksHttp || looksRelative);
+  }, [name, image]);
 
-  const handle = (e) => {
+  async function handleSubmit(e) {
     e.preventDefault();
-    if (disabled) return;
-    onSubmit({ name: name.trim(), imageUrl: imageUrl.trim(), weather });
-    setName("");
-    setImageUrl("");
-    setWeather("hot");
-  };
+    if (!isValid || submitting) return;
 
-  if (!isOpen) return null;
+    setSubmitting(true);
+    try {
+      const val = image.trim();
+      const finalUrl = val.startsWith("/")
+        ? `${window.location.origin}${val}`
+        : val;
+
+      await onAddItem({ name: name.trim(), imageUrl: finalUrl });
+      onClose();
+    } finally {
+      setSubmitting(false);
+    }
+  }
 
   return (
     <ModalWithForm
-      isOpen={isOpen}
       title="New garment"
+      isOpen={isOpen}
       onClose={onClose}
-      onSubmit={handle}
+      onSubmit={handleSubmit}
       submitText="Add garment"
-      submitDisabled={disabled}
+      submitDisabled={!isValid || submitting}
     >
       <label className="modal__label">
-        <span className="modal__label-text">Name</span>
+        Name
         <input
-          className="modal__input modal__input--underline"
+          type="text"
+          className="modal__input"
+          placeholder="Name"
           value={name}
           onChange={(e) => setName(e.target.value)}
-          placeholder="Name"
+          minLength={2}
           required
         />
       </label>
 
       <label className="modal__label">
-        <span className="modal__label-text">Image</span>
+        Image
         <input
-          className="modal__input modal__input--underline"
-          type="url"
-          value={imageUrl}
-          onChange={(e) => setImageUrl(e.target.value)}
+          type="text"
+          className="modal__input"
           placeholder="Image URL"
+          value={image}
+          onChange={(e) => setImage(e.target.value)}
           required
         />
+        <div className="modal__hint">
+          You can use <code>http(s)://…</code> or a site path like <code>/images/clothes/beanie.png</code>
+        </div>
       </label>
-
-      <fieldset className="modal__fieldset">
-        <legend className="modal__legend">Select the weather type:</legend>
-        <label className="modal__radio">
-          <input type="radio" name="weather" value="hot" checked={weather === "hot"} onChange={(e) => setWeather(e.target.value)} />
-          <span>Hot</span>
-        </label>
-        <label className="modal__radio">
-          <input type="radio" name="weather" value="warm" checked={weather === "warm"} onChange={(e) => setWeather(e.target.value)} />
-          <span>Warm</span>
-        </label>
-        <label className="modal__radio">
-          <input type="radio" name="weather" value="cold" checked={weather === "cold"} onChange={(e) => setWeather(e.target.value)} />
-          <span>Cold</span>
-        </label>
-      </fieldset>
     </ModalWithForm>
   );
 }
@@ -82,5 +84,5 @@ export default function AddItemModal({ isOpen, onClose, onSubmit }) {
 AddItemModal.propTypes = {
   isOpen: PropTypes.bool.isRequired,
   onClose: PropTypes.func.isRequired,
-  onSubmit: PropTypes.func.isRequired,
+  onAddItem: PropTypes.func.isRequired,
 };

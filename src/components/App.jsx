@@ -16,7 +16,8 @@ export default function App() {
   const navigate = useNavigate();
 
   const [currentUser, setCurrentUser] = useState(null);
-  const [locationName] = useState(import.meta.env.VITE_LOCATION_NAME || "");
+  const [locationName] = useState(import.meta.env.VITE_LOCATION_NAME || "New York");
+
   const [weatherData, setWeatherData] = useState(null);
   const [clothingItems, setClothingItems] = useState([]);
 
@@ -49,22 +50,28 @@ export default function App() {
   }, []);
 
   useEffect(() => {
-    const coords = (import.meta.env.VITE_DEFAULT_COORDS || "").split(",");
-    const lat = parseFloat(coords[0]);
-    const lon = parseFloat(coords[1]);
-    if (Number.isFinite(lat) && Number.isFinite(lon)) {
-      setIsLoadingWeather(true);
-      getWeather({ lat, lon })
-        .then((data) => setWeatherData(data))
-        .finally(() => setIsLoadingWeather(false));
-    }
+    setIsLoadingWeather(true);
+    getWeather()
+      .then(setWeatherData)
+      .finally(() => setIsLoadingWeather(false));
   }, []);
 
-  function onAddItem(values) {
-    return addItem(values).then((item) => {
-      setClothingItems((prev) => [item, ...prev]);
-      setIsAddOpen(false);
-    });
+  function handleCardClick(item) {
+    setPreviewItem(item);
+  }
+
+  function handleAfterToggle(updatedItem) {
+    setClothingItems((prev) =>
+      prev.map((i) =>
+        (i._id || i.id) === (updatedItem._id || updatedItem.id) ? updatedItem : i
+      )
+    );
+  }
+
+  async function onAddItem(values) {
+    const created = await addItem(values);
+    setClothingItems((prev) => [created, ...prev]);
+    setIsAddOpen(false);
   }
 
   function onDeleteItem(item) {
@@ -84,9 +91,8 @@ export default function App() {
       setCurrentUser(user);
       setIsLoginOpen(false);
       navigate("/");
-    } catch (e) {
+    } catch {
       setAuthError("Invalid email or password");
-      console.error(e);
     }
   }
 
@@ -96,9 +102,8 @@ export default function App() {
       await register(values);
       setIsRegisterOpen(false);
       setIsLoginOpen(true);
-    } catch (e) {
+    } catch {
       setAuthError("Registration failed");
-      console.error(e);
     }
   }
 
@@ -106,18 +111,6 @@ export default function App() {
     localStorage.removeItem("jwt");
     setCurrentUser(null);
     navigate("/");
-  }
-
-  function handleCardClick(item) {
-    setPreviewItem(item);
-  }
-
-  function handleAfterToggle(updatedItem) {
-    setClothingItems((prev) =>
-      prev.map((i) =>
-        (i._id || i.id) === (updatedItem._id || updatedItem.id) ? updatedItem : i
-      )
-    );
   }
 
   const outletContext = useMemo(
@@ -130,6 +123,11 @@ export default function App() {
     }),
     [weatherData, clothingItems, isLoadingWeather, isLoadingItems]
   );
+
+  const isOwner =
+    previewItem &&
+    currentUser &&
+    String(previewItem.owner?._id || previewItem.owner || "") === String(currentUser._id || "");
 
   return (
     <>
@@ -153,7 +151,7 @@ export default function App() {
           <Route
             path="/profile"
             element={
-              <ProtectedRoute isLoggedIn={!!currentUser}>
+              <ProtectedRoute isAuth={!!currentUser} redirectTo="/">
                 <Profile
                   clothingItems={clothingItems}
                   onCardClick={handleCardClick}
@@ -192,8 +190,9 @@ export default function App() {
         <ItemModal
           isOpen={!!previewItem}
           onClose={() => setPreviewItem(null)}
-          card={previewItem}
+          item={previewItem}
           onDelete={onDeleteItem}
+          isOwner={!!isOwner}
         />
       )}
     </>

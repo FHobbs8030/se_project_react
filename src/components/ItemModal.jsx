@@ -37,7 +37,7 @@ ItemModal.propTypes = {
     name: PropTypes.string.isRequired,
     imageUrl: PropTypes.string.isRequired,
     weather: PropTypes.string,
-    owner: PropTypes.object,
+    owner: PropTypes.any,
   }),
   onClose: PropTypes.func.isRequired,
   onDelete: PropTypes.func,
