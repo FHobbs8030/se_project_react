@@ -1,21 +1,22 @@
 .clothes {
-  max-width: var(--container-w);
-  margin: 0 auto;
-  padding: 0 var(--page-pad);
+  padding: 0;
+  margin: 0;
 }
 
-.clothes__title {
-  display: block;
-  margin: 0 0 12px;
-  padding: 6px 8px;
-  font-weight: 600;
-  font-size: 14px;
-  line-height: 1;
-  color: var(--page-fg, #0f172a);
-  background: #eef2f6;
-  border-radius: 4px;
+.clothes__meta {
+  margin: 0 0 8px;
+  font-size: 12px;
+  color: #64748b;
 }
 
-.clothes__intro { white-space: nowrap; }
-.clothes__sep { margin: 0 4px; }
-.clothes__lead { white-space: nowrap; }
+.clothes__summary {
+  max-width: 1360px;
+  margin: 0 auto 16px;
+  padding-inline: var(--gutter, 40px);
+  box-sizing: border-box;
+  width: 100%;
+}
+
+.clothes__loading {
+  padding: 16px 0;
+}

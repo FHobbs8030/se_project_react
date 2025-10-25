@@ -1,0 +1,10 @@
+/* src/pages/ProfilePage.css */
+.profile {
+  display: grid;
+  grid-template-columns: 320px 1fr;
+  gap: 24px;
+}
+
+.profile__content {
+  padding: 0;
+}

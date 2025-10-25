@@ -1,83 +1,92 @@
-:root{
-  --container-w: 1360px;
+:root {
   --gap: 20px;
-
   --card-w: 325px;
   --card-h: 328px;
-
   --card-radius: 12px;
   --card-bg: #eceff1;
   --card-border: #cbd5e1;
+  --label-bg: rgba(248, 250, 252, 0.92);
+  --label-fg: #0f172a;
+  --label-pad-x: 10px;
+  --label-pad-y: 4px;
+  --label-gap: 8px;
+  --label-radius: 9999px;
+  --like-size: 24px;
 }
 
-.cards-wrapper{
-  max-width: var(--container-w);
-  margin: 0 auto;
-  padding: 0;
-}
-
-.cards{
+.cards {
   display: grid;
+  grid-auto-rows: var(--card-h);
+  grid-template-columns: repeat(auto-fill, var(--card-w));
   gap: var(--gap);
   list-style: none;
-  margin: 0;
   padding: 0;
-
-  /* Mobile-first: fluid columns */
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  justify-items: stretch;
-  align-items: stretch;
+  margin: 0;
+  justify-content: center;
 }
 
-/* Base card box */
-.card{
+.card {
+  position: relative;
+  width: var(--card-w);
+  height: var(--card-h);
   box-sizing: border-box;
   border-radius: var(--card-radius);
   background: var(--card-bg);
   border: 1px solid var(--card-border);
-
-  /* Keep a nice proportion on narrow screens */
-  width: 100%;
-  aspect-ratio: 325 / 328;
   overflow: hidden;
 }
 
-/* Make media/content scale neatly inside the card */
-.card img, .card picture, .card video, .card canvas {
+.card__meta {
+  position: absolute;
+  top: 8px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: var(--label-gap);
+}
+
+.card__title {
+  padding: var(--label-pad-y) var(--label-pad-x);
+  border-radius: var(--label-radius);
+  background: var(--label-bg);
+  color: var(--label-fg);
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+.card__like {
+  width: var(--like-size);
+  height: var(--like-size);
+  border: 0;
+  border-radius: 50%;
+  background: transparent center / contain no-repeat url("/images/unLike button.png");
+  cursor: pointer;
+}
+
+.card__like.is-liked {
+  background-image: url("/images/Like button.png");
+}
+
+.card__like:focus-visible {
+  outline: 2px solid #64748b;
+  outline-offset: 2px;
+}
+
+.card img,
+.card picture,
+.card video,
+.card canvas {
   display: block;
   width: 100%;
   height: 100%;
   object-fit: contain;
 }
 
-/* Exact spec at >=1440px: 4 × 325px with 3 × 20px gaps = 1360px */
-@media (min-width: 1440px){
-  .cards{
-    grid-template-columns: repeat(4, var(--card-w));
+@media (min-width: 1440px) {
+  .cards {
     justify-content: space-between;
-  }
-  .card{
-    width: var(--card-w);
-    height: var(--card-h);
-    aspect-ratio: auto;
-  }
-}
-
-/* Helpful intermediate steps (optional but smooth) */
-@media (min-width: 1024px) and (max-width: 1439.98px){
-  .cards{
-    grid-template-columns: repeat(3, minmax(280px, var(--card-w)));
-    justify-content: center;
-  }
-}
-@media (min-width: 768px) and (max-width: 1023.98px){
-  .cards{
-    grid-template-columns: repeat(2, minmax(280px, var(--card-w)));
-    justify-content: center;
-  }
-}
-@media (max-width: 767.98px){
-  .cards{
-    grid-template-columns: 1fr;
   }
 }

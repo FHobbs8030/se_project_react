@@ -1,55 +1,90 @@
+import { useState, useMemo } from "react";
 import PropTypes from "prop-types";
-import ClothingCard from "./ClothingCard.jsx";
 import "../blocks/Cards.css";
 import "../blocks/ClothesSection.css";
 
-function getTempF(weatherData) {
-  if (!weatherData) return null;
-  if (typeof weatherData.tempF === "number") return Math.round(weatherData.tempF);
-  const raw = weatherData?.main?.temp;
-  return typeof raw === "number" ? Math.round(raw) : null;
-}
-
 export default function ClothesSection({
-  clothingItems,
-  weatherData,
+  clothingItems = [],
   onCardClick,
-  isLoadingItems
+  isLoadingItems = false,
+  weatherData = null,
 }) {
-  const items = Array.isArray(clothingItems) ? clothingItems : [];
-  const tF = getTempF(weatherData);
+  const [likedIds, setLikedIds] = useState(() => new Set());
+
+  const tempF =
+    weatherData && typeof weatherData.main?.temp === "number"
+      ? Math.round(weatherData.main.temp)
+      : null;
+
+  const items = useMemo(() => {
+    return Array.isArray(clothingItems) ? clothingItems : [];
+  }, [clothingItems]);
+
+  const toggleLike = (id) => {
+    setLikedIds((prev) => {
+      const next = new Set(prev);
+      if (next.has(id)) next.delete(id);
+      else next.add(id);
+      return next;
+    });
+  };
 
   return (
-    <section className="clothes">
-      <h2 className="clothes__title">
-        <span className="clothes__intro">
-          Today is {Number.isFinite(tF) ? `${tF}° F` : "—"}
-        </span>
-        <span className="clothes__sep"> / </span>
-        <span className="clothes__lead">You may want to wear:</span>
-      </h2>
+    <section className="clothes container">
+      <header className="clothes__meta">
+        {tempF !== null ? (
+          <div className="clothes__summary">Today is {tempF} °F / You may want to wear:</div>
+        ) : (
+          <div className="clothes__summary">You may want to wear:</div>
+        )}
+      </header>
 
-      <div className="cards-wrapper" aria-live="polite">
+      {isLoadingItems ? (
+        <div className="clothes__loading" aria-live="polite">Loading items…</div>
+      ) : (
         <ul className="cards">
-          {items.map((item) => (
-            <ClothingCard
-              key={item._id || item.id}
-              item={item}
-              onCardClick={onCardClick}
-            />
-          ))}
-          {isLoadingItems && items.length === 0 ? (
-            <li className="cards__empty">Loading…</li>
-          ) : null}
+          {items.map((item) => {
+            const id = item._id || item.id;
+            const liked = likedIds.has(id);
+            const name = item.name || "Item";
+            const src = item.imageUrl || item.image;
+            return (
+              <li
+                key={id}
+                className="card"
+                onClick={() => onCardClick && onCardClick(item)}
+                role="button"
+                tabIndex={0}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" || e.key === " ") onCardClick && onCardClick(item);
+                }}
+              >
+                <div className="card__meta">
+                  <div className="card__title">{name}</div>
+                  <button
+                    type="button"
+                    className={`card__like ${liked ? "is-liked" : ""}`}
+                    aria-pressed={liked}
+                    aria-label={liked ? "Unlike" : "Like"}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      toggleLike(id);
+                    }}
+                  />
+                </div>
+                <img src={src} alt={name} />
+              </li>
+            );
+          })}
         </ul>
-      </div>
+      )}
     </section>
   );
 }
 
 ClothesSection.propTypes = {
-  clothingItems: PropTypes.arrayOf(PropTypes.object).isRequired,
-  weatherData: PropTypes.oneOfType([PropTypes.object, PropTypes.number]),
-  onCardClick: PropTypes.func.isRequired,
-  isLoadingItems: PropTypes.bool
+  clothingItems: PropTypes.array,
+  onCardClick: PropTypes.func,
+  isLoadingItems: PropTypes.bool,
+  weatherData: PropTypes.any,
 };

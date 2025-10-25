@@ -8,17 +8,24 @@ export default function Header({
   onLoginClick,
   onRegisterClick,
   onAddItemClick,
+  onAddItemOpen,
   currentUser,
-  locationName
+  locationName,
+  tempUnit,
+  onToggleUnit,
 }) {
+  const navigate = useNavigate();
   const now = new Date();
   const formattedDate = new Intl.DateTimeFormat("en-US", { month: "long", day: "numeric" }).format(now);
-  const navigate = useNavigate();
-  const openProfile = () => navigate("/profile");
 
+  const authed = typeof isAuth === "boolean" ? isAuth : !!currentUser;
   const name = currentUser?.name || "User";
   const initial = name.charAt(0).toUpperCase();
   const avatarUrl = currentUser?.avatar || "";
+  const loc = locationName || import.meta.env.VITE_LOCATION_NAME || "";
+  const handleAdd = onAddItemClick || onAddItemOpen;
+
+  const openProfile = () => navigate("/profile");
 
   return (
     <header className="header">
@@ -29,14 +36,15 @@ export default function Header({
           </Link>
 
           <div className="header__meta">
-            {formattedDate}, {locationName}
+            {formattedDate}
+            {loc ? `, ${loc}` : ""}
           </div>
 
           <div className="header__actions">
-            <ToggleSwitch />
-            {isAuth ? (
+            <ToggleSwitch value={tempUnit} onChange={onToggleUnit} />
+            {authed ? (
               <>
-                <button type="button" className="btn btn--link" onClick={onAddItemClick}>
+                <button type="button" className="btn btn--link" onClick={handleAdd}>
                   <span className="plus">+</span>
                   <span>Add clothes</span>
                 </button>
@@ -62,10 +70,13 @@ export default function Header({
 }
 
 Header.propTypes = {
-  isAuth: PropTypes.bool.isRequired,
+  isAuth: PropTypes.bool,
   onLoginClick: PropTypes.func.isRequired,
   onRegisterClick: PropTypes.func.isRequired,
   onAddItemClick: PropTypes.func,
+  onAddItemOpen: PropTypes.func,
   currentUser: PropTypes.object,
-  locationName: PropTypes.string
+  locationName: PropTypes.string,
+  tempUnit: PropTypes.oneOf(["F", "C"]).isRequired,
+  onToggleUnit: PropTypes.func.isRequired,
 };

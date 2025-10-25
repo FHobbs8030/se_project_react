@@ -1,53 +1,61 @@
-import PropTypes from "prop-types";
-import ModalWithForm from "./ModalWithForm.jsx";
 import { useState } from "react";
+import ModalWithForm from "./ModalWithForm.jsx";
 
 export default function RegisterModal({ isOpen, onClose, onSubmit }) {
-  const [name, setName] = useState("");
-  const [avatar, setAvatar] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [values, setValues] = useState({ name: "", email: "", password: "" });
 
-  if (!isOpen) return null;
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setValues((v) => ({ ...v, [name]: value }));
+  };
 
-  const handle = (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
-    onSubmit({ name, avatar, email, password });
+    onSubmit(values);
   };
 
   return (
     <ModalWithForm
+      title="Sign up"
       isOpen={isOpen}
-      title="Create account"
       onClose={onClose}
-      onSubmit={handle}
+      onSubmit={handleSubmit}
       submitText="Create account"
     >
       <label className="modal__label">
         <span className="modal__label-text">Name</span>
-        <input className="modal__input" value={name} onChange={(e) => setName(e.target.value)} placeholder="Your name" required />
+        <input
+          className="modal__input"
+          type="text"
+          name="name"
+          value={values.name}
+          onChange={handleChange}
+          required
+        />
       </label>
-
-      <label className="modal__label">
-        <span className="modal__label-text">Avatar URL</span>
-        <input className="modal__input" type="url" value={avatar} onChange={(e) => setAvatar(e.target.value)} placeholder="https://..." />
-      </label>
-
       <label className="modal__label">
         <span className="modal__label-text">Email</span>
-        <input className="modal__input" type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="you@example.com" required />
+        <input
+          className="modal__input"
+          type="email"
+          name="email"
+          value={values.email}
+          onChange={handleChange}
+          required
+        />
       </label>
-
       <label className="modal__label">
         <span className="modal__label-text">Password</span>
-        <input className="modal__input" type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="••••••••" required />
+        <input
+          className="modal__input"
+          type="password"
+          name="password"
+          value={values.password}
+          onChange={handleChange}
+          required
+          minLength={6}
+        />
       </label>
     </ModalWithForm>
   );
 }
-
-RegisterModal.propTypes = {
-  isOpen: PropTypes.bool.isRequired,
-  onClose: PropTypes.func.isRequired,
-  onSubmit: PropTypes.func.isRequired,
-};

@@ -1,24 +1,25 @@
-import { useMemo } from 'react';
-import PropTypes from 'prop-types';
-import SideBar from '../components/SideBar.jsx';
-import ClothesSection from '../components/ClothesSection.jsx';
-import '../pages/ProfilePage.css';
+import { useMemo } from "react";
+import PropTypes from "prop-types";
+import { useOutletContext } from "react-router-dom";
+import SideBar from "../components/SideBar.jsx";
+import ClothesSection from "../components/ClothesSection.jsx";
+import "../pages/ProfilePage.css";
 
-export default function ProfilePage({
-  clothingItems = [],
-  isLoadingItems = false,
-  onCardClick,
-  currentUser,
-  onLogoutClick,
-  onEditProfileClick,
-}) {
+export default function ProfilePage({ onLogoutClick, onEditProfileClick }) {
+  const {
+    clothingItems = [],
+    isLoadingItems = false,
+    onCardClick,
+    currentUser,
+  } = useOutletContext();
+
   const userItems = useMemo(() => {
     const items = Array.isArray(clothingItems) ? clothingItems : [];
-    return items.filter(it => {
+    return items.filter((it) => {
       const ownerId =
-        typeof it.owner === 'string'
+        typeof it.owner === "string"
           ? it.owner
-          : it.owner && typeof it.owner === 'object' && it.owner._id
+          : it.owner && typeof it.owner === "object" && it.owner._id
           ? it.owner._id
           : it.ownerId || null;
       return currentUser?._id && ownerId === currentUser._id;
@@ -45,10 +46,6 @@ export default function ProfilePage({
 }
 
 ProfilePage.propTypes = {
-  clothingItems: PropTypes.array,
-  isLoadingItems: PropTypes.bool,
-  onCardClick: PropTypes.func,
-  currentUser: PropTypes.object,
   onLogoutClick: PropTypes.func,
   onEditProfileClick: PropTypes.func,
 };

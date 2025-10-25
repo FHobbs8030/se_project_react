@@ -1,23 +1,31 @@
 import { Outlet } from "react-router-dom";
 import Header from "./Header.jsx";
-import Footer from "./Footer.jsx";
 
-export default function Layout(props) {
+export default function Layout({ outletContext }) {
+  const {
+    currentUser,
+    onLoginClick,
+    onRegisterClick,
+    onAddItemOpen,
+    tempUnit,
+    onToggleUnit,
+  } = outletContext;
+
   return (
     <div className="page">
-      <Header
-        isAuth={props.isAuth}
-        currentUser={props.currentUser}
-        onAddItemClick={props.onAddItemClick}
-        onLoginClick={props.onLoginClick}
-        onRegisterClick={props.onRegisterClick}
-        onLogoutClick={props.onLogoutClick}
-        locationName={props.locationName}
-      />
-      <main className="content">
-        <Outlet context={props.outletContext} />
+      <div className="container">
+        <Header
+          currentUser={currentUser}
+          onLoginClick={onLoginClick}
+          onRegisterClick={onRegisterClick}
+          onAddItemOpen={onAddItemOpen}
+          tempUnit={tempUnit}
+          onToggleUnit={onToggleUnit}
+        />
+      </div>
+      <main className="container">
+        <Outlet context={outletContext} />
       </main>
-      <Footer />
     </div>
   );
 }
