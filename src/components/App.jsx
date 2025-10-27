@@ -18,22 +18,21 @@ const DEFAULT_COORDS = import.meta.env.VITE_DEFAULT_COORDS;
 const LOCATION_NAME = import.meta.env.VITE_LOCATION_NAME ?? "";
 
 export default function App() {
+  console.log("[App] render");
   const navigate = useNavigate();
 
   const [currentUser, setCurrentUser] = useState(null);
   const [clothingItems, setClothingItems] = useState([]);
-  const [weatherData, setWeatherData] = useState(null);
-  const [tempUnit, setTempUnit] = useState("F");
-
-  const [isLoadingWeather, setIsLoadingWeather] = useState(false);
-  const [isLoadingItems, setIsLoadingItems] = useState(false);
-
   const [isLoginOpen, setIsLoginOpen] = useState(false);
   const [isRegisterOpen, setIsRegisterOpen] = useState(false);
   const [isAddItemOpen, setIsAddItemOpen] = useState(false);
   const [isItemOpen, setIsItemOpen] = useState(false);
-
   const [activeItem, setActiveItem] = useState(null);
+
+  const [isLoadingWeather, setIsLoadingWeather] = useState(false);
+  const [isLoadingItems, setIsLoadingItems] = useState(false);
+  const [tempUnit, setTempUnit] = useState("F");
+  const [weatherData, setWeatherData] = useState(null);
 
   useEffect(() => {
     const token = localStorage.getItem("jwt");
@@ -42,7 +41,7 @@ export default function App() {
       try {
         const me = await Auth.getUser();
         setCurrentUser(me);
-      } catch {
+      } catch (e) {
         localStorage.removeItem("jwt");
         setCurrentUser(null);
       }
@@ -63,84 +62,121 @@ export default function App() {
     loadItems();
   }, []);
 
-  useEffect(() => {
-    const loadWeather = async () => {
-      if (!WEATHER_URL || !WEATHER_KEY || !DEFAULT_COORDS) return;
-      setIsLoadingWeather(true);
-      try {
-        const [lat, lon] = DEFAULT_COORDS.split(",").map((v) => v.trim());
-        const res = await fetch(
-          `${WEATHER_URL}?lat=${lat}&lon=${lon}&appid=${WEATHER_KEY}&units=imperial`
-        );
-        const data = await res.json();
-        setWeatherData({ ...data, locationName: LOCATION_NAME });
-      } catch {
+useEffect(() => {
+  (async function loadWeather() {
+    console.log("Environment check:", {
+      WEATHER_URL,
+      hasKey: !!WEATHER_KEY,
+      DEFAULT_COORDS,
+    });
+
+    if (!WEATHER_URL || !WEATHER_KEY || !DEFAULT_COORDS) {
+      console.log("Missing env; aborting weather load");
+      setWeatherData(null);
+      return;
+    }
+
+    setIsLoadingWeather(true);
+    try {
+      const [lat, lon] = DEFAULT_COORDS.split(",").map((v) => v.trim());
+      const url = `${WEATHER_URL}?lat=${lat}&lon=${lon}&appid=${WEATHER_KEY}&units=imperial`;
+      console.log("Requesting weather:", url);
+
+      const res = await fetch(url);
+      console.log("Weather res status:", res.status);
+
+      if (!res.ok) {
+        const text = await res.text().catch(() => "");
+        console.log("Weather fetch failed:", res.status, text);
         setWeatherData(null);
-      } finally {
-        setIsLoadingWeather(false);
+        return;
       }
-    };
-    loadWeather();
-  }, []);
 
-  const onCardClick = (item) => {
-    setActiveItem(item);
-    setIsItemOpen(true);
-  };
+      const data = await res.json();
+      if (!Number.isFinite(data?.main?.temp)) {
+        console.log("Weather response missing main.temp:", data);
+        setWeatherData(null);
+        return;
+      }
 
-  const handleDeleteItem = async (item) => {
-    await Items.deleteItem(item._id || item.id);
-    const list = await Items.getItems();
-    const arr = Array.isArray(list) ? list : list?.data || [];
-    setClothingItems(arr);
-    setIsItemOpen(false);
-    setActiveItem(null);
-  };
+      const withName = { ...data, locationName: LOCATION_NAME };
+      setWeatherData(withName);
+      console.log("Weather data loaded in App:", withName);
+    } catch (e) {
+      console.log("Weather fetch error:", e);
+      setWeatherData(null);
+    } finally {
+      setIsLoadingWeather(false);
+    }
+  })();
+}, []);
 
-  const handleAddItem = async ({ name, imageUrl, weather = "warm" }) => {
-    await Items.addItem({ name, imageUrl, weather });
-    const list = await Items.getItems();
-    const arr = Array.isArray(list) ? list : list?.data || [];
-    setClothingItems(arr);
-    setIsAddItemOpen(false);
-  };
-
+  const handleAddClick = useCallback(() => setIsAddItemOpen(true), []);
   const handleLoginClick = useCallback(() => setIsLoginOpen(true), []);
   const handleRegisterClick = useCallback(() => setIsRegisterOpen(true), []);
-  const handleAddClick = useCallback(() => setIsAddItemOpen(true), []);
+  const onCardClick = useCallback((item) => {
+    setActiveItem(item);
+    setIsItemOpen(true);
+  }, []);
 
-  const handleLoginSubmit = async ({ email, password }) => {
-    const { token } = await Auth.login({ email, password });
-    localStorage.setItem("jwt", token);
-    const me = await Auth.getUser();
-    setCurrentUser(me);
-    const list = await Items.getItems();
-    const arr = Array.isArray(list) ? list : list?.data || [];
-    setClothingItems(arr);
-    setIsLoginOpen(false);
-    navigate("/profile");
-  };
+  const handleAddItem = useCallback(async ({ name, imageUrl, weather }) => {
+    try {
+      const created = await Items.addItem({ name, imageUrl, weather });
+      const doc = created?.data || created;
+      setClothingItems((prev) => [doc, ...prev]);
+      setIsAddItemOpen(false);
+    } catch (e) {
+      console.error("add item failed", e);
+    }
+  }, []);
 
-  const handleRegisterSubmit = async ({ name, email, password }) => {
-    await Auth.register({ name, email, password });
-    const { token } = await Auth.login({ email, password });
-    localStorage.setItem("jwt", token);
-    const me = await Auth.getUser();
-    setCurrentUser(me);
-    const list = await Items.getItems();
-    const arr = Array.isArray(list) ? list : list?.data || [];
-    setClothingItems(arr);
-    setIsRegisterOpen(false);
-    navigate("/profile");
-  };
+  const handleDeleteItem = useCallback(async (item) => {
+    try {
+      await Items.deleteItem(item._id || item.id);
+      const item_id = item._id || item.id;
+      setClothingItems((prev) => prev.filter((it) => (it._id || it.id) !== item_id));
+      setIsItemOpen(false);
+      setActiveItem(null);
+    } catch (e) {
+      console.error("delete item failed", e);
+    }
+  }, []);
+
+  const handleLoginSubmit = useCallback(
+    async ({ email, password }) => {
+      const { token } = await Auth.login({ email, password });
+      localStorage.setItem("jwt", token);
+      const me = await Auth.getUser();
+      setCurrentUser(me);
+      const list = await Items.getItems();
+      const arr = Array.isArray(list) ? list : list?.data || [];
+      setClothingItems(arr);
+      setIsLoginOpen(false);
+      navigate("/profile");
+    },
+    [navigate]
+  );
+
+  const handleRegisterSubmit = useCallback(
+    async ({ email, password, name, avatar }) => {
+      await Auth.register({ email, password, name, avatar });
+      const { token } = await Auth.login({ email, password });
+      localStorage.setItem("jwt", token);
+      const me = await Auth.getUser();
+      setCurrentUser(me);
+      const list = await Items.getItems();
+      const arr = Array.isArray(list) ? list : list?.data || [];
+      setClothingItems(arr);
+      setIsRegisterOpen(false);
+      navigate("/profile");
+    },
+    [navigate]
+  );
 
   const handleLogout = useCallback(async () => {
-    await fetch(`${API_BASE}/signout`, { method: "POST", credentials: "include" }).catch(
-      () => null
-    );
+    await fetch(`${API_BASE}/signout`, { method: "POST", credentials: "include" }).catch(() => null);
     localStorage.removeItem("jwt");
     setCurrentUser(null);
-    setClothingItems([]);
     navigate("/");
   }, [navigate]);
 
@@ -155,12 +191,12 @@ export default function App() {
       setTempUnit,
       currentUser,
       onAddClick: handleAddClick,
-      onLogoutClick: handleLogout,
-      onEditProfileClick: () => null
+      onLogoutClick: handleLogout
     }),
     [
       weatherData,
       clothingItems,
+      onCardClick,
       isLoadingWeather,
       isLoadingItems,
       tempUnit,

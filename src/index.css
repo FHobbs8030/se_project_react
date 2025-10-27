@@ -1,9 +1,6 @@
 @import "./vendor/normalize.css";
 @import url("./vendor/fonts/fonts.css");
 @import "./blocks/layout.css";
-@import "./blocks/Header.css";
-@import "./blocks/ClothesSection.css";
-@import "./blocks/Cards.css";
 
 html, body {
   font-family: "Cabinet Grotesk", "Inter", sans-serif;

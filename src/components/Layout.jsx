@@ -5,20 +5,20 @@ export default function Layout({
   outletContext,
   onAddClick,
   onLoginClick,
-  onRegisterClick,
-  onLogoutClick,
+  onRegisterClick
 }) {
   return (
     <>
       <Header
-        onAddClick={onAddClick}
+        isAuth={!!outletContext?.currentUser}
         onLoginClick={onLoginClick}
         onRegisterClick={onRegisterClick}
-        onLogoutClick={onLogoutClick}
+        onAddItemClick={onAddClick}
+        onAddItemOpen={onAddClick}
         currentUser={outletContext?.currentUser}
-        tempUnit={outletContext?.tempUnit}
-        setTempUnit={outletContext?.setTempUnit}
         locationName={outletContext?.weatherData?.locationName}
+        tempUnit={outletContext?.tempUnit}
+        onToggleUnit={outletContext?.setTempUnit}
       />
       <Outlet context={outletContext} />
     </>
