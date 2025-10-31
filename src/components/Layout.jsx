@@ -5,8 +5,12 @@ export default function Layout({
   outletContext,
   onAddClick,
   onLoginClick,
-  onRegisterClick
+  onRegisterClick,
+  onLogoutClick
 }) {
+  const locationName =
+    outletContext?.weatherData?.name || outletContext?.weatherData?.locationName;
+
   return (
     <>
       <Header
@@ -14,11 +18,11 @@ export default function Layout({
         onLoginClick={onLoginClick}
         onRegisterClick={onRegisterClick}
         onAddItemClick={onAddClick}
-        onAddItemOpen={onAddClick}
+        onLogoutClick={onLogoutClick}
         currentUser={outletContext?.currentUser}
-        locationName={outletContext?.weatherData?.locationName}
+        locationName={locationName}
         tempUnit={outletContext?.tempUnit}
-        onToggleUnit={outletContext?.setTempUnit}
+        onToggleUnit={outletContext?.onTempUnitChange}
       />
       <Outlet context={outletContext} />
     </>
