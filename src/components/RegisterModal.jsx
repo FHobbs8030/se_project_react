@@ -2,7 +2,7 @@ import { useState } from "react";
 import ModalWithForm from "./ModalWithForm.jsx";
 
 export default function RegisterModal({ isOpen, onClose, onSubmit }) {
-  const [values, setValues] = useState({ name: "", email: "", password: "" });
+  const [values, setValues] = useState({ name: "", email: "", password: "", avatar: "" });
 
   const handleChange = (e) => {
     const { name, value } = e.target;

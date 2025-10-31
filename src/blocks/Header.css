@@ -1,170 +1,143 @@
-.header {
-  width: 100%;
-  position: relative;
-}
-
 .header__outer {
-  width: 100%;
+  padding-block: clamp(16px, 2.2vw, 28px); padding-inline: 0; 
+  padding-inline: 0;
+  margin: 0;
 }
 
 .header__inner {
-  max-width: 1360px;
-  margin-inline: auto;
-  padding-inline: clamp(12px, 3vw, 24px);
-  padding-block: clamp(10px, 1.6vw, 16px);
   display: grid;
   grid-template-columns: auto 1fr auto;
   grid-template-areas: "brand meta actions";
   align-items: center;
-  gap: clamp(8px, 1.5vw, 16px);
+  gap: clamp(6px, 1.8vw, 24px);
+  padding-inline: var(--section-pad);
+  margin: 0;
+  width: 100%;
 }
 
-.header__brand {
-  grid-area: brand;
-  display: inline-flex;
-  align-items: center;
-  text-decoration: none;
-}
+.header__brand { grid-area: brand; }
 
 .header__logo {
-  display: block;
-  width: clamp(64px, 6.2vw, 89px);
-  height: auto;
+  text-decoration: none;
+  font-weight: 800;
+  font-size: 22px;
+  letter-spacing: 0.6px;
+  color: #111;
 }
 
 .header__meta {
   grid-area: meta;
-  color: #6b7280;
-  font-size: clamp(12px, 1.2vw, 14px);
-  line-height: 1.2;
+  width: 100%;
+  max-width: 173px;
+  line-height: 24px;
+  font-weight: 700;
+  color: #000;
+  font-size: clamp(12px, 1.2vw, 20px);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
 
+.header__location {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: #666;
+  font-size: 14px;
+}
+
+.header__city { font-weight: 600; color: #111; }
+
+.header__unit { display: flex; align-items: center; }
+
 .header__actions {
   grid-area: actions;
   display: flex;
   align-items: center;
-  flex-wrap: wrap;
-  justify-content: flex-end;
-  gap: clamp(8px, 1.5vw, 16px);
-  row-gap: 6px;
+  gap: 10px;
 }
 
-.btn.btn--link {
+.header__add,
+.header__login,
+.header__register,
+.header__logout,
+.header__user,
+.header__avatar-btn {
+  border: 0;
   background: transparent;
-  border: 0;
-  padding: clamp(6px, 1.2vw, 8px) clamp(8px, 1.6vw, 10px);
-  border-radius: 999px;
   cursor: pointer;
-  font: inherit;
-  color: #111827;
-  line-height: 1;
+  color: #111;
+  font-size: 14px;
 }
 
-.btn.btn--link:hover {
-  background: #f3f4f6;
+.header__add {
+  background: #111;
+  color: #fff;
+  border-radius: 10px;
+  padding: 10px 14px;
 }
 
-.plus {
-  display: inline-block;
-  width: clamp(14px, 1.6vw, 18px);
-  text-align: center;
-  margin-right: 6px;
-}
+.header__user { padding: 8px 10px; border-radius: 8px; }
 
-.header__user {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  padding: 6px 10px;
-  border: 0;
-  background: #f9fafb;
-  border-radius: 999px;
-  cursor: pointer;
-}
+.header__user:hover { background: #f0f0f0; }
 
-.header__user:hover {
-  background: #eef2ff;
-}
-
-.header__user-name {
-  font-size: clamp(12px, 1.2vw, 14px);
-  color: #111827;
-  line-height: 1;
+.header__avatar-btn {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  overflow: hidden;
+  padding: 0;
 }
 
 .header__avatar {
-  width: clamp(28px, 2.3vw, 32px);
-  height: clamp(28px, 2.3vw, 32px);
-  border-radius: 999px;
-  background: #111827;
-  color: #fff;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  overflow: hidden;
-  flex: 0 0 auto;
-}
-
-.header__avatar img {
   width: 100%;
   height: 100%;
   object-fit: cover;
   display: block;
 }
 
-/* <= 768px: two-row layout, nothing hidden */
 @media (max-width: 768px) {
+  .header__inner { gap: clamp(6px, 1.6vw, 20px); }
+  .header__logo { font-size: 20px; }
+  .header__actions { gap: 8px; }
+}
+
+@media (max-width: 520px) {
   .header__inner {
     grid-template-columns: 1fr auto;
     grid-template-areas:
       "brand actions"
-      "meta actions";
-    align-items: center;
+      "meta  meta";
+    row-gap: 8px;
   }
-  .header__meta {
-    font-size: clamp(11px, 3.2vw, 13px);
-    white-space: normal;
-  }
+  .header__logo { font-size: 18px; }
+  .header__meta { max-width: 100%; font-size: 14px; line-height: 20px; }
+  .header__actions { gap: 6px; }
+  .header__add { padding: 8px 10px; border-radius: 8px; font-size: 13px; }
+  .header__login,
+  .header__register,
+  .header__logout,
+  .header__user { font-size: 13px; padding: 6px 8px; }
+  .header__avatar-btn { width: 32px; height: 32px; }
 }
 
-/* <= 480px: tighten spacing, keep all labels visible */
-@media (max-width: 480px) {
-  .header__actions {
-    gap: 8px;
-  }
-  .btn.btn--link {
-    padding: 6px 8px;
-    font-size: 13px;
-  }
-  .header__user {
-    padding: 6px 8px;
-    gap: 6px;
-  }
-  .header__user-name {
-    font-size: 13px;
-  }
-}
-
-/* 320–360px: ultra-compact but still show everything */
-@media (max-width: 360px) {
+@media (max-width: 380px) {
   .header__inner {
-    padding-inline: 10px;
-  }
-  .header__actions {
+    grid-template-columns: 1fr auto;
+    grid-template-areas:
+      "brand actions"
+      "meta  meta";
     gap: 6px;
+    row-gap: 4px;
   }
-  .btn.btn--link {
-    padding: 5px 7px;
-    font-size: 12.5px;
-  }
-  .header__user-name {
-    font-size: 12.5px;
-  }
-  .plus {
-    margin-right: 4px;
-    width: 14px;
-  }
+  .header__logo { font-size: 16px; letter-spacing: 0.4px; }
+  .header__meta { max-width: 100%; font-size: 12px; line-height: 18px; }
+  .header__actions { gap: 4px; }
+  .header__add { padding: 6px 8px; border-radius: 8px; font-size: 12px; }
+  .header__login,
+  .header__register,
+  .header__logout,
+  .header__user { font-size: 12px; padding: 4px 6px; }
+  .header__avatar-btn { width: 28px; height: 28px; }
+  .header__unit .toggle { transform: scale(0.9); transform-origin: right center; }
 }

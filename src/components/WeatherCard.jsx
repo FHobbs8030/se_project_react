@@ -12,13 +12,18 @@ function toTempF(src) {
   return Number.isFinite(v) ? Math.round(v) : null;
 }
 
-export default function WeatherCard({ weatherData: propWD, tempF: propTempF, isLoadingWeather }) {
+export default function WeatherCard({
+  weatherData: propWD,
+  tempF: propTempF,
+  isLoadingWeather,
+}) {
   const ctx = useOutletContext() || {};
   const { tempUnit = "F" } = ctx;
   const wd = propWD ?? ctx.weatherData ?? null;
 
   const baseF = Number.isFinite(propTempF) ? Math.round(propTempF) : toTempF(wd);
-  const tempC = baseF !== null ? Math.round((baseF - 32) * (5 / 9)) : null;
+  const tempC =
+    baseF !== null ? Math.round((baseF - 32) * (5 / 9)) : null;
   const display = tempUnit === "C" ? tempC : baseF;
 
   const icon = wd?.weather?.[0]?.icon || "";
@@ -27,7 +32,9 @@ export default function WeatherCard({ weatherData: propWD, tempF: propTempF, isL
   return (
     <div className="weather-card__outer">
       <section
-        className={`weather-card ${isNight ? "weather-card_night" : "weather-card_day"}`}
+        className={`weather-card ${
+          isNight ? "weather-card_night" : "weather-card_day"
+        }`}
         aria-label="current weather"
         aria-busy={!!isLoadingWeather}
       >

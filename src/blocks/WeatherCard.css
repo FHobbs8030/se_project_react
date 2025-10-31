@@ -1,22 +1,11 @@
 :root {
-  --container-w: 1360px;
-  --gutter: clamp(19px, calc(1.875vw + 13px), 40px);
-  --page-pad: var(--gutter);
-
   --wx-h: 80px;
   --wx-radius: 10px;
-
-  /* temp/deg */
   --wx-temp-size: clamp(20px, 10vw, 40px);
   --wx-deg-size: clamp(20px, 10vw, 40px);
   --wx-temp-w: calc(var(--wx-temp-size) + 8px);
-
-  /* orb */
   --wx-orb: 60px;
-
-  /* NEW: left inset for inner — 8px @320 → 16px @1440 */
   --wx-left-inset: clamp(8px, calc(0.7143vw + 5.714px), 16px);
-
   --wx-day-bg: #00a3ff;
   --wx-day-fg: #ffffff;
   --wx-night-bg: #286897;
@@ -25,29 +14,22 @@
 
 .weather-card {
   width: 100%;
-  max-width: var(--container-w);
-  margin: 0 auto;
-  padding-inline: var(--gutter);
-  box-sizing: border-box;
+  margin: 12px 0 24px;
   background: transparent;
-}
-
-.weather-card__outer {
-  width: 100%;
-  max-width: var(--container-w);
-  margin: 12px auto 24px;
+  padding-inline: 0;
 }
 
 .weather-card__inner {
-  height: var(--wx-h);
-  border-radius: var(--wx-radius);
   position: relative;
   overflow: hidden;
   display: flex;
   align-items: center;
+  min-height: var(--wx-h);
+  border-radius: var(--wx-radius);
+  padding: 16px;
+  padding-left: max(var(--wx-left-inset), var(--section-pad));
+  padding-right: max(calc(var(--wx-orb) + 16px), var(--section-pad));
   width: 100%;
-  padding-left: var(--wx-left-inset);
-  padding-right: calc(var(--wx-orb) + 16px);
   box-sizing: border-box;
 }
 
@@ -90,25 +72,15 @@
 }
 
 .weather-card__orb {
-  position: absolute !important;
-  top: -6px !important;
-  right: -6px !important;
-  width: var(--wx-orb) !important;
-  height: var(--wx-orb) !important;
-  border-radius: 50% !important;
-  background: #fff8ba !important;
-  box-shadow: none !important;
-  z-index: 1 !important;
-}
-
-/* if you’re keeping the desktop stretch, keep the same left inset there too */
-@media (min-width: 1440px) {
-  .weather-card__inner {
-    width: calc(100% + 2 * var(--gutter));
-    margin-inline: calc(-1 * var(--gutter));
-    padding-left: var(--wx-left-inset);
-    padding-right: calc(var(--gutter) + var(--wx-orb) + 16px);
-  }
+  position: absolute;
+  top: -6px;
+  right: -6px;
+  width: var(--wx-orb);
+  height: var(--wx-orb);
+  border-radius: 50%;
+  background: #fff8ba;
+  box-shadow: none;
+  z-index: 1;
 }
 
 @media (max-width: 1280px) {

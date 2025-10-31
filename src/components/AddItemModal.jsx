@@ -15,13 +15,13 @@ export default function AddItemModal({ isOpen, onClose, onAddItem }) {
     }
   }, [isOpen]);
 
-  const isValid = useMemo(() => {
-    const hasName = name.trim().length >= 2;
-    const val = image.trim();
-    const looksHttp = /^https?:\/\/.+/i.test(val);
-    const looksRelative = /^\/[A-Za-z0-9/_\-.]+$/.test(val);
-    return hasName && (looksHttp || looksRelative);
-  }, [name, image]);
+const isValid = useMemo(() => {
+  const hasName = name.trim().length >= 2;
+  const val = image.trim();
+  const looksHttp = /^https?:\/\/.+/i.test(val);
+  const looksRelative = /^\/[A-Za-z0-9/_\-.]+$/.test(val);
+  return hasName && (looksHttp || looksRelative);
+}, [name, image]);
 
   async function handleSubmit(e) {
     e.preventDefault();

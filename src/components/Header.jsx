@@ -9,6 +9,7 @@ export default function Header({
   onRegisterClick,
   onAddItemClick,
   onAddItemOpen,
+  onLogoutClick,
   currentUser,
   locationName,
   tempUnit,
@@ -27,7 +28,6 @@ export default function Header({
   const avatarUrl = currentUser?.avatar || "";
   const loc = locationName || import.meta.env.VITE_LOCATION_NAME || "";
   const handleAdd = onAddItemClick || onAddItemOpen || (() => {});
-
   const openProfile = () => navigate("/profile");
 
   return (
@@ -43,12 +43,10 @@ export default function Header({
               height="40"
             />
           </Link>
-
           <div className="header__meta">
             {formattedDate}
             {loc ? `, ${loc}` : ""}
           </div>
-
           <div className="header__actions">
             <ToggleSwitch value={tempUnit} onToggle={onToggleUnit} />
             {authed ? (
@@ -71,6 +69,13 @@ export default function Header({
                   <span className="header__avatar" aria-hidden="true">
                     {avatarUrl ? <img src={avatarUrl} alt="" /> : initial}
                   </span>
+                </button>
+                <button
+                  type="button"
+                  className="btn btn--link"
+                  onClick={onLogoutClick}
+                >
+                  Log out
                 </button>
               </>
             ) : (
@@ -104,6 +109,7 @@ Header.propTypes = {
   onRegisterClick: PropTypes.func.isRequired,
   onAddItemClick: PropTypes.func,
   onAddItemOpen: PropTypes.func,
+  onLogoutClick: PropTypes.func,
   currentUser: PropTypes.object,
   locationName: PropTypes.string,
   tempUnit: PropTypes.oneOf(["F", "C"]).isRequired,
