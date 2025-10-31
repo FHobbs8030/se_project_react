@@ -1,3 +1,4 @@
+/* src/blocks/global.css */
 @import "../vendor/normalize.css";
 @import url("../vendor/fonts/fonts.css");
 @import "./layout.css";
@@ -5,18 +6,24 @@
 @import "./WeatherCard.css";
 @import "./Cards.css";
 @import "./ToggleSwitch.css";
+@import "./ClothesSection.css";
+@import "./ProfilePage.css";
 
-*, *::before, *::after { box-sizing: border-box; }
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
 
-:root{
+:root {
   --page-bg: #ffffff;
   --page-fg: #0f172a;
   --page-max: 1360px;
-  --gutter: clamp(19px, 2.78vw, 40px);
-   --section-pad: clamp(8px, 1.2vw, 16px);
+  --gutter: clamp(12px, 3vw, 24px);
 }
 
-html, body {
+html,
+body {
   font-family: "Cabinet Grotesk", "Inter", sans-serif;
   margin: 0;
   padding: 0;
@@ -28,12 +35,19 @@ html, body {
   color: var(--page-fg);
 }
 
-#root { min-height: 100%; }
+#root {
+  min-height: 100%;
+}
 
-.container{
-  inline-size: min(var(--page-max), 100% - 2 * var(--gutter));
+.page,
+.container {
+  max-width: var(--page-max);
   margin-inline: auto;
+  padding-inline: var(--gutter);
   width: 100%;
 }
 
-.app, .page, main { background: transparent; }
+.app,
+main {
+  background: transparent;
+}

@@ -1,7 +1,11 @@
+.header {
+  width: 100%;
+}
+
 .header__outer {
-  padding-block: clamp(16px, 2.2vw, 28px); padding-inline: 0; 
+  max-width: 1360px;
+  margin: 0 auto;
   padding-inline: 0;
-  margin: 0;
 }
 
 .header__inner {
@@ -94,6 +98,10 @@
   height: 100%;
   object-fit: cover;
   display: block;
+}
+
+@media (max-width: 1024px) {
+  .header__outer { padding-inline: 16px; }
 }
 
 @media (max-width: 768px) {

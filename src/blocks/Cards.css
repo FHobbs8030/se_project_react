@@ -1,3 +1,4 @@
+/* src/blocks/Cards.css */
 :root {
   --gap: 20px;
   --card-w: 325px;
@@ -26,19 +27,22 @@
   justify-content: center;
 }
 
-/* ≥ 670px: 2 columns (2*325 + 1*20 = 670) */
 @media (min-width: 670px) {
-  .cards { grid-template-columns: repeat(2, var(--card-w)); }
+  .cards {
+    grid-template-columns: repeat(2, var(--card-w));
+  }
 }
 
-/* ≥ 1015px: 3 columns (3*325 + 2*20 = 1015) */
 @media (min-width: 1015px) {
-  .cards { grid-template-columns: repeat(3, var(--card-w)); }
+  .cards {
+    grid-template-columns: repeat(3, var(--card-w));
+  }
 }
 
-/* ≥ 1360px: 4 columns (4*325 + 3*20 = 1360) */
 @media (min-width: 1360px) {
-  .cards { grid-template-columns: repeat(4, var(--card-w)); }
+  .cards {
+    grid-template-columns: repeat(4, var(--card-w));
+  }
 }
 
 .card {
@@ -79,18 +83,31 @@
   height: var(--like-size);
   border: 0;
   border-radius: 50%;
-  background: transparent center / contain no-repeat url("/images/unLike button.png");
+  background: transparent center/contain no-repeat url("/images/unLike button.png");
   cursor: pointer;
 }
-.card__like.is-liked { background-image: url("/images/Like button.png"); }
-.card__like:focus-visible { outline: 2px solid #64748b; outline-offset: 2px; }
 
-.card img,
-.card picture,
-.card video,
-.card canvas {
-  display: block;
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
+.card__like.is-liked {
+  background-image: url("/images/Like button.png");
+}
+
+.card__like:focus-visible {
+  outline: 2px solid #64748b;
+  outline-offset: 2px;
+}
+
+.card img, .card picture, .card video, .card canvas {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    padding: 0 19px;
+}
+
+.card__image--hoodie {
+  filter: hue-rotate(30deg) saturate(1.15);
+}
+
+.card__image--jacket {
+  filter: hue-rotate(210deg) saturate(1.15);
 }

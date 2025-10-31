@@ -91,7 +91,6 @@
   margin-top: 8px;
 }
 
-/* <= 1024px */
 @media (max-width: 1024px) {
   .profile__wrap {
     grid-template-columns: 220px 1fr;
@@ -99,7 +98,6 @@
   }
 }
 
-/* <= 768px */
 @media (max-width: 768px) {
   .profile__wrap {
     grid-template-columns: 1fr;
