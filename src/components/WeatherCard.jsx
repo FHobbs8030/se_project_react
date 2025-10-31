@@ -1,5 +1,3 @@
-import PropTypes from "prop-types";
-import { useOutletContext } from "react-router-dom";
 import "../blocks/WeatherCard.css";
 
 function toTempF(src) {
@@ -24,50 +22,53 @@ function isDaylight(data) {
   }
 }
 
-export default function WeatherCard({ weatherData: propWD, tempF: propTempF, isLoadingWeather }) {
-  const ctx = useOutletContext();
-  const data = propWD ?? ctx?.weatherData ?? null;
-  console.log("Weather data structure:", data);
-  const unit = ctx?.tempUnit === "C" ? "C" : "F";
+export default function WeatherCard({
+  weatherData,
+  tempUnit = "F",
+  sourceUnit = "F",
+  locationName,
+  formattedDate,
+  isLoading = false,
+  error = "",
+}) {
+  const baseF = toTempF(weatherData);
+  const reading =
+    Number.isFinite(baseF)
+      ? sourceUnit === tempUnit
+        ? baseF
+        : tempUnit === "C"
+        ? Math.round((baseF - 32) * (5 / 9))
+        : Math.round(baseF * (9 / 5) + 32)
+      : null;
 
-  let baseF = null;
-  if (typeof propTempF === "number" && Number.isFinite(propTempF)) {
-    baseF = Math.round(propTempF);
-  } else if (typeof propTempF === "string") {
-    const n = Number(propTempF.trim());
-    baseF = Number.isFinite(n) ? Math.round(n) : null;
-  } else {
-    baseF = toTempF(data);
-  }
-
-  console.log("Current unit from context:", unit);
-  console.log("Base temperature (F):", baseF);
-
-  const temp = Number.isFinite(baseF) ? (unit === "F" ? baseF : Math.round((baseF - 32) * 5 / 9)) : null;
-  const symbol = unit === "F" ? "°F" : "°C";
-  console.log("[WeatherCard] temp =", temp, symbol);
-
-  const dayClass = isDaylight(data) ? "weather-card_day" : "weather-card_night";
+  const symbol = tempUnit === "C" ? "°C" : "°F";
+  const dayClass = isDaylight(weatherData) ? "weather-card_day" : "weather-card_night";
 
   return (
-    <div className={`weather-card ${dayClass} container`}>
-      <section className="weather-card__inner" aria-busy={isLoadingWeather ? "true" : "false"}>
-        <div className="weather-card__left">
-          <div className="weather-card__tempwrap" role="group" aria-label="Current temperature">
-            <span className="weather-card__temp">{temp ?? "--"}</span>
-            <span className="weather-card__deg">{symbol}</span>
+    <section className={`weather-card ${dayClass}`}>
+      <div className="container">
+        <div className="weather-card__inner" aria-busy={isLoading ? "true" : "false"}>
+          <div className="weather-card__left">
+            {isLoading ? (
+              <span className="weather-card__loading">Loading...</span>
+            ) : error ? (
+              <span className="weather-card__error">{error}</span>
+            ) : (
+              <div className="weather-card__tempwrap" role="group" aria-label="Current temperature">
+                <span className="weather-card__temp">{reading ?? "--"}</span>
+                <span className="weather-card__deg">{symbol}</span>
+              </div>
+            )}
+          </div>
+          <div className="weather-card__right" aria-hidden="true">
+            <div className="weather-card__meta">
+              {locationName && <span className="weather-card__city">{locationName}</span>}
+              {formattedDate && <span className="weather-card__date">{formattedDate}</span>}
+            </div>
+            <div className="weather-card__orb" />
           </div>
         </div>
-        <div className="weather-card__right" aria-hidden="true">
-          <div className="weather-card__orb" />
-        </div>
-      </section>
-    </div>
+      </div>
+    </section>
   );
 }
-
-WeatherCard.propTypes = {
-  weatherData: PropTypes.object,
-  tempF: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
-  isLoadingWeather: PropTypes.bool,
-};

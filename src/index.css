@@ -1,6 +1,10 @@
 @import "./vendor/normalize.css";
 @import url("./vendor/fonts/fonts.css");
 @import "./blocks/layout.css";
+@import "./blocks/ToggleSwitch.css";
+
+/* Global box-sizing reset */
+*, *::before, *::after { box-sizing: border-box; }
 
 html, body {
   font-family: "Cabinet Grotesk", "Inter", sans-serif;

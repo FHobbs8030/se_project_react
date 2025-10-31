@@ -1,5 +1,7 @@
 .header__outer {
-  padding-block: clamp(16px, 2.2vw, 28px);
+  padding-block: clamp(16px, 2.2vw, 28px); padding-inline: 0; 
+  padding-inline: 0;
+  margin: 0;
 }
 
 .header__inner {
@@ -8,11 +10,12 @@
   grid-template-areas: "brand meta actions";
   align-items: center;
   gap: clamp(6px, 1.8vw, 24px);
+  padding-inline: var(--section-pad);
+  margin: 0;
+  width: 100%;
 }
 
-.header__brand {
-  grid-area: brand;
-}
+.header__brand { grid-area: brand; }
 
 .header__logo {
   text-decoration: none;
@@ -43,15 +46,9 @@
   font-size: 14px;
 }
 
-.header__city {
-  font-weight: 600;
-  color: #111;
-}
+.header__city { font-weight: 600; color: #111; }
 
-.header__unit {
-  display: flex;
-  align-items: center;
-}
+.header__unit { display: flex; align-items: center; }
 
 .header__actions {
   grid-area: actions;
@@ -80,14 +77,9 @@
   padding: 10px 14px;
 }
 
-.header__user {
-  padding: 8px 10px;
-  border-radius: 8px;
-}
+.header__user { padding: 8px 10px; border-radius: 8px; }
 
-.header__user:hover {
-  background: #f0f0f0;
-}
+.header__user:hover { background: #f0f0f0; }
 
 .header__avatar-btn {
   width: 36px;
@@ -104,20 +96,12 @@
   display: block;
 }
 
-/* tighten for tablets */
 @media (max-width: 768px) {
-  .header__inner {
-    gap: clamp(6px, 1.6vw, 20px);
-  }
-  .header__logo {
-    font-size: 20px;
-  }
-  .header__actions {
-    gap: 8px;
-  }
+  .header__inner { gap: clamp(6px, 1.6vw, 20px); }
+  .header__logo { font-size: 20px; }
+  .header__actions { gap: 8px; }
 }
 
-/* 2-row layout around 505px and below */
 @media (max-width: 520px) {
   .header__inner {
     grid-template-columns: 1fr auto;
@@ -126,42 +110,17 @@
       "meta  meta";
     row-gap: 8px;
   }
-
-  .header__logo {
-    font-size: 18px;
-  }
-
-  .header__meta {
-    max-width: 100%;
-    font-size: 14px;
-    line-height: 20px;
-  }
-
-  .header__actions {
-    gap: 6px;
-  }
-
-  .header__add {
-    padding: 8px 10px;
-    border-radius: 8px;
-    font-size: 13px;
-  }
-
+  .header__logo { font-size: 18px; }
+  .header__meta { max-width: 100%; font-size: 14px; line-height: 20px; }
+  .header__actions { gap: 6px; }
+  .header__add { padding: 8px 10px; border-radius: 8px; font-size: 13px; }
   .header__login,
   .header__register,
   .header__logout,
-  .header__user {
-    font-size: 13px;
-    padding: 6px 8px;
-  }
-
-  .header__avatar-btn {
-    width: 32px;
-    height: 32px;
-  }
+  .header__user { font-size: 13px; padding: 6px 8px; }
+  .header__avatar-btn { width: 32px; height: 32px; }
 }
 
-/* ultra-small phones (~360–380px) */
 @media (max-width: 380px) {
   .header__inner {
     grid-template-columns: 1fr auto;
@@ -171,44 +130,14 @@
     gap: 6px;
     row-gap: 4px;
   }
-
-  .header__logo {
-    font-size: 16px;
-    letter-spacing: 0.4px;
-  }
-
-  .header__meta {
-    max-width: 100%;
-    font-size: 12px;
-    line-height: 18px;
-  }
-
-  .header__actions {
-    gap: 4px;
-  }
-
-  .header__add {
-    padding: 6px 8px;
-    border-radius: 8px;
-    font-size: 12px;
-  }
-
+  .header__logo { font-size: 16px; letter-spacing: 0.4px; }
+  .header__meta { max-width: 100%; font-size: 12px; line-height: 18px; }
+  .header__actions { gap: 4px; }
+  .header__add { padding: 6px 8px; border-radius: 8px; font-size: 12px; }
   .header__login,
   .header__register,
   .header__logout,
-  .header__user {
-    font-size: 12px;
-    padding: 4px 6px;
-  }
-
-  .header__avatar-btn {
-    width: 28px;
-    height: 28px;
-  }
-
-  /* shrink the F/°C toggle (root element class is .toggle) */
-  .header__unit .toggle {
-    transform: scale(0.9);
-    transform-origin: right center;
-  }
+  .header__user { font-size: 12px; padding: 4px 6px; }
+  .header__avatar-btn { width: 28px; height: 28px; }
+  .header__unit .toggle { transform: scale(0.9); transform-origin: right center; }
 }

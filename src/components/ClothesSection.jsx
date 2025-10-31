@@ -30,54 +30,56 @@ export default function ClothesSection({
   };
 
   return (
-    <section className="clothes container">
-      <header className="clothes__meta">
-        {tempF !== null ? (
-          <div className="clothes__summary">Today is {tempF} °F / You may want to wear:</div>
-        ) : (
-          <div className="clothes__summary">You may want to wear:</div>
-        )}
-      </header>
+    <section className="clothes">
+      <div className="container">
+        <header className="clothes__meta">
+          {tempF !== null ? (
+            <div className="clothes__summary">Today is {tempF} °F / You may want to wear:</div>
+          ) : (
+            <div className="clothes__summary">You may want to wear:</div>
+          )}
+        </header>
 
-      {isLoadingItems ? (
-        <div className="clothes__loading" aria-live="polite">Loading items…</div>
-      ) : (
-        <ul className="cards">
-          {items.map((item) => {
-            const id = item._id || item.id;
-            const liked = likedIds.has(id);
-            const name = item.name || "Item";
-            const src = item.imageUrl || item.image;
-            return (
-              <li
-                key={id}
-                className="card"
-                onClick={() => onCardClick && onCardClick(item)}
-                role="button"
-                tabIndex={0}
-                onKeyDown={(e) => {
-                  if (e.key === "Enter" || e.key === " ") onCardClick && onCardClick(item);
-                }}
-              >
-                <div className="card__meta">
-                  <div className="card__title">{name}</div>
-                  <button
-                    type="button"
-                    className={`card__like ${liked ? "is-liked" : ""}`}
-                    aria-pressed={liked}
-                    aria-label={liked ? "Unlike" : "Like"}
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      toggleLike(id);
-                    }}
-                  />
-                </div>
-                <img src={src} alt={name} />
-              </li>
-            );
-          })}
-        </ul>
-      )}
+        {isLoadingItems ? (
+          <div className="clothes__loading" aria-live="polite">Loading items…</div>
+        ) : (
+          <ul className="cards">
+            {items.map((item) => {
+              const id = item._id || item.id;
+              const liked = likedIds.has(id);
+              const name = item.name || "Item";
+              const src = item.imageUrl || item.image;
+              return (
+                <li
+                  key={id}
+                  className="card"
+                  onClick={() => onCardClick && onCardClick(item)}
+                  role="button"
+                  tabIndex={0}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter" || e.key === " ") onCardClick && onCardClick(item);
+                  }}
+                >
+                  <div className="card__meta">
+                    <div className="card__title">{name}</div>
+                    <button
+                      type="button"
+                      className={`card__like ${liked ? "is-liked" : ""}`}
+                      aria-pressed={liked}
+                      aria-label={liked ? "Unlike" : "Like"}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        toggleLike(id);
+                      }}
+                    />
+                  </div>
+                  <img src={src} alt={name} />
+                </li>
+              );
+            })}
+          </ul>
+        )}
+      </div>
     </section>
   );
 }

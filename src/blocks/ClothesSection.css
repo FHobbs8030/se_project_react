@@ -1,22 +1,14 @@
 .clothes {
-  padding: 0;
   margin: 0;
+  padding: 0;
 }
-
 .clothes__meta {
-  margin: 0 0 8px;
+  margin: 8px 0 12px;
+  padding: 0;
+}
+.clothes__summary {
+  margin: 0;
+  padding: 0;
   font-size: 12px;
   color: #64748b;
-}
-
-.clothes__summary {
-  max-width: 1360px;
-  margin: 0 auto 16px;
-  padding-inline: var(--gutter, 40px);
-  box-sizing: border-box;
-  width: 100%;
-}
-
-.clothes__loading {
-  padding: 16px 0;
 }

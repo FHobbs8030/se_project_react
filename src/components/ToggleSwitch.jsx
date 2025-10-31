@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import "../blocks/ToggleSwitch.css";
 
 export default function ToggleSwitch({ value, onChange }) {
   const [unit, setUnit] = useState(
