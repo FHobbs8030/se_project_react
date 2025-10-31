@@ -11,13 +11,14 @@ export default function Layout({
   return (
     <>
       <Header
-        onAddClick={onAddClick}
+        isAuth={!!outletContext?.currentUser}
+        onAddItemClick={onAddClick}
         onLoginClick={onLoginClick}
         onRegisterClick={onRegisterClick}
         onLogoutClick={onLogoutClick}
         currentUser={outletContext?.currentUser}
         tempUnit={outletContext?.tempUnit}
-        setTempUnit={outletContext?.setTempUnit}
+        onToggleUnit={outletContext?.onToggleUnit}
         locationName={outletContext?.weatherData?.locationName}
       />
       <Outlet context={outletContext} />

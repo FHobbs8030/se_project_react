@@ -83,61 +83,72 @@ export default function App() {
     loadWeather();
   }, []);
 
-  const onCardClick = (item) => {
+  const onCardClick = useCallback((item) => {
     setActiveItem(item);
     setIsItemOpen(true);
-  };
+  }, []);
 
-  const handleDeleteItem = async (item) => {
+  const handleDeleteItem = useCallback(async (item) => {
     await Items.deleteItem(item._id || item.id);
     const list = await Items.getItems();
     const arr = Array.isArray(list) ? list : list?.data || [];
     setClothingItems(arr);
     setIsItemOpen(false);
     setActiveItem(null);
-  };
+  }, []);
 
-  const handleAddItem = async ({ name, imageUrl, weather = "warm" }) => {
+  const handleAddItem = useCallback(async ({ name, imageUrl, weather = "warm" }) => {
     await Items.addItem({ name, imageUrl, weather });
     const list = await Items.getItems();
     const arr = Array.isArray(list) ? list : list?.data || [];
     setClothingItems(arr);
     setIsAddItemOpen(false);
-  };
+  }, []);
 
   const handleLoginClick = useCallback(() => setIsLoginOpen(true), []);
   const handleRegisterClick = useCallback(() => setIsRegisterOpen(true), []);
   const handleAddClick = useCallback(() => setIsAddItemOpen(true), []);
 
-  const handleLoginSubmit = async ({ email, password }) => {
-    const { token } = await Auth.login({ email, password });
-    localStorage.setItem("jwt", token);
-    const me = await Auth.getUser();
-    setCurrentUser(me);
-    const list = await Items.getItems();
-    const arr = Array.isArray(list) ? list : list?.data || [];
-    setClothingItems(arr);
-    setIsLoginOpen(false);
-    navigate("/profile");
-  };
+  const handleToggleUnit = useCallback((next) => {
+    setTempUnit((prev) => (next ? next : prev === "F" ? "C" : "F"));
+  }, []);
 
-  const handleRegisterSubmit = async ({ name, email, password }) => {
-    await Auth.register({ name, email, password });
-    const { token } = await Auth.login({ email, password });
-    localStorage.setItem("jwt", token);
-    const me = await Auth.getUser();
-    setCurrentUser(me);
-    const list = await Items.getItems();
-    const arr = Array.isArray(list) ? list : list?.data || [];
-    setClothingItems(arr);
-    setIsRegisterOpen(false);
-    navigate("/profile");
-  };
+  const handleLoginSubmit = useCallback(
+    async ({ email, password }) => {
+      const { token } = await Auth.login({ email, password });
+      localStorage.setItem("jwt", token);
+      const me = await Auth.getUser();
+      setCurrentUser(me);
+      const list = await Items.getItems();
+      const arr = Array.isArray(list) ? list : list?.data || [];
+      setClothingItems(arr);
+      setIsLoginOpen(false);
+      navigate("/profile");
+    },
+    [navigate]
+  );
+
+  const handleRegisterSubmit = useCallback(
+    async ({ name, email, password }) => {
+      await Auth.register({ name, email, password });
+      const { token } = await Auth.login({ email, password });
+      localStorage.setItem("jwt", token);
+      const me = await Auth.getUser();
+      setCurrentUser(me);
+      const list = await Items.getItems();
+      const arr = Array.isArray(list) ? list : list?.data || [];
+      setClothingItems(arr);
+      setIsRegisterOpen(false);
+      navigate("/profile");
+    },
+    [navigate]
+  );
 
   const handleLogout = useCallback(async () => {
-    await fetch(`${API_BASE}/signout`, { method: "POST", credentials: "include" }).catch(
-      () => null
-    );
+    await fetch(`${API_BASE}/signout`, {
+      method: "POST",
+      credentials: "include",
+    }).catch(() => null);
     localStorage.removeItem("jwt");
     setCurrentUser(null);
     setClothingItems([]);
@@ -152,21 +163,23 @@ export default function App() {
       isLoadingWeather,
       isLoadingItems,
       tempUnit,
-      setTempUnit,
+      onToggleUnit: handleToggleUnit,
       currentUser,
       onAddClick: handleAddClick,
       onLogoutClick: handleLogout,
-      onEditProfileClick: () => null
+      onEditProfileClick: () => null,
     }),
     [
       weatherData,
       clothingItems,
+      onCardClick,
       isLoadingWeather,
       isLoadingItems,
       tempUnit,
+      handleToggleUnit,
       currentUser,
       handleAddClick,
-      handleLogout
+      handleLogout,
     ]
   );
 
@@ -228,7 +241,8 @@ export default function App() {
           onDelete={handleDeleteItem}
           isOwner={
             currentUser?._id &&
-            String(activeItem.owner?._id || activeItem.owner) === String(currentUser._id)
+            String(activeItem.owner?._id || activeItem.owner) ===
+              String(currentUser._id)
           }
         />
       )}

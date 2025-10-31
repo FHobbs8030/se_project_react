@@ -16,14 +16,17 @@ export default function Header({
 }) {
   const navigate = useNavigate();
   const now = new Date();
-  const formattedDate = new Intl.DateTimeFormat("en-US", { month: "long", day: "numeric" }).format(now);
+  const formattedDate = new Intl.DateTimeFormat("en-US", {
+    month: "long",
+    day: "numeric",
+  }).format(now);
 
   const authed = typeof isAuth === "boolean" ? isAuth : !!currentUser;
   const name = currentUser?.name || "User";
   const initial = name.charAt(0).toUpperCase();
   const avatarUrl = currentUser?.avatar || "";
   const loc = locationName || import.meta.env.VITE_LOCATION_NAME || "";
-  const handleAdd = onAddItemClick || onAddItemOpen;
+  const handleAdd = onAddItemClick || onAddItemOpen || (() => {});
 
   const openProfile = () => navigate("/profile");
 
@@ -32,7 +35,13 @@ export default function Header({
       <div className="header__outer">
         <div className="header__inner">
           <Link className="header__brand" to="/">
-            <img className="header__logo" src="/images/Logo.svg" alt="WTWR logo" width="89" height="40" />
+            <img
+              className="header__logo"
+              src="/images/Logo.svg"
+              alt="WTWR logo"
+              width="89"
+              height="40"
+            />
           </Link>
 
           <div className="header__meta">
@@ -41,15 +50,23 @@ export default function Header({
           </div>
 
           <div className="header__actions">
-            <ToggleSwitch value={tempUnit} onChange={onToggleUnit} />
+            <ToggleSwitch value={tempUnit} onToggle={onToggleUnit} />
             {authed ? (
               <>
-                <button type="button" className="btn btn--link" onClick={handleAdd}>
+                <button
+                  type="button"
+                  className="btn btn--link"
+                  onClick={handleAdd}
+                >
                   <span className="plus">+</span>
                   <span>Add clothes</span>
                 </button>
-
-                <button type="button" className="header__user" onClick={openProfile} aria-label="Open profile">
+                <button
+                  type="button"
+                  className="header__user"
+                  onClick={openProfile}
+                  aria-label="Open profile"
+                >
                   <span className="header__user-name">{name}</span>
                   <span className="header__avatar" aria-hidden="true">
                     {avatarUrl ? <img src={avatarUrl} alt="" /> : initial}
@@ -58,8 +75,20 @@ export default function Header({
               </>
             ) : (
               <>
-                <button type="button" className="btn btn--link" onClick={onRegisterClick}>Sign Up</button>
-                <button type="button" className="btn btn--link" onClick={onLoginClick}>Log In</button>
+                <button
+                  type="button"
+                  className="btn btn--link"
+                  onClick={onRegisterClick}
+                >
+                  Sign Up
+                </button>
+                <button
+                  type="button"
+                  className="btn btn--link"
+                  onClick={onLoginClick}
+                >
+                  Log In
+                </button>
               </>
             )}
           </div>

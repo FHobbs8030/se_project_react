@@ -13,10 +13,14 @@ function toTempF(src) {
 }
 
 export default function WeatherCard({ weatherData: propWD, tempF: propTempF, isLoadingWeather }) {
-  const ctx = useOutletContext();
-  const wd = propWD ?? ctx?.weatherData ?? null;
+  const ctx = useOutletContext() || {};
+  const { tempUnit = "F" } = ctx;
+  const wd = propWD ?? ctx.weatherData ?? null;
 
-  const tF = Number.isFinite(propTempF) ? Math.round(propTempF) : toTempF(wd);
+  const baseF = Number.isFinite(propTempF) ? Math.round(propTempF) : toTempF(wd);
+  const tempC = baseF !== null ? Math.round((baseF - 32) * (5 / 9)) : null;
+  const display = tempUnit === "C" ? tempC : baseF;
+
   const icon = wd?.weather?.[0]?.icon || "";
   const isNight = /n$/.test(icon);
 
@@ -29,8 +33,8 @@ export default function WeatherCard({ weatherData: propWD, tempF: propTempF, isL
       >
         <div className="weather-card__inner">
           <div className="weather-card__left">
-            <span className="weather-card__temp">{tF ?? "--"}</span>
-            <span className="weather-card__deg">°F</span>
+            <span className="weather-card__temp">{display ?? "--"}</span>
+            <span className="weather-card__deg">°{tempUnit}</span>
           </div>
           <div className="weather-card__right" aria-hidden="true">
             <div className="weather-card__orb" />

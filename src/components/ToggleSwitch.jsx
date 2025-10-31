@@ -1,42 +1,34 @@
-import { useEffect, useState } from "react";
+import PropTypes from "prop-types";
 import "../blocks/ToggleSwitch.css";
 
-export default function ToggleSwitch({ value, onChange }) {
-  const [unit, setUnit] = useState(
-    value || localStorage.getItem("wtwr_unit") || "F"
-  );
-
-  useEffect(() => {
-    if (value === "F" || value === "C") setUnit(value);
-  }, [value]);
-
-  useEffect(() => {
-    localStorage.setItem("wtwr_unit", unit);
-    if (typeof onChange === "function") onChange(unit);
-  }, [unit, onChange]);
-
+export default function ToggleSwitch({ value, onToggle }) {
   return (
     <div className="toggle">
       <button
         type="button"
-        className={`toggle__option ${unit === "F" ? "is-active" : ""}`}
-        onClick={() => setUnit("F")}
-        aria-pressed={unit === "F"}
+        className={`toggle__option ${value === "F" ? "is-active" : ""}`}
+        onClick={() => onToggle("F")}
+        aria-pressed={value === "F"}
       >
         F
       </button>
       <button
         type="button"
-        className={`toggle__option ${unit === "C" ? "is-active" : ""}`}
-        onClick={() => setUnit("C")}
-        aria-pressed={unit === "C"}
+        className={`toggle__option ${value === "C" ? "is-active" : ""}`}
+        onClick={() => onToggle("C")}
+        aria-pressed={value === "C"}
       >
         C
       </button>
       <span
-        className={`toggle__thumb ${unit === "F" ? "at-f" : "at-c"}`}
+        className={`toggle__thumb ${value === "F" ? "at-f" : "at-c"}`}
         aria-hidden="true"
       />
     </div>
   );
 }
+
+ToggleSwitch.propTypes = {
+  value: PropTypes.oneOf(["F", "C"]).isRequired,
+  onToggle: PropTypes.func.isRequired,
+};
