@@ -1,0 +1,17 @@
+:root {
+  --gutter: 40px;
+}
+
+.container {
+  max-width: 1360px;
+  margin: 0 auto;
+  padding-inline: var(--gutter);
+}
+
+@media (max-width: 768px) {
+  :root { --gutter: 24px; }
+}
+
+@media (max-width: 420px) {
+  :root { --gutter: 16px; }
+}

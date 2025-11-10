@@ -1,0 +1,1 @@
+﻿Stray /signout calls -> C:\Users\FHobb\Projects\se_project_react\src\utils\authApi.js:76: await raw("/signout", { method: "POST", withCredentials: true }).catch(() => null);

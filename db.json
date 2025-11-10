@@ -1,0 +1,112 @@
+{
+    "items":  [
+                  {
+                      "_id":  "i1",
+                      "name":  "Beanie",
+                      "imageUrl":  "/images/clothes/beanie.png",
+                      "owner":  "u1",
+                      "likes":  [
+
+                                ]
+                  },
+                  {
+                      "_id":  "i2",
+                      "name":  "Boots",
+                      "imageUrl":  "/images/clothes/boots.png",
+                      "owner":  "u1",
+                      "likes":  [
+
+                                ]
+                  },
+                  {
+                      "_id":  "i3",
+                      "name":  "Cap",
+                      "imageUrl":  "/images/clothes/cap.png",
+                      "owner":  "u1",
+                      "likes":  [
+
+                                ]
+                  },
+                  {
+                      "_id":  "i4",
+                      "name":  "Coat",
+                      "imageUrl":  "/images/clothes/coat.png",
+                      "owner":  "u1",
+                      "likes":  [
+
+                                ]
+                  },
+                  {
+                      "_id":  "i5",
+                      "name":  "Hoodie",
+                      "imageUrl":  "/images/clothes/hoodie.png",
+                      "owner":  "u1",
+                      "likes":  [
+
+                                ]
+                  },
+                  {
+                      "_id":  "i6",
+                      "name":  "Jacket",
+                      "imageUrl":  "/images/clothes/jacket.png",
+                      "owner":  "u1",
+                      "likes":  [
+
+                                ]
+                  },
+                  {
+                      "_id":  "i7",
+                      "name":  "Jeans",
+                      "imageUrl":  "/images/clothes/jeans.png",
+                      "owner":  "u1",
+                      "likes":  [
+
+                                ]
+                  },
+                  {
+                      "_id":  "i8",
+                      "name":  "Shoes",
+                      "imageUrl":  "/images/clothes/shoes.png",
+                      "owner":  "u1",
+                      "likes":  [
+
+                                ]
+                  },
+                  {
+                      "_id":  "i9",
+                      "name":  "Shorts",
+                      "imageUrl":  "/images/clothes/shorts.png",
+                      "owner":  "u1",
+                      "likes":  [
+
+                                ]
+                  },
+                  {
+                      "_id":  "i10",
+                      "name":  "Sneakers",
+                      "imageUrl":  "/images/clothes/sneakers.png",
+                      "owner":  "u1",
+                      "likes":  [
+
+                                ]
+                  },
+                  {
+                      "_id":  "i11",
+                      "name":  "Tshirt",
+                      "imageUrl":  "/images/clothes/tshirt.png",
+                      "owner":  "u1",
+                      "likes":  [
+
+                                ]
+                  },
+                  {
+                      "_id":  "i12",
+                      "name":  "Vintage Cap",
+                      "imageUrl":  "/images/clothes/Vintage_Cap.png",
+                      "owner":  "u1",
+                      "likes":  [
+
+                                ]
+                  }
+              ]
+}

@@ -1,0 +1,39 @@
+@import "./vendor/normalize.css";
+@import url("./vendor/fonts/fonts.css");
+@import "./blocks/layout.css";
+@import "./blocks/ToggleSwitch.css";
+
+*, *::before, *::after { box-sizing: border-box; }
+
+:root {
+  --page-bg: #ffffff;
+  --page-fg: #0f172a;
+
+  /* 19px at 320px → 40px at 1440px */
+  --gutter: clamp(19px, calc(13px + 1.875vw), 40px);
+}
+
+html, body {
+  font-family: "Cabinet Grotesk", "Inter", sans-serif;
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
+  width: 100%;
+  max-width: 100vw;
+  height: 100%;
+}
+
+html, body, #root {
+  min-height: 100%;
+  background: var(--page-bg);
+  color: var(--page-fg);
+}
+
+.app, .page, main { background: transparent; }
+
+/* Fluid page frame used across all screens */
+.app-frame{
+  width: min(100%, 1440px);
+  margin-inline: auto;
+  padding-inline: max(var(--gutter), env(safe-area-inset-left)) max(var(--gutter), env(safe-area-inset-right));
+}

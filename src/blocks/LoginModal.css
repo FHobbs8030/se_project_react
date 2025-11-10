@@ -1,0 +1,133 @@
+:root {
+  --modal-bg: rgba(0, 0, 0, 0.52);
+  --panel-bg: #fff;
+  --panel-radius: 16px;
+  --panel-pad: 28px;
+  --border-hr: #0b0b0b;
+  --input-underline: #0b0b0b;
+  --muted: #6b7280;
+  --text: #0b0b0b;
+  --btn-bg: #e5e7eb;
+  --btn-fg: #111827;
+  --btn-bg-disabled: #e5e7eb;
+  --btn-fg-disabled: #6b7280;
+}
+
+.modal {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: grid;
+  place-items: center;
+}
+
+.modal__backdrop {
+  position: absolute;
+  inset: 0;
+  background: var(--modal-bg);
+}
+
+.modal__panel {
+  position: relative;
+  z-index: 1001;
+  width: min(560px, calc(100% - 32px));
+  background: var(--panel-bg);
+  border-radius: var(--panel-radius);
+  padding: var(--panel-pad);
+  box-shadow:
+    0 20px 60px rgba(0,0,0,.25),
+    0 1px 0 rgba(0,0,0,.06) inset;
+}
+
+.modal__close {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  width: 28px;
+  height: 28px;
+  line-height: 28px;
+  font-size: 22px;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  color: var(--muted);
+  cursor: pointer;
+}
+
+.modal__close:hover { background: rgba(0,0,0,.06); }
+
+.modal__title {
+  margin: 0 0 18px;
+  font-size: 18px;
+  line-height: 1.2;
+  color: var(--text);
+  font-weight: 700;
+}
+
+.form {
+  display: grid;
+  gap: 14px;
+}
+
+.form__label {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.form__input {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  border: 0;
+  border-bottom: 2px solid var(--input-underline);
+  padding: 10px 0;
+  outline: none;
+  font-size: 16px;
+  color: var(--text);
+  background: transparent;
+}
+
+.form__input::placeholder { color: #9ca3af; }
+
+.form__actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 8px;
+}
+
+.btn {
+  border: 0;
+  border-radius: 8px;
+  padding: 10px 16px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.btn--primary {
+  background: var(--btn-bg);
+  color: var(--btn-fg);
+}
+
+.btn--primary:disabled {
+  cursor: not-allowed;
+  background: var(--btn-bg-disabled);
+  color: var(--btn-fg-disabled);
+}
+
+.link-as-button {
+  background: transparent;
+  border: 0;
+  color: #6b7280;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 10px 0;
+}
+
+.link-as-button:hover { text-decoration: underline; }
+
+@media (max-width: 420px) {
+  .modal__panel { padding: 22px; }
+  .form__actions { flex-wrap: wrap; gap: 8px; }
+}

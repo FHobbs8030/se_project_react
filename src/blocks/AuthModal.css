@@ -1,0 +1,116 @@
+.authmodal__overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(17, 24, 39, 0.55);
+  display: grid;
+  place-items: center;
+  padding: 24px;
+  z-index: 1000;
+}
+
+.authmodal {
+  width: min(520px, 92vw);
+  background: #ffffff;
+  border-radius: 16px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.25);
+  overflow: hidden;
+}
+
+.authmodal__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px 24px 8px;
+}
+
+.authmodal__title {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 700;
+  color: #0f172a;
+}
+
+.authmodal__close {
+  appearance: none;
+  border: none;
+  background: transparent;
+  font-size: 22px;
+  line-height: 1;
+  padding: 6px 8px;
+  border-radius: 10px;
+  cursor: pointer;
+  color: #6b7280;
+}
+.authmodal__close:hover { background: #f3f4f6; color: #0f172a; }
+
+.authmodal__form {
+  padding: 8px 24px 20px;
+  display: grid;
+  gap: 16px;
+}
+
+.authmodal__field {
+  display: grid;
+  gap: 6px;
+}
+
+.authmodal__label {
+  font-size: 12px;
+  color: #111827;
+}
+
+.authmodal__input {
+  border: none;
+  border-bottom: 1px solid #d1d5db;
+  padding: 10px 2px 8px;
+  font-size: 14px;
+  outline: none;
+  background: transparent;
+}
+.authmodal__input:focus { border-bottom-color: #111827; }
+.authmodal__input--invalid { border-bottom-color: #ef4444; }
+
+.authmodal__error {
+  font-size: 12px;
+  color: #ef4444;
+}
+
+.authmodal__submit {
+  appearance: none;
+  border: none;
+  border-radius: 8px;
+  padding: 10px 14px;
+  font-size: 14px;
+  font-weight: 600;
+  background: #111827;
+  color: #fff;
+  cursor: pointer;
+}
+.authmodal__submit[disabled] {
+  background: #e5e7eb;
+  color: #9ca3af;
+  cursor: not-allowed;
+}
+
+.authmodal__footer {
+  padding: 0 24px 22px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.authmodal__hint {
+  font-size: 13px;
+  color: #6b7280;
+}
+
+.authmodal__link {
+  appearance: none;
+  background: transparent;
+  border: none;
+  color: #2563eb;
+  font-weight: 600;
+  padding: 0;
+  cursor: pointer;
+}
+.authmodal__link:hover { text-decoration: underline; }

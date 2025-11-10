@@ -1,0 +1,1 @@
+Invalid component export (object): C:\Users\FHobb\Projects\se_project_react\src\utils\authApi.js
