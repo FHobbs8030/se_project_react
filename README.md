@@ -131,3 +131,4 @@ npm run dev              # opens at <http://localhost:5175>
 ## 📄 License
 
 MIT
+A weather-based wardrobe app (WTWR) built with React + Vite.
