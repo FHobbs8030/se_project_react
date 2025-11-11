@@ -52,13 +52,13 @@
   height: var(--like-size);
   border: 0;
   border-radius: 50%;
-  background: transparent center/contain no-repeat url('/images/unLike button.png');
+  background: transparent center/contain no-repeat url('/images/heart-empty.png');
   cursor: pointer;
 }
 
 .card__like.is-liked,
 .card__like.card__like_active {
-  background-image: url('/images/Like button.png');
+  background-image: url('/images/heart-filled.png');
 }
 
 .card__like:focus-visible {

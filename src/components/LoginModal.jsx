@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+﻿import { useEffect, useMemo, useState } from 'react';
 import '../blocks/AuthModal.css';
 
 export default function LoginModal({
@@ -27,14 +27,12 @@ export default function LoginModal({
   function handleSubmit(e) {
     e.preventDefault();
     if (!isValid || isSubmitting) return;
-    onSubmit({ email: email.trim(), password });
+    onSubmit?.({ email: email.trim(), password });
   }
 
   useEffect(() => {
     if (!isOpen) return;
-    function onKey(e) {
-      if (e.key === 'Escape') onClose?.();
-    }
+    const onKey = e => e.key === 'Escape' && onClose?.();
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
   }, [isOpen, onClose]);
@@ -74,10 +72,11 @@ export default function LoginModal({
                 emailErr ? 'authmodal__input--invalid' : ''
               }`}
               type="email"
-              value={email}
-              onChange={e => setEmail(e.target.value)}
+              name="email"
               autoComplete="email"
               placeholder="you@example.com"
+              value={email}
+              onChange={e => setEmail(e.target.value)}
               required
             />
             {emailErr && <span className="authmodal__error">{emailErr}</span>}
@@ -90,11 +89,12 @@ export default function LoginModal({
                 passwordErr ? 'authmodal__input--invalid' : ''
               }`}
               type="password"
+              name="password"
+              autoComplete="current-password"
+              placeholder="Password"
               value={password}
               onChange={e => setPassword(e.target.value)}
-              autoComplete="current-password"
               minLength={8}
-              placeholder="••••••••"
               required
             />
             {passwordErr && (

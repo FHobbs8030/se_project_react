@@ -1,8 +1,6 @@
-// src/components/Header.jsx
+﻿// src/components/Header.jsx
 import { Link, useLocation, useOutletContext } from 'react-router-dom';
 import ToggleSwitch from './ToggleSwitch.jsx';
-import '../blocks/Header.css';
-
 export default function Header({
   currentUser: currentUserProp,
   value,
@@ -117,3 +115,4 @@ export default function Header({
     </header>
   );
 }
+

@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+﻿import { useEffect, useMemo, useState } from 'react';
 import '../blocks/AuthModal.css';
 
 export default function RegisterModal({
@@ -11,13 +11,12 @@ export default function RegisterModal({
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [avatar, setAvatar] = useState('');
 
   const nameErr = useMemo(() => {
     const v = name.trim();
     if (!v) return 'Name is required';
-    if (v.length < 2) return 'Min 2 characters';
-    if (v.length > 30) return 'Max 30 characters';
-    return '';
+    return v.length >= 2 ? '' : 'Min 2 characters';
   }, [name]);
 
   const emailErr = useMemo(() => {
@@ -31,19 +30,30 @@ export default function RegisterModal({
     return password.length >= 8 ? '' : 'Min 8 characters';
   }, [password]);
 
-  const isValid = !nameErr && !emailErr && !passwordErr;
+  const avatarErr = useMemo(() => {
+    if (!avatar) return ''; // optional
+    try {
+      // allow absolute http(s) or /images/... from public
+      const ok = /^https?:\/\//i.test(avatar) || avatar.startsWith('/images/');
+      return ok ? '' : 'Use a full URL or /images/...';
+    } catch {
+      return 'Invalid URL';
+    }
+  }, [avatar]);
+
+  const isValid = !nameErr && !emailErr && !passwordErr && !avatarErr;
 
   function handleSubmit(e) {
     e.preventDefault();
     if (!isValid || isSubmitting) return;
-    onSubmit({ name: name.trim(), email: email.trim(), password });
+    const payload = { name: name.trim(), email: email.trim(), password };
+    if (avatar.trim()) payload.avatar = avatar.trim();
+    onSubmit?.(payload);
   }
 
   useEffect(() => {
     if (!isOpen) return;
-    function onKey(e) {
-      if (e.key === 'Escape') onClose?.();
-    }
+    const onKey = e => e.key === 'Escape' && onClose?.();
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
   }, [isOpen, onClose]);
@@ -83,11 +93,12 @@ export default function RegisterModal({
                 nameErr ? 'authmodal__input--invalid' : ''
               }`}
               type="text"
+              name="name"
+              autoComplete="name"
+              placeholder="Your name"
               value={name}
               onChange={e => setName(e.target.value)}
               minLength={2}
-              maxLength={30}
-              placeholder="Your name"
               required
             />
             {nameErr && <span className="authmodal__error">{nameErr}</span>}
@@ -100,10 +111,11 @@ export default function RegisterModal({
                 emailErr ? 'authmodal__input--invalid' : ''
               }`}
               type="email"
-              value={email}
-              onChange={e => setEmail(e.target.value)}
+              name="email"
               autoComplete="email"
               placeholder="you@example.com"
+              value={email}
+              onChange={e => setEmail(e.target.value)}
               required
             />
             {emailErr && <span className="authmodal__error">{emailErr}</span>}
@@ -116,16 +128,33 @@ export default function RegisterModal({
                 passwordErr ? 'authmodal__input--invalid' : ''
               }`}
               type="password"
+              name="password"
+              autoComplete="new-password"
+              placeholder="Password"
               value={password}
               onChange={e => setPassword(e.target.value)}
-              autoComplete="new-password"
               minLength={8}
-              placeholder="••••••••"
               required
             />
             {passwordErr && (
               <span className="authmodal__error">{passwordErr}</span>
             )}
+          </label>
+
+          <label className="authmodal__field">
+            <span className="authmodal__label">Avatar URL (optional)</span>
+            <input
+              className={`authmodal__input ${
+                avatarErr ? 'authmodal__input--invalid' : ''
+              }`}
+              type="url"
+              name="avatar"
+              autoComplete="url"
+              placeholder="/images/Avatar.png or https://…"
+              value={avatar}
+              onChange={e => setAvatar(e.target.value)}
+            />
+            {avatarErr && <span className="authmodal__error">{avatarErr}</span>}
           </label>
 
           <button
@@ -134,7 +163,7 @@ export default function RegisterModal({
             disabled={!isValid || isSubmitting}
             aria-disabled={!isValid || isSubmitting}
           >
-            {isSubmitting ? 'Signing up…' : 'Sign up'}
+            {isSubmitting ? 'Creating…' : 'Sign up'}
           </button>
         </form>
 
