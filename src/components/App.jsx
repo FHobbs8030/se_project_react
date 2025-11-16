@@ -42,44 +42,11 @@ export default function App() {
     }
   }, []);
 
-  useEffect(() => {
-    let alive = true;
-    (async () => {
-      try {
-        const flagged = (() => {
-          try {
-            return localStorage.getItem('loggedOut') === '1';
-          } catch (e) {
-            void e;
-            return false;
-          }
-        })();
-        if (flagged) {
-          setCurrentUser(null);
-          setClothingItems([]);
-        } else {
-          await loadAuthedData();
-        }
-      } catch (e) {
-        void e;
-        if (alive) {
-          setCurrentUser(null);
-          setClothingItems([]);
-        }
-      } finally {
-        if (alive) setIsCheckingAuth(false);
-      }
-    })();
-    return () => {
-      alive = false;
-    };
-  }, [loadAuthedData]);
-
   const handleLogin = useCallback(
-    async ({ email, password, remember }) => {
+    async ({ email, password }) => {
       setIsSubmitting(true);
       try {
-        await Auth.login({ email, password, remember });
+        await Auth.login({ email, password });
         try {
           localStorage.removeItem('loggedOut');
         } catch (e) {
@@ -88,8 +55,6 @@ export default function App() {
         await loadAuthedData();
         setIsLoginOpen(false);
         navigate('/', { replace: true });
-      } catch (e) {
-        void e;
       } finally {
         setIsSubmitting(false);
       }
@@ -98,10 +63,11 @@ export default function App() {
   );
 
   const handleRegister = useCallback(
-    async ({ name, email, password, avatar }) => {
+    async ({ name, email, password, avatarUrl, city }) => {
       setIsSubmitting(true);
       try {
-        await Auth.register({ name, email, password, avatar });
+        await Auth.register({ name, email, password, avatarUrl, city });
+        await Auth.login({ email, password });
         try {
           localStorage.removeItem('loggedOut');
         } catch (e) {
@@ -110,8 +76,6 @@ export default function App() {
         await loadAuthedData();
         setIsRegisterOpen(false);
         navigate('/', { replace: true });
-      } catch (e) {
-        void e;
       } finally {
         setIsSubmitting(false);
       }
@@ -136,6 +100,10 @@ export default function App() {
     navigate('/signin', { replace: true });
   }, [navigate]);
 
+  const handleEditProfile = useCallback(() => {
+    alert('Editing profile data is not implemented in this sprint.');
+  }, []);
+
   const handleAddItem = useCallback(
     async ({ name, imageUrl, weather: weatherTag }) => {
       setIsSubmitting(true);
@@ -150,7 +118,7 @@ export default function App() {
         setIsSubmitting(false);
       }
     },
-    []
+    [setIsSubmitting]
   );
 
   const handleDeleteItem = useCallback(async item => {
@@ -164,18 +132,19 @@ export default function App() {
     }
   }, []);
 
-  const handleCardLike = useCallback(async (id, isLiked) => {
+  const handleCardLike = useCallback(async (id, likedByMe) => {
     if (!id) return;
-    const likeId = String(id);
     setLikePending(prev => {
-      if (prev.has(likeId)) return prev;
       const next = new Set(prev);
-      next.add(likeId);
+      next.add(id);
       return next;
     });
     try {
-      if (isLiked) await Items.unlikeItem(likeId);
-      else await Items.likeItem(likeId);
+      if (likedByMe) {
+        await Items.unlikeItem(id);
+      } else {
+        await Items.likeItem(id);
+      }
       const list = await Items.getItems();
       setClothingItems(Array.isArray(list) ? list : []);
     } catch (e) {
@@ -183,7 +152,7 @@ export default function App() {
     } finally {
       setLikePending(prev => {
         const next = new Set(prev);
-        next.delete(likeId);
+        next.delete(id);
         return next;
       });
     }
@@ -210,6 +179,7 @@ export default function App() {
       currentTemperatureUnit,
       setCurrentTemperatureUnit,
       onLogoutClick: handleLogout,
+      onEditProfileClick: handleEditProfile,
       likePending,
     }),
     [
@@ -219,9 +189,43 @@ export default function App() {
       weather,
       currentTemperatureUnit,
       handleLogout,
+      handleEditProfile,
       likePending,
     ]
   );
+
+  useEffect(() => {
+    let alive = true;
+    (async () => {
+      try {
+        const loggedOutFlag = (() => {
+          try {
+            return localStorage.getItem('loggedOut');
+          } catch (e) {
+            void e;
+            return null;
+          }
+        })();
+        if (loggedOutFlag === '1') {
+          setCurrentUser(null);
+          setClothingItems([]);
+          return;
+        }
+        await loadAuthedData();
+      } catch (e) {
+        void e;
+        if (alive) {
+          setCurrentUser(null);
+          setClothingItems([]);
+        }
+      } finally {
+        if (alive) setIsCheckingAuth(false);
+      }
+    })();
+    return () => {
+      alive = false;
+    };
+  }, [loadAuthedData]);
 
   if (isCheckingAuth) return null;
 
@@ -251,14 +255,26 @@ export default function App() {
           />
           <Route
             path="signin"
-            element={currentUser ? <Navigate to="/" replace /> : <Main />}
+            element={
+              currentUser ? (
+                <Navigate to="/" replace />
+              ) : (
+                <Main initialAuthMode="login" />
+              )
+            }
           />
           <Route
             path="signup"
-            element={currentUser ? <Navigate to="/" replace /> : <Main />}
+            element={
+              currentUser ? (
+                <Navigate to="/" replace />
+              ) : (
+                <Main initialAuthMode="register" />
+              )
+            }
           />
-          <Route path="*" element={<Navigate to="/" replace />} />
         </Route>
+        <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
 
       {isLoginOpen && (
@@ -266,7 +282,7 @@ export default function App() {
           isOpen={isLoginOpen}
           onClose={() => setIsLoginOpen(false)}
           onSubmit={handleLogin}
-          onSwitchToRegister={openRegisterFromLogin}
+          onAltClick={openRegisterFromLogin}
           isSubmitting={isSubmitting}
         />
       )}
@@ -276,7 +292,7 @@ export default function App() {
           isOpen={isRegisterOpen}
           onClose={() => setIsRegisterOpen(false)}
           onSubmit={handleRegister}
-          onSwitchToLogin={openLoginFromRegister}
+          onAltClick={openLoginFromRegister}
           isSubmitting={isSubmitting}
         />
       )}
@@ -285,7 +301,7 @@ export default function App() {
         <AddItemModal
           isOpen={isAddItemOpen}
           onClose={() => setIsAddItemOpen(false)}
-          onAddItem={handleAddItem}
+          onSubmit={handleAddItem}
           isSubmitting={isSubmitting}
         />
       )}
