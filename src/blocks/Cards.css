@@ -66,11 +66,6 @@
   outline-offset: 2px;
 }
 
-.card__like:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-}
-
 .card__media {
   width: 100%;
   aspect-ratio: 4 / 5;

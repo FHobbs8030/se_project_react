@@ -1,135 +1,134 @@
-.additem-overlay {
+.modal {
   position: fixed;
   inset: 0;
-  background: rgba(17, 24, 39, 0.55);
-  display: grid;
-  place-items: center;
-  padding: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.4);
   z-index: 1000;
 }
 
-.additem-modal {
-  width: min(560px, 92vw);
-  background: #fff;
-  border-radius: 16px;
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.25);
-  overflow: hidden;
-}
-
-.additem-header {
+.modal__content {
+  position: relative;
+  width: 496px;
+  padding: 28px 28px 32px;
+  border-radius: 20px;
+  background: #ffffff;
   display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 20px 24px 8px;
+  flex-direction: column;
+  gap: 24px;
 }
 
-.additem-title {
+.modal__title {
   margin: 0;
-  font-size: 18px;
-  line-height: 1.2;
-  font-weight: 600;
-  color: #111827;
-}
-
-.additem-close {
-  appearance: none;
-  border: none;
-  background: transparent;
   font-size: 20px;
-  line-height: 1;
-  padding: 6px 8px;
-  border-radius: 10px;
-  cursor: pointer;
-  color: #6b7280;
-}
-.additem-close:hover { background: #f3f4f6; color: #111827; }
-
-.additem-form {
-  padding: 4px 24px 24px;
-  display: grid;
-  gap: 16px;
+  font-weight: 600;
+  color: #000000;
 }
 
-.additem-label {
-  display: grid;
-  gap: 6px;
+.modal__form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
 }
 
-.additem-fieldname {
-  font-size: 12px;
-  color: #111827;
-}
-
-.additem-input {
-  width: 100%;
-  border: none;
-  border-bottom: 1px solid #d1d5db;
-  padding: 10px 2px 8px;
+.modal__label {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
   font-size: 14px;
-  outline: none;
+  font-weight: 500;
+  color: #000000;
+}
+
+.modal__input {
+  border: none;
+  border-bottom: 1px solid #000000;
+  padding: 4px 0;
+  width: 100%;
+  font-size: 14px;
   background: transparent;
-}
-.additem-input:focus {
-  border-bottom-color: #111827;
-}
-.additem-input--invalid {
-  border-bottom-color: #ef4444;
+  outline: none;
 }
 
-.additem-hint {
-  font-size: 11px;
-  color: #6b7280;
+.modal__hint {
   margin-top: 4px;
-}
-
-.additem-error {
-  margin-top: 6px;
   font-size: 12px;
-  color: #ef4444;
+  color: #7e7e7e;
 }
 
-.additem-fieldset {
+.modal__fieldset {
   border: none;
   padding: 0;
-  margin: 4px 0 0;
-  display: grid;
-  gap: 10px;
-}
-.additem-legend {
-  margin: 0 0 6px 0;
-  font-size: 12px;
-  color: #111827;
-}
-.additem-radio {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  margin-right: 16px;
-  font-size: 14px;
-  color: #111827;
-}
-.additem-radio input[type="radio"] {
-  width: 16px;
-  height: 16px;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
 }
 
-.additem-submit {
-  appearance: none;
-  border: none;
-  border-radius: 8px;
-  padding: 10px 14px;
+.modal__legend {
   font-size: 14px;
-  font-weight: 600;
-  background: #111827;
-  color: #fff;
+  font-weight: 500;
+  color: #000000;
+  margin-bottom: 4px;
+}
+
+.modal__radio {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
   cursor: pointer;
-  transition: transform 0.02s ease-in-out, opacity 0.2s ease-in-out;
 }
-.additem-submit:disabled {
-  background: #e5e7eb;
-  color: #9ca3af;
-  cursor: not-allowed;
+
+.modal__radio input {
+  accent-color: #000000;
 }
-.additem-submit:not(:disabled):active {
-  transform: translateY(1px);
+
+.modal__submit {
+  width: 100%;
+  padding: 12px 0;
+  border-radius: 6px;
+  border: none;
+  font-size: 14px;
+  font-weight: 500;
+  background: #000000;
+  color: #ffffff;
+  cursor: pointer;
+}
+
+.modal__submit:disabled {
+  background: #c4c4c4;
+  cursor: default;
+}
+
+.modal__close {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  width: 24px;
+  height: 24px;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+}
+
+.modal__close::before,
+.modal__close::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 16px;
+  height: 2px;
+  background: #000000;
+  transform-origin: center;
+}
+
+.modal__close::before {
+  transform: translate(-50%, -50%) rotate(45deg);
+}
+
+.modal__close::after {
+  transform: translate(-50%, -50%) rotate(-45deg);
 }

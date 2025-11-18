@@ -1,201 +1,111 @@
-import { useEffect, useMemo, useState } from 'react';
-import PropTypes from 'prop-types';
-import '../blocks/AddItemModal.css';
+import { useEffect, useState } from 'react';
 
 export default function AddItemModal({
   isOpen,
   onClose,
   onAddItem,
-  isSubmitting = false,
+  isSubmitting,
 }) {
   const [name, setName] = useState('');
   const [imageUrl, setImageUrl] = useState('');
-  const [weather, setWeather] = useState('');
-  const [touched, setTouched] = useState({
-    name: false,
-    imageUrl: false,
-    weather: false,
-  });
+  const [weather, setWeather] = useState('hot');
 
   useEffect(() => {
     if (!isOpen) {
       setName('');
       setImageUrl('');
-      setWeather('');
-      setTouched({ name: false, imageUrl: false, weather: false });
+      setWeather('hot');
     }
   }, [isOpen]);
 
-  const nameError = useMemo(() => {
-    const v = name.trim();
-    if (v.length === 0) return 'Required';
-    if (v.length < 2) return 'Must be at least 2 characters';
-    if (v.length > 30) return 'Must be at most 30 characters';
-    return '';
-  }, [name]);
-
-  const urlError = useMemo(() => {
-    const v = imageUrl.trim();
-    if (v.length === 0) return 'Required';
-    try {
-      const u = new URL(v);
-      if (!/^https?:$/i.test(u.protocol))
-        return 'Must start with http:// or https://';
-    } catch {
-      return 'Invalid URL';
-    }
-    return '';
-  }, [imageUrl]);
-
-  const weatherError = useMemo(() => {
-    if (!weather) return 'Select a weather type';
-    return '';
-  }, [weather]);
-
-  const isValid = nameError === '' && urlError === '' && weatherError === '';
-
-  function handleSubmit(e) {
+  const handleSubmit = e => {
     e.preventDefault();
-    if (!isValid || isSubmitting) return;
-    onAddItem({
-      name: name.trim(),
-      imageUrl: imageUrl.trim(),
-      weather,
-    });
-  }
+    if (!onAddItem) return;
+    onAddItem({ name, imageUrl, weather });
+  };
 
   if (!isOpen) return null;
 
   return (
-    <div
-      className="additem-overlay"
-      onMouseDown={e => e.target === e.currentTarget && onClose()}
-    >
-      <div
-        className="additem-modal"
-        role="dialog"
-        aria-modal="true"
-        aria-labelledby="additem-title"
-      >
-        <div className="additem-header">
-          <h2 id="additem-title" className="additem-title">
-            New garment
-          </h2>
-          <button
-            className="additem-close"
-            type="button"
-            aria-label="Close"
-            onClick={onClose}
-          >
-            ×
-          </button>
-        </div>
-
-        <form className="additem-form" onSubmit={handleSubmit} noValidate>
-          <label className="additem-label">
-            <span className="additem-fieldname">Name</span>
+    <div className="modal">
+      <div className="modal__content">
+        <button className="modal__close" type="button" onClick={onClose} />
+        <h3 className="modal__title">New garment</h3>
+        <form className="modal__form" onSubmit={handleSubmit}>
+          <label className="modal__label">
+            Name
             <input
-              className={`additem-input ${
-                touched.name && nameError ? 'additem-input--invalid' : ''
-              }`}
               type="text"
-              name="name"
-              minLength={2}
-              maxLength={30}
+              className="modal__input"
               value={name}
               onChange={e => setName(e.target.value)}
-              onBlur={() => setTouched(t => ({ ...t, name: true }))}
-              placeholder="Name"
               required
+              disabled={isSubmitting}
             />
-            {touched.name && nameError && (
-              <span className="additem-error">{nameError}</span>
-            )}
           </label>
 
-          <label className="additem-label">
-            <span className="additem-fieldname">Image</span>
+          <label className="modal__label">
+            Image
             <input
-              className={`additem-input ${
-                touched.imageUrl && urlError ? 'additem-input--invalid' : ''
-              }`}
               type="url"
-              name="imageUrl"
+              className="modal__input"
               value={imageUrl}
               onChange={e => setImageUrl(e.target.value)}
-              onBlur={() => setTouched(t => ({ ...t, imageUrl: true }))}
-              placeholder="Image URL"
-              inputMode="url"
               required
+              disabled={isSubmitting}
             />
-            <div className="additem-hint">
-              You can use http(s):// — or a site path like
+            <span className="modal__hint">
+              You can use http(s):// – or a site path like
               /images/clothes/beanie.png
-            </div>
-            {touched.imageUrl && urlError && (
-              <span className="additem-error">{urlError}</span>
-            )}
+            </span>
           </label>
 
-          <fieldset
-            className="additem-fieldset"
-            onBlur={() => setTouched(t => ({ ...t, weather: true }))}
-          >
-            <legend className="additem-legend">Select the weather type:</legend>
-            <label className="additem-radio">
+          <fieldset className="modal__fieldset">
+            <legend className="modal__legend">Select the weather type:</legend>
+            <label className="modal__radio">
               <input
                 type="radio"
                 name="weather"
                 value="hot"
                 checked={weather === 'hot'}
                 onChange={e => setWeather(e.target.value)}
-                required
+                disabled={isSubmitting}
               />
-              <span>Hot</span>
+              Hot
             </label>
-            <label className="additem-radio">
+            <label className="modal__radio">
               <input
                 type="radio"
                 name="weather"
                 value="warm"
                 checked={weather === 'warm'}
                 onChange={e => setWeather(e.target.value)}
-                required
+                disabled={isSubmitting}
               />
-              <span>Warm</span>
+              Warm
             </label>
-            <label className="additem-radio">
+            <label className="modal__radio">
               <input
                 type="radio"
                 name="weather"
                 value="cold"
                 checked={weather === 'cold'}
                 onChange={e => setWeather(e.target.value)}
-                required
+                disabled={isSubmitting}
               />
-              <span>Cold</span>
+              Cold
             </label>
-            {touched.weather && weatherError && (
-              <span className="additem-error">{weatherError}</span>
-            )}
           </fieldset>
 
           <button
-            className="additem-submit"
             type="submit"
-            disabled={!isValid || isSubmitting}
+            className="modal__submit"
+            disabled={isSubmitting}
           >
-            {isSubmitting ? 'Adding…' : 'Add garment'}
+            {isSubmitting ? 'Saving...' : 'Add garment'}
           </button>
         </form>
       </div>
     </div>
   );
 }
-
-AddItemModal.propTypes = {
-  isOpen: PropTypes.bool.isRequired,
-  onClose: PropTypes.func.isRequired,
-  onAddItem: PropTypes.func.isRequired,
-  isSubmitting: PropTypes.bool,
-};

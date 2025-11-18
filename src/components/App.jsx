@@ -104,22 +104,18 @@ export default function App() {
     alert('Editing profile data is not implemented in this sprint.');
   }, []);
 
-  const handleAddItem = useCallback(
-    async ({ name, imageUrl, weather: weatherTag }) => {
+  const handleAddItem = useCallback(async values => {
+    try {
       setIsSubmitting(true);
-      try {
-        await Items.createItem({ name, imageUrl, weather: weatherTag });
-        const list = await Items.getItems();
-        setClothingItems(Array.isArray(list) ? list : []);
-        setIsAddItemOpen(false);
-      } catch (e) {
-        void e;
-      } finally {
-        setIsSubmitting(false);
-      }
-    },
-    [setIsSubmitting]
-  );
+      const newItem = await Items.createItem(values);
+      setClothingItems(prev => [newItem, ...prev]);
+      setIsAddItemOpen(false);
+    } catch (e) {
+      console.error('Failed to add item', e);
+    } finally {
+      setIsSubmitting(false);
+    }
+  }, []);
 
   const handleDeleteItem = useCallback(async item => {
     if (!item) return;
@@ -301,7 +297,7 @@ export default function App() {
         <AddItemModal
           isOpen={isAddItemOpen}
           onClose={() => setIsAddItemOpen(false)}
-          onSubmit={handleAddItem}
+          onAddItem={handleAddItem}
           isSubmitting={isSubmitting}
         />
       )}
