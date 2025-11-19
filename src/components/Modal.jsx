@@ -28,6 +28,9 @@ export default function Modal({ isOpen, onClose, children }) {
   return (
     <div className="modal" onMouseDown={handleOverlayClick}>
       <div className="modal__content" onMouseDown={e => e.stopPropagation()}>
+        <button className="modal__close" onClick={onClose}>
+          ×
+        </button>
         {children}
       </div>
     </div>

@@ -261,11 +261,7 @@ export default function App() {
           card={selectedCard}
           onClose={() => setSelectedCard(null)}
           onDelete={handleDeleteItem}
-          canDelete={
-            currentUser &&
-            (selectedCard.owner === currentUser._id ||
-              selectedCard.owner?._id === currentUser._id)
-          }
+          canDelete={true}
         />
       )}
     </>

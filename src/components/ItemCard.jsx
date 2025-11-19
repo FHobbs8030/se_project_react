@@ -32,7 +32,7 @@ export default function ItemCard({ item, onCardClick, onCardLike, isLiked }) {
           }}
         />
       </div>
-      {src ? <img src={src} alt={name} /> : null}
+      {src && <img src={src} alt={name} className="card__image" />}
     </li>
   );
 }
@@ -44,6 +44,7 @@ ItemCard.propTypes = {
     name: PropTypes.string.isRequired,
     imageUrl: PropTypes.string.isRequired,
     weather: PropTypes.string,
+    owner: PropTypes.string,
     focusY: PropTypes.number,
   }).isRequired,
   onCardClick: PropTypes.func,
