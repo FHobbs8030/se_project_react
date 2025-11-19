@@ -2,35 +2,51 @@ const BASE_URL = (
   import.meta.env.VITE_API_BASE_URL || 'http://localhost:3001'
 ).replace(/\/+$/, '');
 
-async function request(path, options = {}) {
+async function request(path, opts = {}) {
+  const { method = 'GET', body, headers = {}, allow401 = false } = opts;
   const url = `${BASE_URL}${path.startsWith('/') ? path : `/${path}`}`;
-  const res = await fetch(url, {
-    method: 'GET',
-    headers: { 'Content-Type': 'application/json', ...(options.headers || {}) },
-    credentials: 'include',
-    ...options,
-    body: options.body ? JSON.stringify(options.body) : undefined,
-  });
+  const hasBody = body !== undefined;
 
-  if (!res.ok) {
-    const msg = await res.text().catch(() => '');
-    throw new Error(msg || `HTTP ${res.status}`);
-  }
+  const res = await fetch(url, {
+    method,
+    headers: hasBody
+      ? { 'Content-Type': 'application/json', ...headers }
+      : headers,
+    credentials: 'include',
+    body: hasBody ? JSON.stringify(body) : undefined,
+  });
 
   if (res.status === 204) return null;
 
   const ct = res.headers.get('content-type') || '';
-  return ct.includes('application/json') ? res.json() : res.text();
+  const data = ct.includes('application/json')
+    ? await res.json().catch(() => ({}))
+    : await res.text().catch(() => '');
+
+  if (res.status === 401 && allow401) return null;
+
+  if (!res.ok) {
+    const err =
+      typeof data === 'object' && data !== null
+        ? data
+        : { message: String(data || `HTTP ${res.status}`) };
+    throw err;
+  }
+
+  return data;
 }
 
 export function login({ email, password }) {
-  return request('/signin', { method: 'POST', body: { email, password } });
+  return request('/signin', {
+    method: 'POST',
+    body: { email, password },
+  });
 }
 
-export function register({ name, email, password }) {
+export function register({ name, email, password, avatarUrl, city }) {
   return request('/signup', {
     method: 'POST',
-    body: { name, email, password },
+    body: { name, email, password, avatarUrl, city },
   });
 }
 
@@ -39,5 +55,5 @@ export function logout() {
 }
 
 export function getUser() {
-  return request('/users/me');
+  return request('/users/me', { allow401: true });
 }

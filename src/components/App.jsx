@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState, useCallback } from 'react';
+﻿import { useEffect, useMemo, useState, useCallback } from 'react';
 import { Routes, Route, useNavigate, Navigate } from 'react-router-dom';
 import Layout from './Layout.jsx';
 import Main from './Main.jsx';
@@ -29,56 +29,25 @@ export default function App() {
   const [currentTemperatureUnit, setCurrentTemperatureUnit] = useState('F');
   const [weather, setWeather] = useState(null);
 
+  const [likePending, setLikePending] = useState(() => new Set());
+
   const loadAuthedData = useCallback(async () => {
     const me = await Auth.getUser();
-    setCurrentUser(me);
-    const list = await Items.getItems();
-    setClothingItems(Array.isArray(list) ? list : []);
+    if (me) {
+      setCurrentUser(me);
+      const list = await Items.getItems();
+      setClothingItems(Array.isArray(list) ? list : []);
+    } else {
+      setCurrentUser(null);
+      setClothingItems([]);
+    }
   }, []);
-
-  useEffect(() => {
-    let alive = true;
-    (async () => {
-      try {
-        const flagged = (() => {
-          try {
-            return localStorage.getItem('loggedOut') === '1';
-          } catch (e) {
-            console.warn('localStorage getItem failed:', e);
-            return false;
-          }
-        })();
-        if (flagged) {
-          setCurrentUser(null);
-          setClothingItems([]);
-          return;
-        }
-        await loadAuthedData();
-      } catch (e) {
-        console.error('Boot load failed:', e);
-        if (alive) {
-          setCurrentUser(null);
-          setClothingItems([]);
-        }
-      } finally {
-        if (alive) setIsCheckingAuth(false);
-      }
-    })();
-    return () => {
-      alive = false;
-    };
-  }, [loadAuthedData]);
 
   const handleLogin = useCallback(
     async ({ email, password }) => {
       setIsSubmitting(true);
       try {
         await Auth.login({ email, password });
-        try {
-          localStorage.removeItem('loggedOut');
-        } catch (e) {
-          console.warn('localStorage removeItem failed:', e);
-        }
         await loadAuthedData();
         setIsLoginOpen(false);
         navigate('/', { replace: true });
@@ -90,15 +59,11 @@ export default function App() {
   );
 
   const handleRegister = useCallback(
-    async ({ name, email, password }) => {
+    async ({ name, email, password, avatarUrl, city }) => {
       setIsSubmitting(true);
       try {
-        await Auth.register({ name, email, password });
-        try {
-          localStorage.removeItem('loggedOut');
-        } catch (e) {
-          console.warn('localStorage removeItem failed:', e);
-        }
+        await Auth.register({ name, email, password, avatarUrl, city });
+        await Auth.login({ email, password });
         await loadAuthedData();
         setIsRegisterOpen(false);
         navigate('/', { replace: true });
@@ -113,12 +78,7 @@ export default function App() {
     try {
       await Auth.logout();
     } catch (e) {
-      console.error('Logout failed:', e);
-    }
-    try {
-      localStorage.setItem('loggedOut', '1');
-    } catch (e) {
-      console.warn('localStorage setItem failed:', e);
+      void e;
     }
     setCurrentUser(null);
     setClothingItems([]);
@@ -126,20 +86,20 @@ export default function App() {
     navigate('/signin', { replace: true });
   }, [navigate]);
 
-  const handleAddItem = useCallback(
-    async ({ name, imageUrl, weather: weatherTag }) => {
+  const handleEditProfile = useCallback(() => {
+    alert('Editing profile is not implemented in this sprint.');
+  }, []);
+
+  const handleAddItem = useCallback(async values => {
+    try {
       setIsSubmitting(true);
-      try {
-        await Items.addItem({ name, imageUrl, weather: weatherTag });
-        const list = await Items.getItems();
-        setClothingItems(Array.isArray(list) ? list : []);
-        setIsAddItemOpen(false);
-      } finally {
-        setIsSubmitting(false);
-      }
-    },
-    []
-  );
+      const newItem = await Items.createItem(values);
+      setClothingItems(prev => [newItem, ...prev]);
+      setIsAddItemOpen(false);
+    } finally {
+      setIsSubmitting(false);
+    }
+  }, []);
 
   const handleDeleteItem = useCallback(async item => {
     if (!item) return;
@@ -148,23 +108,25 @@ export default function App() {
     setClothingItems(Array.isArray(list) ? list : []);
   }, []);
 
-  const handleCardLike = useCallback(async (id, isLiked) => {
+  const handleCardLike = useCallback(async (id, likedByMe) => {
     if (!id) return;
-    const likeId = String(id);
-    if (isLiked) await Items.unlikeItem(likeId);
-    else await Items.likeItem(likeId);
-    const list = await Items.getItems();
-    setClothingItems(Array.isArray(list) ? list : []);
-  }, []);
-
-  const openRegisterFromLogin = useCallback(() => {
-    setIsLoginOpen(false);
-    setIsRegisterOpen(true);
-  }, []);
-
-  const openLoginFromRegister = useCallback(() => {
-    setIsRegisterOpen(false);
-    setIsLoginOpen(true);
+    setLikePending(prev => {
+      const next = new Set(prev);
+      next.add(id);
+      return next;
+    });
+    try {
+      if (likedByMe) await Items.unlikeItem(id);
+      else await Items.likeItem(id);
+      const list = await Items.getItems();
+      setClothingItems(Array.isArray(list) ? list : []);
+    } finally {
+      setLikePending(prev => {
+        const next = new Set(prev);
+        next.delete(id);
+        return next;
+      });
+    }
   }, []);
 
   const outletContext = useMemo(
@@ -178,6 +140,8 @@ export default function App() {
       currentTemperatureUnit,
       setCurrentTemperatureUnit,
       onLogoutClick: handleLogout,
+      onEditProfileClick: handleEditProfile,
+      likePending,
     }),
     [
       currentUser,
@@ -186,8 +150,24 @@ export default function App() {
       weather,
       currentTemperatureUnit,
       handleLogout,
+      handleEditProfile,
+      likePending,
     ]
   );
+
+  useEffect(() => {
+    let alive = true;
+    (async () => {
+      try {
+        await loadAuthedData();
+      } finally {
+        if (alive) setIsCheckingAuth(false);
+      }
+    })();
+    return () => {
+      alive = false;
+    };
+  }, [loadAuthedData]);
 
   if (isCheckingAuth) return null;
 
@@ -217,14 +197,26 @@ export default function App() {
           />
           <Route
             path="signin"
-            element={currentUser ? <Navigate to="/" replace /> : <Main />}
+            element={
+              currentUser ? (
+                <Navigate to="/" replace />
+              ) : (
+                <Main initialAuthMode="login" />
+              )
+            }
           />
           <Route
             path="signup"
-            element={currentUser ? <Navigate to="/" replace /> : <Main />}
+            element={
+              currentUser ? (
+                <Navigate to="/" replace />
+              ) : (
+                <Main initialAuthMode="register" />
+              )
+            }
           />
-          <Route path="*" element={<Navigate to="/" replace />} />
         </Route>
+        <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
 
       {isLoginOpen && (
@@ -232,7 +224,10 @@ export default function App() {
           isOpen={isLoginOpen}
           onClose={() => setIsLoginOpen(false)}
           onSubmit={handleLogin}
-          onSwitchToRegister={openRegisterFromLogin}
+          onAltClick={() => {
+            setIsLoginOpen(false);
+            setIsRegisterOpen(true);
+          }}
           isSubmitting={isSubmitting}
         />
       )}
@@ -242,7 +237,10 @@ export default function App() {
           isOpen={isRegisterOpen}
           onClose={() => setIsRegisterOpen(false)}
           onSubmit={handleRegister}
-          onSwitchToLogin={openLoginFromRegister}
+          onAltClick={() => {
+            setIsRegisterOpen(false);
+            setIsLoginOpen(true);
+          }}
           isSubmitting={isSubmitting}
         />
       )}

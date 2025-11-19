@@ -14,11 +14,24 @@ export default function ProfilePage() {
     <section className="profile-page">
       <header className="profile-page__header"></header>
       <div className="profile-page__user">
-        <div
-          className="profile-page__avatar"
-          style={{ backgroundImage: `url(${avatar})` }}
-        />
-        <h2 className="profile-page__name">{currentUser?.name || ''}</h2>
+        <div className="profile-page__avatar-wrap">
+          <img
+            src={avatar}
+            alt="User avatar"
+            className="profile-page__avatar"
+          />
+        </div>
+        <div className="profile-page__info">
+          <h1 className="profile-page__name">
+            {currentUser?.name || 'New User'}
+          </h1>
+          <p className="profile-page__city">
+            {currentUser?.city || 'City not set'}
+          </p>
+        </div>
+      </div>
+      <div className="profile-page__actions">
+        <h2 className="profile-page__section-title">Profile</h2>
       </div>
       <button
         type="button"

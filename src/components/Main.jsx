@@ -1,4 +1,3 @@
-// src/components/Main.jsx
 import { useEffect, useState, useMemo } from 'react';
 import { useOutletContext } from 'react-router-dom';
 import { getWeatherPair } from '../utils/weatherApi.js';
@@ -11,6 +10,7 @@ function filterByWeather(items, tempF) {
   const t = Number(tempF);
   return items.filter(it => {
     const tag = String(it.weather || it.weatherType || '').toLowerCase();
+    if (!tag) return true;
     if (t <= 40) return tag.includes('cold');
     if (t >= 75) return tag.includes('hot');
     return tag.includes('warm') || tag.includes('mild') || tag.includes('cool');
@@ -31,6 +31,8 @@ export default function Main() {
         setLoadingWx(true);
         const pair = await getWeatherPair();
         if (alive) setTemps(pair);
+      } catch (e) {
+        void e;
       } finally {
         if (alive) setLoadingWx(false);
       }
@@ -65,7 +67,6 @@ export default function Main() {
           </h3>
 
           <ClothesSection
-            items={visible}
             clothingItems={visible}
             onCardClick={onCardClick}
             onCardLike={onCardLike}

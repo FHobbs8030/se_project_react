@@ -1,34 +1,27 @@
-import PropTypes from 'prop-types';
-import '../blocks/Card.css';
-
-export default function ItemCard({ item, onCardClick, onCardLike, isLiked }) {
-  const id = item?._id || item?.id;
-  const name = item?.name || '';
-  const type = (item?.name || '').toLowerCase();
-  const src = item?.imageUrl || null;
-  const likeId = id;
-  const canLike = !!likeId;
+export default function ItemCard({
+  item,
+  currentUser,
+  onCardClick,
+  onCardLike,
+  likePending,
+}) {
+  const id = item._id || item.id;
+  const me = currentUser?._id;
+  const likedByMe = !!me && (item.likes || []).some(u => (u?._id ?? u) === me);
 
   return (
-    <li
-      className="card"
-      data-type={type}
-      onClick={() => onCardClick && onCardClick(item)}
-      role="button"
-      tabIndex={0}
-    >
+    <li className="card" onClick={() => onCardClick?.(item)}>
       <div className="card__meta">
-        <div className="card__title">{name}</div>
+        <div className="card__title">{item?.name || ''}</div>
         <button
           type="button"
-          className={`card__like ${isLiked ? 'is-liked' : ''}`}
-          aria-pressed={isLiked}
-          aria-label={isLiked ? 'Unlike' : 'Like'}
-          disabled={!canLike}
+          className={`card__like ${likedByMe ? 'is-liked' : ''}`}
+          aria-pressed={likedByMe}
+          aria-label={likedByMe ? 'Unlike' : 'Like'}
+          disabled={likePending?.has(id)}
           onClick={e => {
             e.stopPropagation();
-            if (!canLike) return;
-            onCardLike && onCardLike(likeId, isLiked);
+            onCardLike?.(id, likedByMe);
           }}
         />
       </div>

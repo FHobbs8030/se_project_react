@@ -1,5 +1,6 @@
 import PropTypes from 'prop-types';
 import { useOutletContext } from 'react-router-dom';
+import ItemCard from './ItemCard.jsx';
 import '../blocks/Cards.css';
 import '../blocks/ClothesSection.css';
 
@@ -28,11 +29,13 @@ export default function ClothesSection({
   onCardLike,
   isLoadingItems = false,
   currentUser,
+  likePending,
 }) {
   const outlet = useOutletContext?.() || {};
   const _onCardClick = onCardClick ?? outlet.onCardClick;
   const _onCardLike = onCardLike ?? outlet.onCardLike;
   const _currentUser = currentUser ?? outlet.currentUser;
+  const _likePending = likePending ?? outlet.likePending;
 
   if (isLoadingItems) {
     return <ul className="cards" aria-busy="true" aria-live="polite" />;
@@ -46,37 +49,17 @@ export default function ClothesSection({
         const name = item?.name || '';
         const key = item?._id || item?.id || name;
         const src = item?.imageUrl || FALLBACK[name.toLowerCase()] || null;
-
-        const isLiked =
-          _currentUser?._id && Array.isArray(item?.likes)
-            ? item.likes.some(
-                u => (typeof u === 'string' ? u : u?._id) === _currentUser._id
-              )
-            : false;
+        const hydrated = src ? { ...item, imageUrl: src } : item;
 
         return (
-          <li
+          <ItemCard
             key={key}
-            className="card"
-            onClick={() => _onCardClick && _onCardClick(item)}
-            role="button"
-            tabIndex={0}
-          >
-            <div className="card__meta">
-              <div className="card__title">{name}</div>
-              <button
-                type="button"
-                className={`card__like ${isLiked ? 'is-liked' : ''}`}
-                aria-pressed={isLiked}
-                aria-label={isLiked ? 'Unlike' : 'Like'}
-                onClick={e => {
-                  e.stopPropagation();
-                  _onCardLike && _onCardLike(item?._id || item?.id, isLiked);
-                }}
-              />
-            </div>
-            {src ? <img src={src} alt={name} /> : null}
-          </li>
+            item={hydrated}
+            currentUser={_currentUser}
+            onCardClick={_onCardClick}
+            onCardLike={_onCardLike}
+            likePending={_likePending}
+          />
         );
       })}
     </ul>
@@ -89,4 +72,5 @@ ClothesSection.propTypes = {
   onCardLike: PropTypes.func,
   isLoadingItems: PropTypes.bool,
   currentUser: PropTypes.any,
+  likePending: PropTypes.instanceOf(Set),
 };
