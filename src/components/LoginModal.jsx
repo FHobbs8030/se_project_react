@@ -1,128 +1,55 @@
-import { useEffect, useMemo, useState } from 'react';
-import '../blocks/AuthModal.css';
+import Modal from './Modal.jsx';
+import '../blocks/LoginModal.css';
 
 export default function LoginModal({
   isOpen,
   onClose,
   onSubmit,
+  onAltClick,
   isSubmitting,
-  onSwitchToRegister,
 }) {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-
-  const emailErr = useMemo(() => {
-    const v = email.trim();
-    if (!v) return 'Email is required';
-    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v) ? '' : 'Invalid email';
-  }, [email]);
-
-  const passwordErr = useMemo(() => {
-    if (!password) return 'Password is required';
-    return password.length >= 8 ? '' : 'Min 8 characters';
-  }, [password]);
-
-  const isValid = !emailErr && !passwordErr;
-
-  function handleSubmit(e) {
+  const handleSubmit = e => {
     e.preventDefault();
-    if (!isValid || isSubmitting) return;
-    onSubmit({ email: email.trim(), password });
-  }
-
-  useEffect(() => {
-    if (!isOpen) return;
-    function onKey(e) {
-      if (e.key === 'Escape') onClose?.();
-    }
-    window.addEventListener('keydown', onKey);
-    return () => window.removeEventListener('keydown', onKey);
-  }, [isOpen, onClose]);
-
-  if (!isOpen) return null;
+    const email = e.target.email.value;
+    const password = e.target.password.value;
+    onSubmit({ email, password });
+  };
 
   return (
-    <div
-      className="authmodal__overlay"
-      onMouseDown={e => e.target === e.currentTarget && onClose?.()}
-    >
-      <div
-        className="authmodal"
-        role="dialog"
-        aria-modal="true"
-        aria-labelledby="login-title"
-      >
-        <div className="authmodal__header">
-          <h2 id="login-title" className="authmodal__title">
-            Log in
-          </h2>
-          <button
-            type="button"
-            className="authmodal__close"
-            aria-label="Close"
-            onClick={() => onClose?.()}
-          >
-            ×
-          </button>
-        </div>
-
-        <form className="authmodal__form" onSubmit={handleSubmit} noValidate>
-          <label className="authmodal__field">
-            <span className="authmodal__label">Email</span>
-            <input
-              className={`authmodal__input ${
-                emailErr ? 'authmodal__input--invalid' : ''
-              }`}
-              type="email"
-              value={email}
-              onChange={e => setEmail(e.target.value)}
-              autoComplete="email"
-              placeholder="you@example.com"
-              required
-            />
-            {emailErr && <span className="authmodal__error">{emailErr}</span>}
-          </label>
-
-          <label className="authmodal__field">
-            <span className="authmodal__label">Password</span>
-            <input
-              className={`authmodal__input ${
-                passwordErr ? 'authmodal__input--invalid' : ''
-              }`}
-              type="password"
-              value={password}
-              onChange={e => setPassword(e.target.value)}
-              autoComplete="current-password"
-              minLength={8}
-              placeholder="••••••••"
-              required
-            />
-            {passwordErr && (
-              <span className="authmodal__error">{passwordErr}</span>
-            )}
-          </label>
-
-          <button
-            type="submit"
-            className="authmodal__submit"
-            disabled={!isValid || isSubmitting}
-            aria-disabled={!isValid || isSubmitting}
-          >
-            {isSubmitting ? 'Logging in…' : 'Log in'}
-          </button>
-        </form>
-
-        <div className="authmodal__footer">
-          <span className="authmodal__hint">No account?</span>
-          <button
-            type="button"
-            className="authmodal__link"
-            onClick={() => onSwitchToRegister?.()}
-          >
-            Sign up
-          </button>
-        </div>
+    <Modal isOpen={isOpen} onClose={onClose}>
+      <div className="login__header">
+        <h2 className="login__title">Log In</h2>
+        <button className="login__close" onClick={onClose}>
+          ×
+        </button>
       </div>
-    </div>
+
+      <form className="login__form" onSubmit={handleSubmit}>
+        <label className="login__label">
+          Email
+          <input name="email" type="email" className="login__input" required />
+        </label>
+
+        <label className="login__label">
+          Password
+          <input
+            name="password"
+            type="password"
+            className="login__input"
+            required
+          />
+        </label>
+
+        <div className="login__actions">
+          <button className="login__submit" disabled={isSubmitting}>
+            Log In
+          </button>
+
+          <button type="button" className="login__alt" onClick={onAltClick}>
+            or Sign Up
+          </button>
+        </div>
+      </form>
+    </Modal>
   );
 }
