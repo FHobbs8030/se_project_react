@@ -1,4 +1,3 @@
-// se_project_react/src/utils/authApi.js
 const BASE_URL = (
   import.meta.env.VITE_API_BASE_URL || 'http://localhost:3001'
 ).replace(/\/+$/, '');
@@ -7,6 +6,7 @@ async function request(path, opts = {}) {
   const { method = 'GET', body, headers = {}, allow401 = false } = opts;
   const url = `${BASE_URL}${path.startsWith('/') ? path : `/${path}`}`;
   const hasBody = body !== undefined;
+
   const res = await fetch(url, {
     method,
     headers: hasBody
@@ -15,12 +15,16 @@ async function request(path, opts = {}) {
     credentials: 'include',
     body: hasBody ? JSON.stringify(body) : undefined,
   });
+
   if (res.status === 204) return null;
+
   const ct = res.headers.get('content-type') || '';
   const data = ct.includes('application/json')
     ? await res.json().catch(() => ({}))
     : await res.text().catch(() => '');
+
   if (res.status === 401 && allow401) return null;
+
   if (!res.ok) {
     const err =
       typeof data === 'object' && data !== null
@@ -28,20 +32,22 @@ async function request(path, opts = {}) {
         : { message: String(data || `HTTP ${res.status}`) };
     throw err;
   }
+
   return data;
 }
 
-export function login({ email, password, remember }) {
+export function login({ email, password }) {
   return request('/signin', {
     method: 'POST',
-    body: { email, password, remember: !!remember },
+    body: { email, password },
   });
 }
 
-export function register({ name, email, password, avatar }) {
-  const body = { name, email, password };
-  if (avatar) body.avatar = avatar;
-  return request('/signup', { method: 'POST', body });
+export function register({ name, email, password, avatarUrl, city }) {
+  return request('/signup', {
+    method: 'POST',
+    body: { name, email, password, avatarUrl, city },
+  });
 }
 
 export function logout() {

@@ -33,11 +33,12 @@ export default function App() {
 
   const loadAuthedData = useCallback(async () => {
     const me = await Auth.getUser();
-    setCurrentUser(me);
     if (me) {
+      setCurrentUser(me);
       const list = await Items.getItems();
       setClothingItems(Array.isArray(list) ? list : []);
     } else {
+      setCurrentUser(null);
       setClothingItems([]);
     }
   }, []);
@@ -47,11 +48,6 @@ export default function App() {
       setIsSubmitting(true);
       try {
         await Auth.login({ email, password });
-        try {
-          localStorage.removeItem('loggedOut');
-        } catch (e) {
-          void e;
-        }
         await loadAuthedData();
         setIsLoginOpen(false);
         navigate('/', { replace: true });
@@ -68,11 +64,6 @@ export default function App() {
       try {
         await Auth.register({ name, email, password, avatarUrl, city });
         await Auth.login({ email, password });
-        try {
-          localStorage.removeItem('loggedOut');
-        } catch (e) {
-          void e;
-        }
         await loadAuthedData();
         setIsRegisterOpen(false);
         navigate('/', { replace: true });
@@ -89,11 +80,6 @@ export default function App() {
     } catch (e) {
       void e;
     }
-    try {
-      localStorage.setItem('loggedOut', '1');
-    } catch (e) {
-      void e;
-    }
     setCurrentUser(null);
     setClothingItems([]);
     setSelectedCard(null);
@@ -101,7 +87,7 @@ export default function App() {
   }, [navigate]);
 
   const handleEditProfile = useCallback(() => {
-    alert('Editing profile data is not implemented in this sprint.');
+    alert('Editing profile is not implemented in this sprint.');
   }, []);
 
   const handleAddItem = useCallback(async values => {
@@ -110,8 +96,6 @@ export default function App() {
       const newItem = await Items.createItem(values);
       setClothingItems(prev => [newItem, ...prev]);
       setIsAddItemOpen(false);
-    } catch (e) {
-      console.error('Failed to add item', e);
     } finally {
       setIsSubmitting(false);
     }
@@ -119,13 +103,9 @@ export default function App() {
 
   const handleDeleteItem = useCallback(async item => {
     if (!item) return;
-    try {
-      await Items.deleteItem(item._id || item.id);
-      const list = await Items.getItems();
-      setClothingItems(Array.isArray(list) ? list : []);
-    } catch (e) {
-      void e;
-    }
+    await Items.deleteItem(item._id || item.id);
+    const list = await Items.getItems();
+    setClothingItems(Array.isArray(list) ? list : []);
   }, []);
 
   const handleCardLike = useCallback(async (id, likedByMe) => {
@@ -136,15 +116,10 @@ export default function App() {
       return next;
     });
     try {
-      if (likedByMe) {
-        await Items.unlikeItem(id);
-      } else {
-        await Items.likeItem(id);
-      }
+      if (likedByMe) await Items.unlikeItem(id);
+      else await Items.likeItem(id);
       const list = await Items.getItems();
       setClothingItems(Array.isArray(list) ? list : []);
-    } catch (e) {
-      void e;
     } finally {
       setLikePending(prev => {
         const next = new Set(prev);
@@ -152,16 +127,6 @@ export default function App() {
         return next;
       });
     }
-  }, []);
-
-  const openRegisterFromLogin = useCallback(() => {
-    setIsLoginOpen(false);
-    setIsRegisterOpen(true);
-  }, []);
-
-  const openLoginFromRegister = useCallback(() => {
-    setIsRegisterOpen(false);
-    setIsLoginOpen(true);
   }, []);
 
   const outletContext = useMemo(
@@ -194,26 +159,7 @@ export default function App() {
     let alive = true;
     (async () => {
       try {
-        const loggedOutFlag = (() => {
-          try {
-            return localStorage.getItem('loggedOut');
-          } catch (e) {
-            void e;
-            return null;
-          }
-        })();
-        if (loggedOutFlag === '1') {
-          setCurrentUser(null);
-          setClothingItems([]);
-          return;
-        }
         await loadAuthedData();
-      } catch (e) {
-        void e;
-        if (alive) {
-          setCurrentUser(null);
-          setClothingItems([]);
-        }
       } finally {
         if (alive) setIsCheckingAuth(false);
       }
@@ -278,7 +224,10 @@ export default function App() {
           isOpen={isLoginOpen}
           onClose={() => setIsLoginOpen(false)}
           onSubmit={handleLogin}
-          onAltClick={openRegisterFromLogin}
+          onAltClick={() => {
+            setIsLoginOpen(false);
+            setIsRegisterOpen(true);
+          }}
           isSubmitting={isSubmitting}
         />
       )}
@@ -288,7 +237,10 @@ export default function App() {
           isOpen={isRegisterOpen}
           onClose={() => setIsRegisterOpen(false)}
           onSubmit={handleRegister}
-          onAltClick={openLoginFromRegister}
+          onAltClick={() => {
+            setIsRegisterOpen(false);
+            setIsLoginOpen(true);
+          }}
           isSubmitting={isSubmitting}
         />
       )}
