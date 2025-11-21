@@ -1,32 +1,44 @@
-const API_BASE = import.meta.env.VITE_API_BASE_URL;
+const BASE_URL = 'http://localhost:3001';
 
-function ensureOk(res) {
-  if (!res.ok) throw new Error(`HTTP ${res.status}`);
-  return res;
+function check(res) {
+  if (res.ok) return res.json();
+  throw new Error(`API error: ${res.status}`);
 }
 
-export async function getItems() {
-  const res = await fetch(`${API_BASE}/items`, {
-    method: 'GET',
+export function getItems() {
+  return fetch(`${BASE_URL}/items`, {
     credentials: 'include',
-  }).then(ensureOk);
-  const body = await res.json().catch(() => null);
-  const list = Array.isArray(body) ? body : body?.data ?? [];
-  return Array.isArray(list) ? list : [];
+  }).then(check);
 }
 
-export async function likeItem(id) {
-  await fetch(`${API_BASE}/items/${id}/likes`, {
-    method: 'PUT',
+export function createItem({ name, imageUrl, weather }) {
+  return fetch(`${BASE_URL}/items`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
     credentials: 'include',
-    headers: { 'Content-Type': 'application/json' },
-  }).then(ensureOk);
+    body: JSON.stringify({ name, imageUrl, weather }),
+  }).then(check);
 }
 
-export async function unlikeItem(id) {
-  await fetch(`${API_BASE}/items/${id}/likes`, {
+export function deleteItem(itemId) {
+  return fetch(`${BASE_URL}/items/${itemId}`, {
     method: 'DELETE',
     credentials: 'include',
-    headers: { 'Content-Type': 'application/json' },
-  }).then(ensureOk);
+  }).then(check);
+}
+
+export function likeItem(itemId) {
+  return fetch(`${BASE_URL}/items/${itemId}/likes`, {
+    method: 'PUT',
+    credentials: 'include',
+  }).then(check);
+}
+
+export function unlikeItem(itemId) {
+  return fetch(`${BASE_URL}/items/${itemId}/likes`, {
+    method: 'DELETE',
+    credentials: 'include',
+  }).then(check);
 }

@@ -22,7 +22,7 @@ input, button, select, textarea { font: inherit; }
 }
 
 html, body {
-  font-family: "Cabinet Grotesk", "Inter", system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+  font-family: "Cabinet Grotesk", "Inter", sans-serif;
   font-weight: 500;
   margin: 0;
   padding: 0;

@@ -1,63 +1,73 @@
-/* Container variant for item view */
 .modal__container_item {
-  width: 520px;
+  width: 498px;
   max-width: calc(100vw - 32px);
-  background: #fff;
-  border-radius: 16px;
-  padding: 16px;
+  background: #ffffff;
+  border-radius: 20px;
+  overflow: hidden;
   position: relative;
   box-sizing: border-box;
 }
 
-/* Big image */
 .item-modal__image {
   width: 100%;
-  height: 360px;
-  display: block;
+  height: 498px;
   object-fit: cover;
-  border-radius: 12px;
-  background: #e5e7eb;
+  display: block;
 }
 
-/* Text block */
-.item-modal__meta {
-  margin-top: 12px;
+.item-modal__info {
+  background: #ffffff;
+  width: 100%;
+  max-width: 498px;
+  max-height: 159px;
+  padding: 20px;
   display: flex;
-  align-items: baseline;
+  flex-direction: column;
   gap: 12px;
-}
-.item-modal__title {
-  font-size: 18px;
-  font-weight: 700;
-  color: #0f172a;
-}
-.item-modal__weather {
-  font-size: 14px;
-  color: #475569;
+  font-family: 'Cabinet Grotesk', sans-serif;
 }
 
-/* Bottom-right delete button */
-/* .item-modal__delete {
-  position: absolute;
-  right: 16px;
-  bottom: 16px;
-  padding: 8px 12px;
-  background: #fff;
-  border: 1px solid #e2e8f0;
-  border-radius: 999px;
-  font-size: 12px;
-  font-weight: 600;
-  cursor: pointer;
-} */
+.item-modal__toprow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.item-modal__title {
+  font-size: 20px;
+  line-height: 24px;
+  font-weight: 700;
+  color: #000000;
+  margin: 0;
+}
+
+.item-modal__weather {
+  font-size: 20px;
+  font-weight: 700;
+  line-height: 24px;
+  color: #000000;
+}
 
 .item-modal__delete {
-  color: #ef4444;
-  font-weight: 600;
+  font-size: 20px;
+  line-height: 24px;
+  font-weight: 700;
+  color: #ff4d00;
   background: transparent;
   border: none;
   cursor: pointer;
+  text-align: right;
 }
 
-.item-modal__delete:hover {
-  box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.05);
+.item-modal__close {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  width: 20px;
+  height: 20px;
+  font-size: 22px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  color: #6b7280;
 }

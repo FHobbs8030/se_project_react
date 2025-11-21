@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import '../blocks/Modal.css';
 
-export default function Modal({ isOpen, onClose, children }) {
+export default function Modal({ isOpen, onClose, children, variant }) {
   const handleOverlayClick = e => {
     if (e.target.classList.contains('modal')) onClose();
   };
@@ -27,9 +27,13 @@ export default function Modal({ isOpen, onClose, children }) {
 
   return (
     <div className="modal" onMouseDown={handleOverlayClick}>
-      <div className="modal__content" onMouseDown={e => e.stopPropagation()}>
-        {children}
-      </div>
+      {variant === 'item' ? (
+        <div onMouseDown={e => e.stopPropagation()}>{children}</div>
+      ) : (
+        <div className="modal__content" onMouseDown={e => e.stopPropagation()}>
+          {children}
+        </div>
+      )}
     </div>
   );
 }
