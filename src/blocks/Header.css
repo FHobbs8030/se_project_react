@@ -15,11 +15,18 @@
   gap: 16px;
 }
 
+
+
+/* LEFT SIDE */
 .header__left {
   display: flex;
   align-items: center;
   gap: 16px;
   min-width: 0;
+}
+
+.header__logo {
+  display: block;
 }
 
 .header__meta {
@@ -29,6 +36,21 @@
   white-space: nowrap;
 }
 
+.header__date {
+  font-size: 16px;
+}
+
+.header__city {
+  font-size: 16px;
+}
+
+.header__sep {
+  margin-inline: 4px;
+}
+
+
+
+/* RIGHT SIDE */
 .header__right {
   display: flex;
   align-items: center;
@@ -41,6 +63,9 @@
   gap: 20px;
 }
 
+
+
+/* USER SECTION */
 .header__user {
   display: flex;
   align-items: center;
@@ -48,13 +73,13 @@
 }
 
 .header__user-name {
-    color: #000;
-    white-space: nowrap;
-    font-weight: 700;
-    font-size: 20px;
-    line-height: 100%;
-    padding: 6px 4px;
-    margin: 0;
+  color: #000;
+  white-space: nowrap;
+  font-weight: 700;
+  font-size: 20px;
+  line-height: 100%;
+  padding: 6px 4px;
+  margin: 0;
 }
 
 .header__avatar img {
@@ -64,53 +89,45 @@
   object-fit: cover;
 }
 
-/* UNIVERSAL BUTTON STYLE */
-.header__add-btn {
+
+
+/* BUTTONS */
+.header__btn {
   appearance: none;
   border: none;
   cursor: pointer;
   padding: 8px 12px;
   border-radius: 10px;
   font-size: 14px;
-  line-height: 1;
   font-weight: 600;
+  line-height: 1;
 }
 
-/* WHITE VARIANT */
-.header__add-btn--white {
+.header__btn--white {
   background: #fff;
   color: #111827;
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
 }
 
-.header__add-btn--white:hover {
+.header__btn--white:hover {
   background: #f9fafb;
 }
 
-.header__add-btn--white:active {
+.header__btn--white:active {
   background: #f3f4f6;
 }
 
-.header__add-btn {
-  font-weight: 700;
-  font-size: 20px;
-  line-height: 24px;
-  background: #ffffff;
-  color: #000000;
-  padding: 6px 14px;
-  border: none;
-  border-radius: 12px;
-  cursor: pointer;
-}
-
-.header__add-btn:hover {
+.header__btn:hover {
   background: #f9fafb;
 }
 
-.header__add-btn:active {
+.header__btn:active {
   transform: translateY(1px);
 }
 
+
+
+/* RESPONSIVE */
 @media (max-width: 600px) {
   .header__outer {
     padding: 20px 16px 16px;
@@ -165,11 +182,11 @@
   .header__inner {
     grid-template-columns: 1fr;
     grid-template-areas:
-      'toggle'
-      'brand'
-      'meta'
-      'user'
-      'add';
+      "toggle"
+      "brand"
+      "meta"
+      "user"
+      "add";
     justify-items: center;
     row-gap: 6px;
   }
@@ -204,7 +221,7 @@
     justify-self: center;
   }
 
-  .header__add-btn,
+  .header__btn,
   .header__auth .header__btn {
     padding: 6px 10px;
     font-size: 12px;
