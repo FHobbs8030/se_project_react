@@ -3,7 +3,7 @@
 @import "./layout.css";
 @import "./Header.css";
 @import "./WeatherCard.css";
-@import "./Cards.css";            /* ensure this matches your actual file name */
+@import "./Cards.css";            
 @import "./ToggleSwitch.css";
 @import "./ClothesSection.css";
 @import "./ProfilePage.css";
@@ -16,13 +16,12 @@ input, button, select, textarea { font: inherit; }
 :root {
   --page-bg: #ffffff;
   --page-fg: #0f172a;
-  --page-max: 1440px;                       /* use 1440px for the full layout */
-  --gutter: clamp(19px, calc(13px + 1.875vw), 40px);/* 19px @320 -> 40px @1440 */
+  --page-max: 1440px;                       
+  --gutter: clamp(19px, calc(13px + 1.875vw), 40px);
  
 }
 
 html, body {
-  font-family: "Cabinet Grotesk", "Inter", sans-serif;
   font-weight: 500;
   margin: 0;
   padding: 0;
