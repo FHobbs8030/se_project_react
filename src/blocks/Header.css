@@ -15,8 +15,6 @@
   gap: 16px;
 }
 
-
-
 /* LEFT SIDE */
 .header__left {
   display: flex;
@@ -48,8 +46,6 @@
   margin-inline: 4px;
 }
 
-
-
 /* RIGHT SIDE */
 .header__right {
   display: flex;
@@ -63,13 +59,44 @@
   gap: 20px;
 }
 
+.header__add-btn {
+  font-family: 'Cabinet Grotesk', sans-serif;
+  font-weight: 700;
+  font-size: 20px;
+  line-height: 24px;
+  background: #ffffff;
+  color: #000000;
+  padding: 6px 14px;
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
 
+.header__add-btn:hover {
+  background: #f0f0f0;
+}
+
+.header__add-btn:active {
+  transform: translateY(1px);
+}
 
 /* USER SECTION */
 .header__user {
   display: flex;
   align-items: center;
   gap: 12px;
+  text-decoration: none;
+}
+
+.header__user:visited {
+  text-decoration: none;
+}
+
+.header__user-name {
+  text-decoration: none;
 }
 
 .header__user-name {
@@ -88,8 +115,6 @@
   border-radius: 9999px;
   object-fit: cover;
 }
-
-
 
 /* BUTTONS */
 .header__btn {
@@ -124,8 +149,6 @@
 .header__btn:active {
   transform: translateY(1px);
 }
-
-
 
 /* RESPONSIVE */
 @media (max-width: 600px) {
@@ -182,11 +205,11 @@
   .header__inner {
     grid-template-columns: 1fr;
     grid-template-areas:
-      "toggle"
-      "brand"
-      "meta"
-      "user"
-      "add";
+      'toggle'
+      'brand'
+      'meta'
+      'user'
+      'add';
     justify-items: center;
     row-gap: 6px;
   }
