@@ -25,8 +25,10 @@ export default function ProfilePage() {
   return (
     <div className="profile">
       <aside className="profile__sidebar">
-        <img className="profile__avatar" src={avatarSrc} alt="avatar" />
-        <h2 className="profile__name">{currentUser?.name}</h2>
+        <div className="profile__user-row">
+          <img className="profile__avatar" src={avatarSrc} alt="avatar" />
+          <h2 className="profile__name">{currentUser?.name}</h2>
+        </div>
 
         <button
           type="button"
