@@ -47,6 +47,16 @@
   gap: 12px;
 }
 
+.header__user-name {
+    color: #000;
+    white-space: nowrap;
+    font-weight: 700;
+    font-size: 20px;
+    line-height: 100%;
+    padding: 6px 4px;
+    margin: 0;
+}
+
 .header__avatar img {
   width: 40px;
   height: 40px;
@@ -82,15 +92,15 @@
 }
 
 .header__add-btn {
-    font-weight: 700;
-    font-size: 20px;
-    line-height: 24px;
-    background: #ffffff;
-    color: #000000;
-    padding: 6px 14px;
-    border: none;
-    border-radius: 12px;
-    cursor: pointer;
+  font-weight: 700;
+  font-size: 20px;
+  line-height: 24px;
+  background: #ffffff;
+  color: #000000;
+  padding: 6px 14px;
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
 }
 
 .header__add-btn:hover {
@@ -155,11 +165,11 @@
   .header__inner {
     grid-template-columns: 1fr;
     grid-template-areas:
-      "toggle"
-      "brand"
-      "meta"
-      "user"
-      "add";
+      'toggle'
+      'brand'
+      'meta'
+      'user'
+      'add';
     justify-items: center;
     row-gap: 6px;
   }
