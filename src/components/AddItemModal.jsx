@@ -23,7 +23,6 @@ export default function AddItemModal({
     setName('');
     setImageUrl('');
     setWeather('');
-
     onClose();
   };
 
@@ -63,41 +62,50 @@ export default function AddItemModal({
               Select the weather type:
             </legend>
 
-            <label className="add-item__radio-label">
+            <div className="add-item__radio-row add-item__radio-row--1">
               <input
                 type="radio"
+                id="weather-hot"
                 className="add-item__radio"
                 name="weather"
                 value="hot"
                 checked={weather === 'hot'}
                 onChange={e => setWeather(e.target.value)}
               />
-              Hot
-            </label>
+              <label htmlFor="weather-hot" className="add-item__radio-label">
+                Hot
+              </label>
+            </div>
 
-            <label className="add-item__radio-label">
+            <div className="add-item__radio-row add-item__radio-row--2">
               <input
                 type="radio"
+                id="weather-warm"
                 className="add-item__radio"
                 name="weather"
                 value="warm"
                 checked={weather === 'warm'}
                 onChange={e => setWeather(e.target.value)}
               />
-              Warm
-            </label>
+              <label htmlFor="weather-warm" className="add-item__radio-label">
+                Warm
+              </label>
+            </div>
 
-            <label className="add-item__radio-label">
+            <div className="add-item__radio-row add-item__radio-row--3">
               <input
                 type="radio"
+                id="weather-cold"
                 className="add-item__radio"
                 name="weather"
                 value="cold"
                 checked={weather === 'cold'}
                 onChange={e => setWeather(e.target.value)}
               />
-              Cold
-            </label>
+              <label htmlFor="weather-cold" className="add-item__radio-label">
+                Cold
+              </label>
+            </div>
           </fieldset>
 
           <button
