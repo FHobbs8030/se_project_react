@@ -25,7 +25,13 @@ export default function ItemCard({
           }}
         />
       </div>
-      {item?.imageUrl ? <img src={item.imageUrl} alt={item.name} /> : null}
+
+      {item?.imageUrl ? (
+        <img
+          src={item.imageUrl.replace('/image/', '/images/')}
+          alt={item.name}
+        />
+      ) : null}
     </li>
   );
 }
