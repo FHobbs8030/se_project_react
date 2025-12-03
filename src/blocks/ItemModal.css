@@ -19,20 +19,41 @@
   top: 16px;
   right: 16px;
   font-size: 24px;
-  color: #0000004D;
+  color: #0000004d;
   background: none;
   border: none;
   cursor: pointer;
 }
 
 .item-modal__info {
-  padding: 24px;
+  padding: 20px 32px 32px 32px;
+  margin: 0;
 }
 
 .item-modal__top {
   display: flex;
   justify-content: space-between;
+  align-items: flex-start;
   margin-bottom: 12px;
+  flex-wrap: wrap;
+}
+
+.item-modal__name {
+  font-weight: 700;
+  font-size: 20px;
+  line-height: 24px;
+  color: #000000;
+  margin: 0;
+  padding: 0;
+}
+
+.item-modal__weather {
+  font-weight: 700;
+  font-size: 20px;
+  line-height: 24px;
+  color: #000000;
+  margin: 0;
+  padding: 0;
 }
 
 .item-modal__delete {
