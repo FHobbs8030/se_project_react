@@ -1,73 +1,43 @@
-.modal__container_item {
+.item-modal {
   width: 498px;
-  max-width: calc(100vw - 32px);
-  background: #ffffff;
   border-radius: 20px;
   overflow: hidden;
-  position: relative;
-  box-sizing: border-box;
+  background: #fff;
+  display: flex;
+  flex-direction: column;
 }
 
 .item-modal__image {
   width: 100%;
-  height: 498px;
+  height: 436px;
   object-fit: cover;
   display: block;
 }
 
-.item-modal__info {
-  background: #ffffff;
-  width: 100%;
-  max-width: 498px;
-  max-height: 159px;
-  padding: 20px;
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  font-family: 'Cabinet Grotesk', sans-serif;
+.item-modal__close {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  font-size: 24px;
+  color: #0000004D;
+  background: none;
+  border: none;
+  cursor: pointer;
 }
 
-.item-modal__toprow {
+.item-modal__info {
+  padding: 24px;
+}
+
+.item-modal__top {
   display: flex;
   justify-content: space-between;
-  align-items: center;
-}
-
-.item-modal__title {
-  font-size: 20px;
-  line-height: 24px;
-  font-weight: 700;
-  color: #000000;
-  margin: 0;
-}
-
-.item-modal__weather {
-  font-size: 20px;
-  font-weight: 700;
-  line-height: 24px;
-  color: #000000;
+  margin-bottom: 12px;
 }
 
 .item-modal__delete {
-  font-size: 20px;
-  line-height: 24px;
-  font-weight: 700;
   color: #ff4d00;
-  background: transparent;
+  background: none;
   border: none;
   cursor: pointer;
-  text-align: right;
-}
-
-.item-modal__close {
-  position: absolute;
-  top: 20px;
-  right: 20px;
-  width: 20px;
-  height: 20px;
-  font-size: 22px;
-  background: transparent;
-  border: none;
-  cursor: pointer;
-  color: #6b7280;
 }

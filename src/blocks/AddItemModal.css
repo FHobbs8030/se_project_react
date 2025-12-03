@@ -17,18 +17,22 @@
   line-height: 20px;
 }
 
+.add-item__container {
+  width: 496px;
+  background: #fff;
+  border-radius: 20px;
+  padding: 28px;
+}
+
 .add-item__close {
-    position: relative;
-    top: -8px;
-    Left: 5px;
-    appearance: none;
-    border: none;
-    background: transparent;
-    font-size: 22px;
-    line-height: 20px;
-    color: #6b7280;
-    cursor: pointer;
-    padding: 4px;
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  font-size: 22px;
+  background: none;
+  color: #0000004D;
+  border: none;
+  cursor: pointer;
 }
 
 .add-item__form {

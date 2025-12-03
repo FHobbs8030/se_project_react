@@ -10,24 +10,30 @@ export default function ItemModal({ card, onClose, onDelete, canDelete }) {
   };
 
   return (
-    <Modal isOpen={!!card} onClose={onClose} variant="item">
-      <div className="modal__container_item">
+    <Modal isOpen={!!card} onClose={onClose}>
+      <div className="item-modal">
         <button className="item-modal__close" onClick={onClose}>
           ×
         </button>
 
-        <img
-          src={card.imageUrl}
-          alt={card.name}
-          className="item-modal__image"
-        />
+        <div className="item-modal__media">
+          <img
+            src={card.imageUrl}
+            alt={card.name}
+            className="item-modal__image"
+          />
+        </div>
 
         <div className="item-modal__info">
-          <div className="item-modal__toprow">
-            <p className="item-modal__title">{card.name}</p>
+          <div className="item-modal__top">
+            <p className="item-modal__name">{card.name}</p>
 
             {canDelete && (
-              <button className="item-modal__delete" onClick={handleDelete}>
+              <button
+                type="button"
+                className="item-modal__delete"
+                onClick={handleDelete}
+              >
                 Delete item
               </button>
             )}

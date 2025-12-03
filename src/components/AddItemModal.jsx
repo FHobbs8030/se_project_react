@@ -14,11 +14,22 @@ export default function AddItemModal({
 
   const isValid = name.trim() && imageUrl.trim() && weather.trim();
 
+  const normalizeImage = url => {
+    if (!url) return '';
+    return url.replace('/image/', '/images/');
+  };
+
   const handleSubmit = e => {
     e.preventDefault();
     if (!isValid) return;
 
-    onAddItem({ name, imageUrl, weather });
+    const fixedUrl = normalizeImage(imageUrl);
+
+    onAddItem({
+      name,
+      imageUrl: fixedUrl,
+      weather,
+    });
 
     setName('');
     setImageUrl('');
