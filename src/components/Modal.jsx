@@ -26,11 +26,11 @@ export default function Modal({ isOpen, onClose, children, variant }) {
   if (!isOpen) return null;
 
   return (
-    <div className="modal" onMouseDown={handleOverlayClick}>
+    <div className="modal" onClick={handleOverlayClick}>
       {variant === 'item' ? (
-        <div onMouseDown={e => e.stopPropagation()}>{children}</div>
+        <div onClick={e => e.stopPropagation()}>{children}</div>
       ) : (
-        <div className="modal__content" onMouseDown={e => e.stopPropagation()}>
+        <div className="modal__content" onClick={e => e.stopPropagation()}>
           {children}
         </div>
       )}

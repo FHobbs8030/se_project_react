@@ -27,7 +27,13 @@ export default function LoginModal({
       <form className="login__form" onSubmit={handleSubmit}>
         <label className="login__label">
           Email
-          <input name="email" type="email" className="login__input" required />
+          <input
+            name="email"
+            type="email"
+            className="login__input"
+            placeholder="Email"
+            required
+          />
         </label>
 
         <label className="login__label">
@@ -36,6 +42,7 @@ export default function LoginModal({
             name="password"
             type="password"
             className="login__input"
+            placeholder="Password"
             required
           />
         </label>

@@ -41,6 +41,7 @@
 .login__input {
   border: none;
   border-bottom: 1px solid #111827;
+  color: #000;
   padding: 6px 0;
   font-size: 16px;
   background: transparent;
@@ -49,6 +50,11 @@
 
 .login__input:focus {
   border-bottom: 1px solid #000;
+}
+
+.login__input::placeholder {
+  color: #9ca3af;
+  opacity: 1;
 }
 
 .login__actions {
