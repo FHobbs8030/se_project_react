@@ -12,9 +12,10 @@
 .modal__content {
   background: #fff;
   border-radius: 20px;
-  width: fit-content;
+  width: 496px;
   max-width: 90vw;
   max-height: 90vh;
+  padding: 28px;
   overflow: hidden;
   position: relative;
   display: flex;
