@@ -1,3 +1,4 @@
+import { useState, useEffect } from 'react';
 import Modal from './Modal.jsx';
 import '../blocks/LoginModal.css';
 
@@ -8,10 +9,21 @@ export default function LoginModal({
   onAltClick,
   isSubmitting,
 }) {
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+
+  const isValid = email.trim() !== '' && password.trim() !== '';
+
+  useEffect(() => {
+    if (!isOpen) {
+      setEmail('');
+      setPassword('');
+    }
+  }, [isOpen]);
+
   const handleSubmit = e => {
     e.preventDefault();
-    const email = e.target.email.value;
-    const password = e.target.password.value;
+    if (!isValid) return;
     onSubmit({ email, password });
   };
 
@@ -31,7 +43,9 @@ export default function LoginModal({
             name="email"
             type="email"
             className="login__input"
-            placeholder="Email"
+            autoComplete="email"
+            value={email}
+            onChange={e => setEmail(e.target.value)}
             required
           />
         </label>
@@ -42,13 +56,15 @@ export default function LoginModal({
             name="password"
             type="password"
             className="login__input"
-            placeholder="Password"
+            autoComplete="current-password"
+            value={password}
+            onChange={e => setPassword(e.target.value)}
             required
           />
         </label>
 
         <div className="login__actions">
-          <button className="login__submit" disabled={isSubmitting}>
+          <button className="login__submit" disabled={!isValid || isSubmitting}>
             Log In
           </button>
 

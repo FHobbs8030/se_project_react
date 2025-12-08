@@ -73,8 +73,14 @@
   cursor: pointer;
 }
 
+.login__submit:not(:disabled) {
+  background: #000;
+  color: #fff;
+}
+
 .login__submit:disabled {
   opacity: 0.6;
+  cursor: not-allowed;
 }
 
 .login__alt {
@@ -84,4 +90,13 @@
   color: #374151;
   cursor: pointer;
   padding: 8px 12px;
+}
+
+.login__input:-webkit-autofill,
+.login__input:-webkit-autofill:hover,
+.login__input:-webkit-autofill:focus,
+.login__input:-webkit-autofill:active {
+  -webkit-text-fill-color: #000;
+  box-shadow: 0 0 0px 1000px #ffffff inset;
+  transition: background-color 9999s ease-in-out 0s;
 }

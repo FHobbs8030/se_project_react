@@ -1,5 +1,6 @@
-﻿import { Outlet } from "react-router-dom";
-import Header from "./Header.jsx";
+﻿import { Outlet } from 'react-router-dom';
+import Header from './Header.jsx';
+import Footer from './Footer.jsx';
 
 export default function Layout({
   outletContext,
@@ -9,7 +10,7 @@ export default function Layout({
   onLogoutClick,
 }) {
   return (
-    <div className="app-frame">
+    <div className="page">
       <Header
         currentUser={outletContext?.currentUser || null}
         value={outletContext?.currentTemperatureUnit}
@@ -19,10 +20,12 @@ export default function Layout({
         onLogoutClick={onLogoutClick}
         onAddClick={onAddClick}
       />
-      <main>
+
+      <main className="content">
         <Outlet context={outletContext} />
       </main>
+
+      <Footer />
     </div>
   );
 }
-

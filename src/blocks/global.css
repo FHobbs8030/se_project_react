@@ -1,53 +1,95 @@
-﻿/* src/blocks/global.css */
+﻿/* ------------------------------
+   IMPORTS
+------------------------------ */
 @import "../vendor/normalize.css";
 @import "./layout.css";
 @import "./Header.css";
 @import "./WeatherCard.css";
-@import "./Cards.css";            
+@import "./Cards.css";
 @import "./ToggleSwitch.css";
 @import "./ClothesSection.css";
 @import "./ProfilePage.css";
 @import "./AuthModal.css";
 
-input, button, select, textarea { font: inherit; }
+/* ------------------------------
+   GLOBAL RESET
+------------------------------ */
+*, *::before, *::after {
+  box-sizing: border-box;
+}
 
-*, *::before, *::after { box-sizing: border-box; }
+input, button, select, textarea {
+  font: inherit;
+}
 
+/* ------------------------------
+   THEME VARIABLES
+------------------------------ */
 :root {
   --page-bg: #ffffff;
   --page-fg: #0f172a;
-  --page-max: 1440px;                       
+  --page-max: 1440px;
   --gutter: clamp(19px, calc(13px + 1.875vw), 40px);
- 
 }
 
+/* ------------------------------
+   ROOT + BODY
+------------------------------ */
 html, body {
-  font-weight: 500;
   margin: 0;
   padding: 0;
-  overflow-x: hidden;
   width: 100%;
   max-width: 100vw;
   height: 100%;
   background: var(--page-bg);
   color: var(--page-fg);
+  font-weight: 500;
+  overflow-x: hidden;
 }
 
+#root {
+  height: 100%;
+}
 
-#root { min-height: 100%; }
+/* ------------------------------
+   PAGE LAYOUT — FIXED
+------------------------------ */
+.page {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: var(--page-bg);
+}
 
-.app, main { background: transparent; }
+/* Content grows, footer stays visible */
+.page main {
+  flex: 1 0 auto;
+}
 
-/* Single, shared frame for all pages */
-.app-frame,
-.page,
+/* ------------------------------
+   CONTAINER UTILITY
+------------------------------ */
 .container {
   width: min(100%, var(--page-max));
   margin-inline: auto;
-  /* use safe-area on iOS while honoring your gutter */
-  padding-inline: max(var(--gutter), env(safe-area-inset-left)) max(var(--gutter), env(safe-area-inset-right));
+  padding-inline: max(var(--gutter), env(safe-area-inset-left))
+                  max(var(--gutter), env(safe-area-inset-right));
 }
 
+/* ------------------------------
+   APP FRAME (NO WIDTH CONTROL!)
+------------------------------ */
+.app-frame {
+  width: 100%;
+  min-height: 100%;
+  margin: 0;
+  padding: 0;
+  background: transparent;
+}
+
+/* ------------------------------
+   PASSWORD INPUT FIX
+------------------------------ */
 input[type="password"] {
   font-family: system-ui, -apple-system, "Segoe UI", "Segoe UI Symbol",
                Roboto, Arial, sans-serif, "Cabinet Grotesk", "Inter";
@@ -56,6 +98,6 @@ input[type="password"] {
 
 @supports (-webkit-text-security: disc) {
   input[type="password"] {
-    -webkit-text-security: disc; /* Chrome/Edge/Safari */
+    -webkit-text-security: disc;
   }
 }
