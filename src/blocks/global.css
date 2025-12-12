@@ -101,42 +101,6 @@ input[type="password"] {
   font-weight: 700;
 }
 
-.weather-card {
-  position: relative;
-  width: min(var(--container-w), 100%);
-  height: var(--wx-h);
-  margin: 0 auto var(--gutter);
-  border-radius: var(--radius);
-  overflow: hidden;
-  background: #0aa4ff;
-}
-
-.weather-card__temp {
-  position: absolute;
-  left: calc(var(--gutter) - 4px);
-  top: 50%;
-  transform: translateY(-50%);
-  font-size: 28px;
-  font-weight: 700;
-  color: #fff;
-}
-
-.weather-card__icon {
-  position: absolute;
-  right: var(--gutter);
-  top: 50%;
-  transform: translateY(-50%);
-  width: 112px;
-  height: 56px;
-  background: radial-gradient(
-      circle at 80% 20%,
-      #ffd400 30%,
-      rgba(255, 212, 0, 0) 31%
-    ),
-    linear-gradient(180deg, #fff 0%, #f0f3f9 100%);
-  border-radius: 999px;
-}
-
 .section__title {
   width: min(var(--container-w), 100%);
   margin: 8px auto 12px;

@@ -8,6 +8,7 @@ import '../blocks/Main.css';
 function filterByWeather(items, tempF) {
   if (tempF == null) return items;
   const t = Number(tempF);
+
   return items.filter(it => {
     const tag = String(it.weather || it.weatherType || '').toLowerCase();
     if (!tag) return true;
@@ -21,41 +22,49 @@ export default function Main() {
   const { clothingItems, onCardClick, onCardLike, currentTemperatureUnit } =
     useOutletContext();
 
-  const [temps, setTemps] = useState({ f: null, c: null });
-  const [loadingWx, setLoadingWx] = useState(true);
+  const [weather, setWeather] = useState({
+    f: null,
+    c: null,
+    icon: '',
+    isNight: false,
+    city: '',
+  });
+
+  const [isLoadingWeather, setIsLoadingWeather] = useState(true);
 
   useEffect(() => {
-    let alive = true;
+    let active = true;
+
     (async () => {
       try {
-        setLoadingWx(true);
-        const pair = await getWeatherPair();
-        if (alive) setTemps(pair);
-      } catch (e) {
-        void e;
+        setIsLoadingWeather(true);
+        const data = await getWeatherPair();
+        if (active) setWeather(data);
       } finally {
-        if (alive) setLoadingWx(false);
+        if (active) setIsLoadingWeather(false);
       }
     })();
+
     return () => {
-      alive = false;
+      active = false;
     };
   }, []);
 
-  const visible = useMemo(
-    () => filterByWeather(clothingItems || [], temps.f),
-    [clothingItems, temps.f]
+  const visibleClothing = useMemo(
+    () => filterByWeather(clothingItems || [], weather.f),
+    [clothingItems, weather.f]
   );
 
-  const displayTemp = currentTemperatureUnit === 'F' ? temps.f : temps.c;
+  const displayTemp = currentTemperatureUnit === 'F' ? weather.f : weather.c;
 
   return (
     <main className="main">
       <div className="weather-block">
         <WeatherCard
-          tempF={temps.f}
+          tempF={weather.f}
           unit={currentTemperatureUnit}
-          isLoadingWeather={loadingWx}
+          weatherData={weather}
+          isLoadingWeather={isLoadingWeather}
         />
       </div>
 
@@ -67,7 +76,7 @@ export default function Main() {
           </h3>
 
           <ClothesSection
-            clothingItems={visible}
+            clothingItems={visibleClothing}
             onCardClick={onCardClick}
             onCardLike={onCardLike}
           />

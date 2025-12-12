@@ -1,38 +1,48 @@
-import PropTypes from "prop-types";
-import { likeItem, unlikeItem } from "../utils/itemsApi.js";
+import PropTypes from 'prop-types';
+import '../blocks/ClothingCard.css';
 
-export default function ClothingCard({ item, onCardClick, onAfterToggle, currentUser }) {
-  const id = item._id || item.id;
-  const name = (item?.name || "").trim();
+export default function ClothingCard({
+  item,
+  onCardClick,
+  onAfterToggle,
+  currentUser,
+}) {
+  const name = (item?.name || '').trim();
   const uid = currentUser?._id || currentUser?.id || null;
-  const liked = Array.isArray(item.likes) && uid ? item.likes.some(l => String(l) === String(uid)) : false;
 
-  async function toggleLike(e) {
+  const liked =
+    Array.isArray(item.likes) && uid
+      ? item.likes.some(l => String(l) === String(uid))
+      : false;
+
+  function handleToggle(e) {
     e.stopPropagation();
-    const updated = liked ? await unlikeItem(id) : await likeItem(id);
-    if (typeof onAfterToggle === "function") onAfterToggle(updated);
+    if (onAfterToggle) {
+      onAfterToggle({ ...item, liked: !liked });
+    }
+  }
+
+  function handleClick() {
+    if (onCardClick) {
+      onCardClick(item);
+    }
   }
 
   return (
-    <li className="card" onClick={() => onCardClick(item)}>
-      <button
-        className={`card__like ${liked ? "is-liked" : ""}`}
-        type="button"
-        aria-pressed={liked ? "true" : "false"}
-        onClick={toggleLike}
-        title={liked ? "Unlike" : "Like"}
-      >
-        ♥
-      </button>
-      <span className="card__badge" aria-hidden="true">{name}</span>
+    <li className="card" onClick={handleClick}>
+      <div className="card__meta">
+        <span className="card__name">{name}</span>
+        <button
+          type="button"
+          className={`card__like-btn ${liked ? 'card__like-btn_liked' : ''}`}
+          onClick={handleToggle}
+        />
+      </div>
+
       <img
-        className={`card__image card__image--${name.toLowerCase().replace(/\s+/g, "-")}`}
-        src={item.imageUrl}
+        src={item?.imageUrl || item?.link || ''}
         alt={name}
-        onError={(e) => {
-          e.currentTarget.onerror = null;
-          e.currentTarget.src = "/images/placeholder.svg";
-        }}
+        className="card__image"
       />
     </li>
   );
@@ -43,12 +53,16 @@ ClothingCard.propTypes = {
     _id: PropTypes.string,
     id: PropTypes.string,
     name: PropTypes.string.isRequired,
-    imageUrl: PropTypes.string.isRequired,
-    weather: PropTypes.string,
-    owner: PropTypes.any,
-    likes: PropTypes.array
+    imageUrl: PropTypes.string,
+    link: PropTypes.string,
+    likes: PropTypes.array,
   }).isRequired,
+
+  currentUser: PropTypes.shape({
+    _id: PropTypes.string,
+    id: PropTypes.string,
+  }),
+
   onCardClick: PropTypes.func.isRequired,
   onAfterToggle: PropTypes.func,
-  currentUser: PropTypes.object
 };
