@@ -1,4 +1,3 @@
-// src/components/WeatherCard.jsx
 import PropTypes from "prop-types";
 import { useOutletContext } from "react-router-dom";
 import "../blocks/WeatherCard.css";
@@ -16,7 +15,7 @@ function toTempF(src) {
 export default function WeatherCard({
   weatherData: propWD,
   tempF: propTempF,
-  unit,                 // optional override
+  unit,                 
   isLoadingWeather,
 }) {
   const ctx = useOutletContext() || {};

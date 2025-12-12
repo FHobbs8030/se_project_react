@@ -4,15 +4,6 @@
   padding: var(--pad);
 }
 
-.header {
-  width: min(var(--container-w), 100%);
-  margin: 0 auto;
-  padding: var(--pad);
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-
 .header__brand {
   font-size: 24px;
   font-weight: 700;
@@ -58,13 +49,4 @@
   width: min(var(--container-w), 100%);
   margin: 8px auto 12px;
   font-weight: 600;
-}
-
-.footer {
-  width: min(var(--container-w), 100%);
-  margin: 0 auto;
-  padding: var(--pad);
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
 }

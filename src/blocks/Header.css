@@ -3,9 +3,10 @@
 }
 
 .header__outer {
-  max-width: 1360px;
-  margin-inline: auto;
-  padding: 32px 40px 28px;
+    width: 100%;
+    max-width: 1360px;
+    margin: 0;
+    padding: 32px 16px 28px 16px;
 }
 
 .header__inner {
@@ -15,7 +16,6 @@
   gap: 16px;
 }
 
-/* LEFT SIDE */
 .header__left {
   display: flex;
   align-items: center;
@@ -46,7 +46,6 @@
   margin-inline: 4px;
 }
 
-/* RIGHT SIDE */
 .header__right {
   display: flex;
   align-items: center;
@@ -83,7 +82,6 @@
   transform: translateY(1px);
 }
 
-/* USER SECTION */
 .header__user {
   display: flex;
   align-items: center;

@@ -1,5 +1,23 @@
 :root {
   --gutter: 40px;
+  --page-max: 1360px;
+}
+
+#root {
+  width: 100%;
+  display: block;
+}
+
+.page {
+  width: 100%;
+  max-width: 100%;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.content {
+  flex: 1;
 }
 
 .container {
