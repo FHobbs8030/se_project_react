@@ -1,17 +1,18 @@
 .profile {
-  display: grid;
-  grid-template-columns: 240px 1fr;
-  gap: 32px;
-  padding: 40px;
-  background: #f3f3f3;
-  min-height: 100vh;
+    display: grid;
+    grid-template-columns: 325px minmax(0, 1100px);
+    gap: 21px;
+    padding: 40px;
 }
 
 .profile__sidebar {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 12px;
+    width: 100%;
+    max-width: 229px;
+    height: auto;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
 }
 
 .profile__user-row {
@@ -46,9 +47,10 @@
 }
 
 .profile__main {
+  width: 100%;
+  max-width: 1060px;
   display: flex;
   flex-direction: column;
-  gap: 24px;
 }
 
 .profile__header-row {

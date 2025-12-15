@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import Modal from './Modal.jsx';
 import '../blocks/AddItemModal.css';
 
 export default function AddItemModal({
@@ -12,47 +11,40 @@ export default function AddItemModal({
   const [imageUrl, setImageUrl] = useState('');
   const [weather, setWeather] = useState('');
 
-  const isValid = name.trim() && imageUrl.trim() && weather.trim();
+  if (!isOpen) return null;
 
-  const normalizeImage = url => {
-    if (!url) return '';
-    return url.replace('/image/', '/images/');
-  };
+  const isValid = name.trim() && imageUrl.trim() && weather;
 
-  const handleSubmit = e => {
+  function handleSubmit(e) {
     e.preventDefault();
-    if (!isValid) return;
-
-    const fixedUrl = normalizeImage(imageUrl);
+    if (!isValid || isSubmitting) return;
 
     onAddItem({
       name,
-      imageUrl: fixedUrl,
+      imageUrl,
       weather,
     });
 
     setName('');
     setImageUrl('');
     setWeather('');
-    onClose();
-  };
+  }
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose}>
-      <div className="add-item__container">
-        <div className="add-item__header">
-          <h2 className="add-item__title">New garment</h2>
-          <button className="add-item__close" onClick={onClose}>
-            ×
-          </button>
-        </div>
+    <div className="modal-overlay" onClick={onClose}>
+      <div className="modal-container" onClick={e => e.stopPropagation()}>
+        <button className="add-item__close" onClick={onClose}>
+          ×
+        </button>
+
+        <h2 className="add-item__title">New garment</h2>
 
         <form className="add-item__form" onSubmit={handleSubmit}>
           <label className="add-item__label">
             Name
             <input
-              type="text"
               className="add-item__input"
+              placeholder="Name"
               value={name}
               onChange={e => setName(e.target.value)}
             />
@@ -61,8 +53,8 @@ export default function AddItemModal({
           <label className="add-item__label">
             Image
             <input
-              type="text"
               className="add-item__input"
+              placeholder="Image URL"
               value={imageUrl}
               onChange={e => setImageUrl(e.target.value)}
             />
@@ -73,50 +65,35 @@ export default function AddItemModal({
               Select the weather type:
             </legend>
 
-            <div className="add-item__radio-row add-item__radio-row--1">
+            <label className="add-item__radio-row">
               <input
                 type="radio"
-                id="weather-hot"
                 className="add-item__radio"
-                name="weather"
-                value="hot"
                 checked={weather === 'hot'}
-                onChange={e => setWeather(e.target.value)}
+                onChange={() => setWeather('hot')}
               />
-              <label htmlFor="weather-hot" className="add-item__radio-label">
-                Hot
-              </label>
-            </div>
+              <span className="add-item__radio-label">Hot</span>
+            </label>
 
-            <div className="add-item__radio-row add-item__radio-row--2">
+            <label className="add-item__radio-row">
               <input
                 type="radio"
-                id="weather-warm"
                 className="add-item__radio"
-                name="weather"
-                value="warm"
                 checked={weather === 'warm'}
-                onChange={e => setWeather(e.target.value)}
+                onChange={() => setWeather('warm')}
               />
-              <label htmlFor="weather-warm" className="add-item__radio-label">
-                Warm
-              </label>
-            </div>
+              <span className="add-item__radio-label">Warm</span>
+            </label>
 
-            <div className="add-item__radio-row add-item__radio-row--3">
+            <label className="add-item__radio-row">
               <input
                 type="radio"
-                id="weather-cold"
                 className="add-item__radio"
-                name="weather"
-                value="cold"
                 checked={weather === 'cold'}
-                onChange={e => setWeather(e.target.value)}
+                onChange={() => setWeather('cold')}
               />
-              <label htmlFor="weather-cold" className="add-item__radio-label">
-                Cold
-              </label>
-            </div>
+              <span className="add-item__radio-label">Cold</span>
+            </label>
           </fieldset>
 
           <button
@@ -124,10 +101,10 @@ export default function AddItemModal({
             className="add-item__submit"
             disabled={!isValid || isSubmitting}
           >
-            Add garment
+            {isSubmitting ? 'Saving...' : 'Add garment'}
           </button>
         </form>
       </div>
-    </Modal>
+    </div>
   );
 }

@@ -6,7 +6,6 @@ export default function ItemModal({ card, onClose, onDelete, canDelete }) {
 
   const handleDelete = () => {
     onDelete(card);
-    onClose();
   };
 
   return (

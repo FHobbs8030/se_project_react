@@ -1,7 +1,6 @@
 import PropTypes from 'prop-types';
 import { useOutletContext } from 'react-router-dom';
 import ItemCard from './ItemCard.jsx';
-import '../blocks/Cards.css';
 import '../blocks/ClothesSection.css';
 
 const FALLBACK = {
