@@ -1,7 +1,6 @@
 ﻿@import "../vendor/normalize.css";
 @import "./layout.css";
 @import "./Header.css";
-@import "./WeatherCard.css";
 @import "./Cards.css";
 @import "./ToggleSwitch.css";
 @import "./ClothesSection.css";
