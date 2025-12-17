@@ -31,12 +31,12 @@ export default function App() {
   const [likePending, setLikePending] = useState(() => new Set());
 
   const loadAuthedData = useCallback(async () => {
-    const me = await Auth.getUser();
-    if (me) {
+    try {
+      const me = await Auth.getUser();
       setCurrentUser(me);
       const list = await Items.getItems();
       setClothingItems(Array.isArray(list) ? list : []);
-    } else {
+    } catch {
       setCurrentUser(null);
       setClothingItems([]);
     }
@@ -76,8 +76,8 @@ export default function App() {
   const handleLogout = useCallback(async () => {
     try {
       await Auth.logout();
-    } catch (e) {
-      void e;
+    } catch {
+      void 0;
     }
     setCurrentUser(null);
     setClothingItems([]);

@@ -16,7 +16,6 @@ export default function RegisterModal({
   const [avatarUrl, setAvatarUrl] = useState('');
   const [city, setCity] = useState('');
 
-  // reset when modal closes
   useEffect(() => {
     if (!isOpen) {
       setEmail('');
@@ -64,6 +63,7 @@ export default function RegisterModal({
             className="register__input"
             value={email}
             onChange={e => setEmail(e.target.value)}
+            placeholder="Email"
             required
           />
         </label>
@@ -76,6 +76,7 @@ export default function RegisterModal({
             className="register__input"
             value={password}
             onChange={e => setPassword(e.target.value)}
+            placeholder="Password"
             required
           />
         </label>
@@ -84,9 +85,11 @@ export default function RegisterModal({
           Name*
           <input
             name="name"
+            type="text"
             className="register__input"
             value={name}
             onChange={e => setName(e.target.value)}
+            placeholder="Name"
             required
           />
         </label>
@@ -95,13 +98,13 @@ export default function RegisterModal({
           Avatar URL*
           <input
             name="avatarUrl"
-            className="register__input"
             type="text"
+            className="register__input"
             value={avatarUrl}
             onChange={e => setAvatarUrl(e.target.value)}
-            required
             placeholder="https://example.com/me.png or /images/me.png"
             pattern="https?://.*|/images/.*|.*\.(png|jpg|jpeg|gif|svg)"
+            required
           />
         </label>
 
@@ -109,9 +112,11 @@ export default function RegisterModal({
           City
           <input
             name="city"
+            type="text"
             className="register__input"
             value={city}
             onChange={e => setCity(e.target.value)}
+            placeholder="City"
           />
         </label>
 
