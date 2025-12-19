@@ -1,24 +1,41 @@
-import PropTypes from "prop-types";
+import PropTypes from 'prop-types';
+import Modal from './Modal.jsx';
+import '../blocks/ConfirmDeleteModal.css';
 
 export default function ConfirmDeleteModal({ isOpen, onClose, onConfirm }) {
-  if (!isOpen) return null;
   return (
-    <div className="modal confirm">
-      <button
-        className="modal__close"
-        type="button"
-        onClick={onClose}
-        aria-label="Close"
-      />
-      <h2>Are you sure you want to delete this item?</h2>
-      <p>This action is irreversible.</p>
-      <button className="confirm__danger" type="button" onClick={onConfirm}>
-        Yes, delete item
-      </button>
-      <button className="confirm__cancel" type="button" onClick={onClose}>
-        Cancel
-      </button>
-    </div>
+    <Modal isOpen={isOpen} onClose={onClose}>
+      <div className="confirm-modal">
+        <button
+          className="modal__close"
+          type="button"
+          onClick={onClose}
+          aria-label="Close"
+        />
+
+        <h2 className="confirm-modal__title">
+          Are you sure you want to delete this item?
+        </h2>
+
+        <p className="confirm-modal__text">This action is irreversible.</p>
+
+        <button
+          className="confirm-modal__danger"
+          type="button"
+          onClick={onConfirm}
+        >
+          Yes, delete item
+        </button>
+
+        <button
+          className="confirm-modal__cancel"
+          type="button"
+          onClick={onClose}
+        >
+          Cancel
+        </button>
+      </div>
+    </Modal>
   );
 }
 

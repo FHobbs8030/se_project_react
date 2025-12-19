@@ -1,3 +1,6 @@
+import PropTypes from 'prop-types';
+import '../blocks/ItemCard.css';
+
 export default function ItemCard({
   item,
   currentUser,
@@ -5,33 +8,44 @@ export default function ItemCard({
   onCardLike,
   likePending,
 }) {
-  const id = item._id || item.id;
-  const me = currentUser?._id;
-  const likedByMe = !!me && (item.likes || []).some(u => (u?._id ?? u) === me);
+  const itemId = item._id || item.id;
+  const likes = Array.isArray(item.likes) ? item.likes : [];
+  const isLiked = currentUser ? likes.includes(currentUser._id) : false;
+  const isPending = likePending?.has?.(itemId);
+
+  const handleLikeClick = e => {
+    e.stopPropagation();
+    if (!onCardLike || isPending) return;
+    onCardLike(itemId, isLiked);
+  };
 
   return (
-    <li className="card" onClick={() => onCardClick?.(item)}>
+    <li className="card">
       <div className="card__meta">
-        <div className="card__title">{item?.name || ''}</div>
+        <span className="card__title">{item.name}</span>
         <button
           type="button"
-          className={`card__like ${likedByMe ? 'is-liked' : ''}`}
-          aria-pressed={likedByMe}
-          aria-label={likedByMe ? 'Unlike' : 'Like'}
-          disabled={likePending?.has(id)}
-          onClick={e => {
-            e.stopPropagation();
-            onCardLike?.(id, likedByMe);
-          }}
+          className={`card__like ${isLiked ? 'card__like_active' : ''}`}
+          aria-pressed={isLiked}
+          onClick={handleLikeClick}
+          disabled={isPending}
         />
       </div>
 
-      {item?.imageUrl ? (
-        <img
-          src={item.imageUrl.replace('/image/', '/images/')}
-          alt={item.name}
-        />
-      ) : null}
+      <img
+        src={item.imageUrl}
+        alt={item.name}
+        className="card__image"
+        onClick={() => onCardClick(item)}
+      />
     </li>
   );
 }
+
+ItemCard.propTypes = {
+  item: PropTypes.object.isRequired,
+  currentUser: PropTypes.object,
+  onCardClick: PropTypes.func.isRequired,
+  onCardLike: PropTypes.func,
+  likePending: PropTypes.instanceOf(Set),
+};

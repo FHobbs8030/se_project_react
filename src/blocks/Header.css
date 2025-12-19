@@ -3,10 +3,10 @@
 }
 
 .header__outer {
-    width: 100%;
-    max-width: 1360px;
-    margin: 0;
-    padding: 32px 16px 23px 16px;
+  width: 100%;
+  max-width: 1360px;
+  margin: 0;
+  padding: 32px 16px 23px 16px;
 }
 
 .header__inner {
@@ -199,53 +199,59 @@
   }
 }
 
-@media (max-width: 340px) {
+@media (max-width: 420px) {
   .header__inner {
-    grid-template-columns: 1fr;
-    grid-template-areas:
-      'toggle'
-      'brand'
-      'meta'
-      'user'
-      'add';
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 12px;
+  }
+}
+
+@media (max-width: 390px) {
+  .header__inner {
     justify-items: center;
-    row-gap: 6px;
-  }
-
-  .header__left {
-    display: contents;
-  }
-
-  .header__brand {
-    grid-area: brand;
-  }
-
-  .header__meta {
-    grid-area: meta;
     text-align: center;
   }
 
-  .header__actions {
-    display: contents;
+  
+  .header__meta,
+  .header__user {
+    justify-content: center;
+    align-items: center;
+    text-align: center;
   }
 
-  .header__actions > :first-child {
-    grid-area: toggle;
+  .header__user-name {
+    text-align: center;
+  }
+}
+
+@media (max-width: 340px) {
+  .header__inner {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    text-align: center;
   }
 
-  .header__actions > :nth-child(2) {
-    grid-area: add;
+  .header__left,
+  .header__actions,
+  .header__user {
+    width: 100%;
+    justify-content: center;
   }
 
   .header__user {
-    grid-area: user;
-    justify-self: center;
+    flex-direction: column;
+    gap: 6px;
   }
 
-  .header__btn,
-  .header__auth .header__btn {
-    padding: 6px 10px;
-    font-size: 12px;
+  .header__user-name {
+    white-space: normal;
+    font-size: 16px;
     line-height: 1.2;
+    text-align: center;
   }
 }

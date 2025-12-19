@@ -1,104 +1,41 @@
 .confirm-modal {
-  position: fixed;
-  inset: 0;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  background-color: rgba(0, 0, 0, 0.6);
-  z-index: 1000;
-}
-
-.confirm-modal__box {
-  position: relative;
   width: 670px;
   height: 280px;
-  box-sizing: border-box;
-  max-width: 90vw;
-  background-color: #fff;
-  border-radius: 12px;
-  padding: 32px 24px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  background: #ffffff;
+  border-radius: 16px;
+  padding: 0 40px;
+  position: relative;
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
   text-align: center;
 }
 
-.confirm-modal__content {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  height: 100%;
-  width: 100%;
-}
-
-
-.confirm-modal__close-button {
-  position: absolute;
-  top: 16px;
-  right: 20px;
-  background: none;
-  border: none;
-  font-size: 24px;
-  font-weight: 700;
-  color: #333;
-  cursor: pointer;
-  transition: color 0.2s ease, transform 0.2s ease;
-}
-
-.confirm-modal__close-button:hover {
-  color: #000;
-  transform: scale(1.1);
-}
-
 .confirm-modal__title {
-  font-family: 'Cabinet Grotesk', 'Inter', sans-serif;
-  font-weight: 700;
   font-size: 20px;
-  line-height: 24px;
-  color: #000;
+  font-weight: 700;
   margin: 0 0 12px;
 }
 
 .confirm-modal__text {
-  font-family: 'Cabinet Grotesk', 'Inter', sans-serif;
-  font-weight: 700;
-  font-size: 20px;
-  line-height: 24px;
-  color: #000;
-  margin: 0 0 28px;
+  font-size: 16px;
+  margin: 0 0 32px;
 }
 
-.confirm-modal__delete-button {
-  font-family: 'Cabinet Grotesk', 'Inter', sans-serif;
-  font-weight: 700;
-  font-size: 20px;
-  line-height: 24px;
-  color: #ff3b30;
+.confirm-modal__danger {
+  color: #ff4d00;
   background: none;
   border: none;
-  cursor: pointer;
-  margin-bottom: 16px;
-}
-
-.confirm-modal__delete-button:hover {
-  color: #d60000;
-  text-decoration: underline;
-}
-
-.confirm-modal__cancel-button {
-  font-family: 'Cabinet Grotesk', 'Inter', sans-serif;
-  font-weight: 700;
   font-size: 20px;
-  line-height: 24px;
-  color: #000;
+  font-weight: 700;
+  cursor: pointer;
+  margin-bottom: 24px;
+}
+
+.confirm-modal__cancel {
   background: none;
   border: none;
+  font-size: 16px;
   cursor: pointer;
-}
-
-.confirm-modal__cancel-button:hover {
-  color: #444;
-  text-decoration: underline;
 }

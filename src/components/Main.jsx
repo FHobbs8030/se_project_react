@@ -1,4 +1,4 @@
-import { useEffect, useState, useMemo } from 'react';
+import { useEffect, useState, useMemo, useCallback } from 'react';
 import { useOutletContext } from 'react-router-dom';
 import { getWeatherPair } from '../utils/weatherApi.js';
 import WeatherCard from './WeatherCard.jsx';
@@ -18,9 +18,22 @@ function filterByWeather(items, tempF) {
   });
 }
 
+function isOwner(card, currentUser) {
+  if (!card || !currentUser) return false;
+
+  const ownerId = typeof card.owner === 'string' ? card.owner : card.owner?._id;
+
+  return ownerId === currentUser._id;
+}
+
 export default function Main() {
-  const { clothingItems, onCardClick, onCardLike, currentTemperatureUnit } =
-    useOutletContext();
+  const {
+    clothingItems,
+    onCardClick,
+    onCardLike,
+    currentTemperatureUnit,
+    currentUser,
+  } = useOutletContext();
 
   const [weather, setWeather] = useState({
     f: null,
@@ -55,6 +68,16 @@ export default function Main() {
     [clothingItems, weather.f]
   );
 
+  const handleCardClick = useCallback(
+    card => {
+      onCardClick({
+        ...card,
+        canDelete: isOwner(card, currentUser),
+      });
+    },
+    [onCardClick, currentUser]
+  );
+
   const displayTemp = currentTemperatureUnit === 'F' ? weather.f : weather.c;
 
   return (
@@ -77,7 +100,7 @@ export default function Main() {
 
           <ClothesSection
             clothingItems={visibleClothing}
-            onCardClick={onCardClick}
+            onCardClick={handleCardClick}
             onCardLike={onCardLike}
           />
         </div>

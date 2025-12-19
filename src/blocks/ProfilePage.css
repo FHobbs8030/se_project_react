@@ -1,7 +1,7 @@
 .profile {
     display: grid;
     grid-template-columns: 325px minmax(0, 1100px);
-    gap: 21px;
+    gap: 18px;
     padding: 40px;
 }
 
@@ -82,6 +82,16 @@
 
 .profile__add-btn:hover {
   opacity: 0.8;
+}
+
+@media (min-width: 1440px) {
+  .profile {
+    gap: 0;
+  }
+
+  .profile_main {
+    padding-left: 21px;
+  }
 }
 
 @media (max-width: 720px) {

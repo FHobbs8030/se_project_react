@@ -1,28 +1,26 @@
 ﻿import { useEffect, useMemo, useState, useCallback } from 'react';
-import { Routes, Route, useNavigate, Navigate } from 'react-router-dom';
+import { Routes, Route, Navigate } from 'react-router-dom';
 import Layout from './Layout.jsx';
 import Main from './Main.jsx';
 import ProfilePage from './ProfilePage.jsx';
 import ProtectedRoute from './ProtectedRoute.jsx';
-import LoginModal from './LoginModal.jsx';
-import RegisterModal from './RegisterModal.jsx';
-import AddItemModal from './AddItemModal.jsx';
 import ItemModal from './ItemModal.jsx';
+import ConfirmDeleteModal from './ConfirmDeleteModal.jsx';
+import EditProfileModal from './EditProfileModal.jsx';
 import * as Auth from '../utils/authApi.js';
 import * as Items from '../utils/itemsApi.js';
+import * as Users from '../utils/usersApi.js';
 
 export default function App() {
-  const navigate = useNavigate();
-
   const [currentUser, setCurrentUser] = useState(null);
   const [isCheckingAuth, setIsCheckingAuth] = useState(true);
   const [clothingItems, setClothingItems] = useState([]);
   const [selectedCard, setSelectedCard] = useState(null);
 
-  const [isLoginOpen, setIsLoginOpen] = useState(false);
-  const [isRegisterOpen, setIsRegisterOpen] = useState(false);
-  const [isAddItemOpen, setIsAddItemOpen] = useState(false);
+  const [cardToDelete, setCardToDelete] = useState(null);
+  const [isConfirmDeleteOpen, setIsConfirmDeleteOpen] = useState(false);
 
+  const [isEditProfileOpen, setIsEditProfileOpen] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const [currentTemperatureUnit, setCurrentTemperatureUnit] = useState('F');
@@ -42,70 +40,19 @@ export default function App() {
     }
   }, []);
 
-  const handleLogin = useCallback(
-    async ({ email, password }) => {
-      setIsSubmitting(true);
+  useEffect(() => {
+    let alive = true;
+    (async () => {
       try {
-        await Auth.login({ email, password });
         await loadAuthedData();
-        setIsLoginOpen(false);
-        navigate('/', { replace: true });
       } finally {
-        setIsSubmitting(false);
+        if (alive) setIsCheckingAuth(false);
       }
-    },
-    [loadAuthedData, navigate]
-  );
-
-  const handleRegister = useCallback(
-    async ({ name, email, password, avatarUrl, city }) => {
-      setIsSubmitting(true);
-      try {
-        await Auth.register({ name, email, password, avatarUrl, city });
-        await Auth.login({ email, password });
-        await loadAuthedData();
-        setIsRegisterOpen(false);
-        navigate('/', { replace: true });
-      } finally {
-        setIsSubmitting(false);
-      }
-    },
-    [loadAuthedData, navigate]
-  );
-
-  const handleLogout = useCallback(async () => {
-    try {
-      await Auth.logout();
-    } catch {
-      void 0;
-    }
-    setCurrentUser(null);
-    setClothingItems([]);
-    setSelectedCard(null);
-    navigate('/signin', { replace: true });
-  }, [navigate]);
-
-  const handleEditProfile = useCallback(() => {
-    alert('Editing profile is not implemented in this sprint.');
-  }, []);
-
-  const handleAddItem = useCallback(async values => {
-    try {
-      setIsSubmitting(true);
-      const newItem = await Items.createItem(values);
-      setClothingItems(prev => [newItem, ...prev]);
-      setIsAddItemOpen(false);
-    } finally {
-      setIsSubmitting(false);
-    }
-  }, []);
-
-  const handleDeleteItem = useCallback(async item => {
-    if (!item) return;
-    await Items.deleteItem(item._id || item.id);
-    const list = await Items.getItems();
-    setClothingItems(Array.isArray(list) ? list : []);
-  }, []);
+    })();
+    return () => {
+      alive = false;
+    };
+  }, [loadAuthedData]);
 
   const handleCardLike = useCallback(async (id, likedByMe) => {
     if (!id) return;
@@ -128,136 +75,79 @@ export default function App() {
     }
   }, []);
 
+  const handleEditProfileSubmit = useCallback(async values => {
+    setIsSubmitting(true);
+    try {
+      const updatedUser = await Users.updateProfile(values);
+      setCurrentUser(updatedUser);
+      setIsEditProfileOpen(false);
+    } finally {
+      setIsSubmitting(false);
+    }
+  }, []);
+
+  const handleRequestDelete = useCallback(card => {
+    setCardToDelete(card);
+    setIsConfirmDeleteOpen(true);
+  }, []);
+
+  const handleConfirmDelete = useCallback(async () => {
+    if (!cardToDelete) return;
+    await Items.deleteItem(cardToDelete._id || cardToDelete.id);
+    const list = await Items.getItems();
+    setClothingItems(Array.isArray(list) ? list : []);
+    setIsConfirmDeleteOpen(false);
+    setSelectedCard(null);
+    setCardToDelete(null);
+  }, [cardToDelete]);
+
   const outletContext = useMemo(
     () => ({
       currentUser,
       clothingItems,
       onCardClick: setSelectedCard,
       onCardLike: handleCardLike,
+      likePending,
+      onEditProfileClick: () => setIsEditProfileOpen(true),
       weather,
       setWeather,
       currentTemperatureUnit,
       setCurrentTemperatureUnit,
-      onLogoutClick: handleLogout,
-      onEditProfileClick: handleEditProfile,
-      likePending,
     }),
     [
       currentUser,
       clothingItems,
       handleCardLike,
+      likePending,
       weather,
       currentTemperatureUnit,
-      handleLogout,
-      handleEditProfile,
-      likePending,
     ]
   );
-
-  useEffect(() => {
-    let alive = true;
-    (async () => {
-      try {
-        await loadAuthedData();
-      } finally {
-        if (alive) setIsCheckingAuth(false);
-      }
-    })();
-    return () => {
-      alive = false;
-    };
-  }, [loadAuthedData]);
 
   if (isCheckingAuth) return null;
 
   return (
     <>
       <Routes>
-        <Route
-          path="/"
-          element={
-            <Layout
-              outletContext={outletContext}
-              onAddClick={() => setIsAddItemOpen(true)}
-              onLoginClick={() => setIsLoginOpen(true)}
-              onRegisterClick={() => setIsRegisterOpen(true)}
-              onLogoutClick={handleLogout}
-            />
-          }
-        >
+        <Route path="/" element={<Layout outletContext={outletContext} />}>
           <Route index element={<Main />} />
           <Route
             path="profile"
             element={
-              <ProtectedRoute isAuth={!!currentUser} redirectTo="/signin">
+              <ProtectedRoute isAuth={!!currentUser} redirectTo="/">
                 <ProfilePage />
               </ProtectedRoute>
-            }
-          />
-          <Route
-            path="signin"
-            element={
-              currentUser ? (
-                <Navigate to="/" replace />
-              ) : (
-                <Main initialAuthMode="login" />
-              )
-            }
-          />
-          <Route
-            path="signup"
-            element={
-              currentUser ? (
-                <Navigate to="/" replace />
-              ) : (
-                <Main initialAuthMode="register" />
-              )
             }
           />
         </Route>
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
 
-      {isLoginOpen && (
-        <LoginModal
-          isOpen={isLoginOpen}
-          onClose={() => setIsLoginOpen(false)}
-          onSubmit={handleLogin}
-          onAltClick={() => {
-            setIsLoginOpen(false);
-            setIsRegisterOpen(true);
-          }}
-          isSubmitting={isSubmitting}
-        />
-      )}
-
-      {isRegisterOpen && (
-        <RegisterModal
-          isOpen={isRegisterOpen}
-          onClose={() => setIsRegisterOpen(false)}
-          onSubmit={handleRegister}
-          onAltClick={() => {
-            setIsRegisterOpen(false);
-            setIsLoginOpen(true);
-          }}
-          isSubmitting={isSubmitting}
-        />
-      )}
-
-      {isAddItemOpen && (
-        <AddItemModal
-          isOpen={isAddItemOpen}
-          onClose={() => setIsAddItemOpen(false)}
-          onAddItem={handleAddItem}
-          isSubmitting={isSubmitting}
-        />
-      )}
-
       {selectedCard && (
         <ItemModal
           card={selectedCard}
           onClose={() => setSelectedCard(null)}
-          onDelete={handleDeleteItem}
+          onDelete={handleRequestDelete}
           canDelete={
             currentUser &&
             (selectedCard.owner === currentUser._id ||
@@ -265,6 +155,20 @@ export default function App() {
           }
         />
       )}
+
+      <ConfirmDeleteModal
+        isOpen={isConfirmDeleteOpen}
+        onClose={() => setIsConfirmDeleteOpen(false)}
+        onConfirm={handleConfirmDelete}
+      />
+
+      <EditProfileModal
+        isOpen={isEditProfileOpen}
+        onClose={() => setIsEditProfileOpen(false)}
+        onSubmit={handleEditProfileSubmit}
+        currentUser={currentUser}
+        isSubmitting={isSubmitting}
+      />
     </>
   );
 }

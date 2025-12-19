@@ -10,9 +10,8 @@
 
 .cards {
   display: grid;
-  grid-template-columns: repeat(auto-fill, var(--card-w));
+  grid-template-columns: repeat(auto-fit, var(--card-w));
   gap: var(--gap);
-  justify-content: start;
   width: 100%;
   margin: 16px 0;
   padding: 0;
@@ -20,7 +19,8 @@
 }
 
 .card {
-  width: var(--card-w);
+  width: 100%;
+  max-width: var(--card-w);
   height: var(--card-h);
   box-sizing: border-box;
   border-radius: var(--card-radius);
@@ -29,6 +29,7 @@
   box-shadow: inset 0 0 0 1px var(--card-border);
   overflow: hidden;
   position: relative;
+  justify-self: start;
 }
 
 .card__meta {
@@ -62,15 +63,20 @@
 
 .card__like.is-liked,
 .card__like.card__like_active {
-  background-image: url("/images/heart-filled.png");
+  background-image: url('/images/heart-filled.png');
 }
 
 .card img {
   display: block;
   width: 100%;
   height: 100%;
-  /* object-fit: cover; */
   object-position: center 60%;
+}
+
+@media (min-width: 1440px) {
+  .profile {
+    grid-template-columns: 325px minmax(0, 1fr);
+  }
 }
 
 @media (max-width: 480px) {
@@ -80,7 +86,7 @@
   }
 
   .card {
-    width: 100%;
     max-width: 282px;
+    justify-self: center;
   }
 }

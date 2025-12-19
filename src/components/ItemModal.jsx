@@ -1,17 +1,13 @@
 import Modal from './Modal.jsx';
 import '../blocks/ItemModal.css';
 
-export default function ItemModal({ card, onClose, onDelete, canDelete }) {
+export default function ItemModal({ card, onClose, onDelete }) {
   if (!card) return null;
-
-  const handleDelete = () => {
-    onDelete(card);
-  };
 
   return (
     <Modal isOpen={!!card} onClose={onClose}>
       <div className="item-modal">
-        <button className="item-modal__close" onClick={onClose}>
+        <button type="button" className="item-modal__close" onClick={onClose}>
           ×
         </button>
 
@@ -27,15 +23,13 @@ export default function ItemModal({ card, onClose, onDelete, canDelete }) {
           <div className="item-modal__top">
             <p className="item-modal__name">{card.name}</p>
 
-            {canDelete && (
-              <button
-                type="button"
-                className="item-modal__delete"
-                onClick={handleDelete}
-              >
-                Delete item
-              </button>
-            )}
+            <button
+              type="button"
+              className="item-modal__delete"
+              onClick={() => onDelete(card)}
+            >
+              Delete item
+            </button>
           </div>
 
           <p className="item-modal__weather">Weather: {card.weather}</p>
