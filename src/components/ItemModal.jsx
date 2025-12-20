@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import Modal from './Modal.jsx';
 import '../blocks/ItemModal.css';
 
@@ -7,21 +8,22 @@ export default function ItemModal({ card, onClose, onDelete }) {
   return (
     <Modal isOpen={!!card} onClose={onClose}>
       <div className="item-modal">
-        <button type="button" className="item-modal__close" onClick={onClose}>
-          ×
-        </button>
+        <button
+          type="button"
+          className="item-modal__close"
+          onClick={onClose}
+          aria-label="Close"
+        />
 
-        <div className="item-modal__media">
-          <img
-            src={card.imageUrl}
-            alt={card.name}
-            className="item-modal__image"
-          />
-        </div>
+        <img
+          src={card.imageUrl}
+          alt={card.name}
+          className="item-modal__image"
+        />
 
         <div className="item-modal__info">
-          <div className="item-modal__top">
-            <p className="item-modal__name">{card.name}</p>
+          <div className="item-modal__header">
+            <h2 className="item-modal__name">{card.name}</h2>
 
             <button
               type="button"
@@ -38,3 +40,14 @@ export default function ItemModal({ card, onClose, onDelete }) {
     </Modal>
   );
 }
+
+ItemModal.propTypes = {
+  card: PropTypes.shape({
+    _id: PropTypes.string,
+    name: PropTypes.string.isRequired,
+    imageUrl: PropTypes.string.isRequired,
+    weather: PropTypes.string.isRequired,
+  }),
+  onClose: PropTypes.func.isRequired,
+  onDelete: PropTypes.func.isRequired,
+};

@@ -15,16 +15,14 @@ export default function Layout({
         currentUser={outletContext?.currentUser || null}
         value={outletContext?.currentTemperatureUnit}
         onToggle={outletContext?.setCurrentTemperatureUnit}
+        onAddClick={onAddClick}
         onLoginClick={onLoginClick}
         onRegisterClick={onRegisterClick}
         onLogoutClick={onLogoutClick}
-        onAddClick={onAddClick}
       />
-
       <main className="content">
         <Outlet context={outletContext} />
       </main>
-
       <Footer />
     </div>
   );

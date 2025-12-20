@@ -64,7 +64,11 @@ export default function LoginModal({
         </label>
 
         <div className="login__actions">
-          <button className="login__submit" disabled={!isValid || isSubmitting}>
+          <button
+            type="submit"
+            className="login__submit"
+            disabled={!isValid || isSubmitting}
+          >
             Log In
           </button>
 

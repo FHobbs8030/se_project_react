@@ -1,60 +1,51 @@
 .edit-profile {
-  position: relative;
   width: 496px;
+  display: flex;
+  flex-direction: column;
   padding: 28px;
-  border-radius: 16px;
-  background: #ffffff;
-  box-sizing: border-box;
 }
 
 .edit-profile__title {
   margin: 0 0 24px;
   font-size: 20px;
   font-weight: 700;
-  color: #000000;
+  color: #000;
 }
 
 .edit-profile__label {
-  display: block;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
   margin-bottom: 20px;
   font-size: 14px;
   font-weight: 700;
-  color: #000000;
+  color: #000;
 }
 
 .edit-profile__input {
-  display: block;
   width: 100%;
-  margin-top: 8px;
   padding: 8px 0;
   border: none;
-  border-bottom: 1px solid #000000;
-  background-color: #ffffff;
-  color: #000000;
+  border-bottom: 1px solid #000;
   font-size: 14px;
+  background: transparent;
   outline: none;
 }
 
-.edit-profile__input::placeholder {
-  color: #9ca3af;
-}
-
 .edit-profile__submit {
+  align-self: flex-start;
+  margin-top: 4px;
+  padding: 12px 20px;
   background: #000;
   color: #fff;
   border: none;
   border-radius: 8px;
-  padding: 12px 20px;
   font-size: 16px;
   font-weight: 700;
   cursor: pointer;
-  transition: opacity 0.2s ease;
 }
 
 .edit-profile__submit:disabled {
-  background: #000;
   opacity: 0.4;
   cursor: not-allowed;
-  pointer-events: none;
 }
-

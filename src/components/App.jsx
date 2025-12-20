@@ -7,6 +7,9 @@ import ProtectedRoute from './ProtectedRoute.jsx';
 import ItemModal from './ItemModal.jsx';
 import ConfirmDeleteModal from './ConfirmDeleteModal.jsx';
 import EditProfileModal from './EditProfileModal.jsx';
+import LoginModal from './LoginModal.jsx';
+import RegisterModal from './RegisterModal.jsx';
+import AddItemModal from './AddItemModal.jsx';
 import * as Auth from '../utils/authApi.js';
 import * as Items from '../utils/itemsApi.js';
 import * as Users from '../utils/usersApi.js';
@@ -21,6 +24,9 @@ export default function App() {
   const [isConfirmDeleteOpen, setIsConfirmDeleteOpen] = useState(false);
 
   const [isEditProfileOpen, setIsEditProfileOpen] = useState(false);
+  const [isAddItemOpen, setIsAddItemOpen] = useState(false);
+  const [isLoginOpen, setIsLoginOpen] = useState(false);
+  const [isRegisterOpen, setIsRegisterOpen] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const [currentTemperatureUnit, setCurrentTemperatureUnit] = useState('F');
@@ -41,29 +47,64 @@ export default function App() {
   }, []);
 
   useEffect(() => {
-    let alive = true;
     (async () => {
-      try {
-        await loadAuthedData();
-      } finally {
-        if (alive) setIsCheckingAuth(false);
-      }
+      await loadAuthedData();
+      setIsCheckingAuth(false);
     })();
-    return () => {
-      alive = false;
-    };
   }, [loadAuthedData]);
+
+  const handleLoginSubmit = useCallback(
+    async values => {
+      setIsSubmitting(true);
+      try {
+        await Auth.login(values);
+        await loadAuthedData();
+        setIsLoginOpen(false);
+      } finally {
+        setIsSubmitting(false);
+      }
+    },
+    [loadAuthedData]
+  );
+
+  const handleRegisterSubmit = useCallback(
+    async values => {
+      setIsSubmitting(true);
+      try {
+        await Auth.register(values);
+        await Auth.login({ email: values.email, password: values.password });
+        await loadAuthedData();
+        setIsRegisterOpen(false);
+      } finally {
+        setIsSubmitting(false);
+      }
+    },
+    [loadAuthedData]
+  );
+
+  const handleLogout = useCallback(async () => {
+    await Auth.logout();
+    setCurrentUser(null);
+    setClothingItems([]);
+  }, []);
+
+  const handleAddItemSubmit = useCallback(async values => {
+    setIsSubmitting(true);
+    try {
+      await Items.createItem(values);
+      const list = await Items.getItems();
+      setClothingItems(Array.isArray(list) ? list : []);
+      setIsAddItemOpen(false);
+    } finally {
+      setIsSubmitting(false);
+    }
+  }, []);
 
   const handleCardLike = useCallback(async (id, likedByMe) => {
     if (!id) return;
-    setLikePending(prev => {
-      const next = new Set(prev);
-      next.add(id);
-      return next;
-    });
+    setLikePending(prev => new Set(prev).add(id));
     try {
-      if (likedByMe) await Items.unlikeItem(id);
-      else await Items.likeItem(id);
+      likedByMe ? await Items.unlikeItem(id) : await Items.likeItem(id);
       const list = await Items.getItems();
       setClothingItems(Array.isArray(list) ? list : []);
     } finally {
@@ -109,6 +150,10 @@ export default function App() {
       onCardLike: handleCardLike,
       likePending,
       onEditProfileClick: () => setIsEditProfileOpen(true),
+      onAddClick: () => setIsAddItemOpen(true),
+      onLogoutClick: handleLogout,
+      onLoginClick: () => setIsLoginOpen(true),
+      onRegisterClick: () => setIsRegisterOpen(true),
       weather,
       setWeather,
       currentTemperatureUnit,
@@ -119,6 +164,7 @@ export default function App() {
       clothingItems,
       handleCardLike,
       likePending,
+      handleLogout,
       weather,
       currentTemperatureUnit,
     ]
@@ -129,7 +175,18 @@ export default function App() {
   return (
     <>
       <Routes>
-        <Route path="/" element={<Layout outletContext={outletContext} />}>
+        <Route
+          path="/"
+          element={
+            <Layout
+              outletContext={outletContext}
+              onAddClick={() => setIsAddItemOpen(true)}
+              onLoginClick={() => setIsLoginOpen(true)}
+              onRegisterClick={() => setIsRegisterOpen(true)}
+              onLogoutClick={handleLogout}
+            />
+          }
+        >
           <Route index element={<Main />} />
           <Route
             path="profile"
@@ -167,6 +224,35 @@ export default function App() {
         onClose={() => setIsEditProfileOpen(false)}
         onSubmit={handleEditProfileSubmit}
         currentUser={currentUser}
+        isSubmitting={isSubmitting}
+      />
+
+      <AddItemModal
+        isOpen={isAddItemOpen}
+        onClose={() => setIsAddItemOpen(false)}
+        onAddItem={handleAddItemSubmit}
+        isSubmitting={isSubmitting}
+      />
+
+      <LoginModal
+        isOpen={isLoginOpen}
+        onClose={() => setIsLoginOpen(false)}
+        onSubmit={handleLoginSubmit}
+        onAltClick={() => {
+          setIsLoginOpen(false);
+          setIsRegisterOpen(true);
+        }}
+        isSubmitting={isSubmitting}
+      />
+
+      <RegisterModal
+        isOpen={isRegisterOpen}
+        onClose={() => setIsRegisterOpen(false)}
+        onSubmit={handleRegisterSubmit}
+        onAltClick={() => {
+          setIsRegisterOpen(false);
+          setIsLoginOpen(true);
+        }}
         isSubmitting={isSubmitting}
       />
     </>
