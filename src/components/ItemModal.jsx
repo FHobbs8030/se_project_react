@@ -2,33 +2,28 @@ import PropTypes from 'prop-types';
 import Modal from './Modal.jsx';
 import '../blocks/ItemModal.css';
 
-export default function ItemModal({ card, onClose, onDelete }) {
+export default function ItemModal({ card, onClose, onRequestDelete }) {
   if (!card) return null;
 
   return (
     <Modal isOpen={!!card} onClose={onClose}>
       <div className="item-modal">
-        <button
-          type="button"
-          className="item-modal__close"
-          onClick={onClose}
-          aria-label="Close"
-        />
-
-        <img
-          src={card.imageUrl}
-          alt={card.name}
-          className="item-modal__image"
-        />
+        <div className="item-modal__media">
+          <img
+            src={card.imageUrl}
+            alt={card.name}
+            className="item-modal__image"
+          />
+        </div>
 
         <div className="item-modal__info">
-          <div className="item-modal__header">
+          <div className="item-modal__top">
             <h2 className="item-modal__name">{card.name}</h2>
 
             <button
               type="button"
               className="item-modal__delete"
-              onClick={() => onDelete(card)}
+              onClick={() => onRequestDelete(card)}
             >
               Delete item
             </button>
@@ -49,5 +44,5 @@ ItemModal.propTypes = {
     weather: PropTypes.string.isRequired,
   }),
   onClose: PropTypes.func.isRequired,
-  onDelete: PropTypes.func.isRequired,
+  onRequestDelete: PropTypes.func.isRequired,
 };

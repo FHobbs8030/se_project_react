@@ -1,7 +1,7 @@
 .modal {
   position: fixed;
   inset: 0;
-  z-index: 9999;
+  z-index: 1000;
 }
 
 .modal__overlay {
@@ -17,28 +17,45 @@
   position: relative;
   background: #ffffff;
   border-radius: 20px;
-  width: 496px;
-  max-width: calc(100% - 32px);
   box-sizing: border-box;
-  padding: 0;
 }
 
 .modal__close {
   position: absolute;
-  top: 20px;
-  right: 20px;
-  width: 24px;
-  height: 24px;
-  background: transparent;
+  top: 16px;
+  right: 16px;
+  width: 32px;
+  height: 32px;
   border: none;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.9);
   cursor: pointer;
-  z-index: 2;
+  z-index: 5;
+}
+
+.modal__close::before,
+.modal__close::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 16px;
+  height: 2px;
+  background-color: #000000;
 }
 
 .modal__close::before {
-  content: '×';
-  display: block;
-  font-size: 24px;
-  line-height: 24px;
-  color: #000;
+  transform: translate(-50%, -50%) rotate(45deg);
+}
+
+.modal__close::after {
+  transform: translate(-50%, -50%) rotate(-45deg);
+}
+
+.modal__content--confirm {
+  width: 670px;
+  height: 280px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }

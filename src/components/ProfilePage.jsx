@@ -1,69 +1,74 @@
 import { useOutletContext } from 'react-router-dom';
 import ClothesSection from './ClothesSection.jsx';
-import '../blocks/ProfilePage.css';
 
 export default function ProfilePage() {
   const {
     currentUser,
     clothingItems,
     onCardClick,
-    onCardLike,
-    likePending,
-    onLogoutClick,
+    onAddClick,
     onEditProfileClick,
+    onLogoutClick,
   } = useOutletContext();
 
-  const avatarSrc =
-    currentUser?.avatar && currentUser.avatar.trim() !== ''
-      ? currentUser.avatar
-      : '/images/Avatar.png';
+  const userId = currentUser?._id || currentUser?.id;
 
-  const myItems = clothingItems.filter(
-    it => String(it.owner?._id || it.owner) === String(currentUser?._id)
-  );
+  const avatarSrc = currentUser?.avatar?.startsWith('http')
+    ? currentUser.avatar
+    : currentUser?.avatarUrl?.startsWith('http')
+    ? currentUser.avatarUrl
+    : 'http://localhost:3001/users/avatar.png';
+
+  const ownItems = clothingItems.filter(item => {
+    const ownerId =
+      typeof item.owner === 'string'
+        ? item.owner
+        : item.owner?._id || item.owner?.id;
+    return ownerId === userId;
+  });
 
   return (
-    <div className="profile">
-      <aside className="profile__sidebar">
-        <div className="profile__user-row">
-          <img className="profile__avatar" src={avatarSrc} alt="avatar" />
-          <h2 className="profile__name">{currentUser?.name}</h2>
-        </div>
-
-        <button
-          type="button"
-          className="profile__link"
-          onClick={onEditProfileClick}
-        >
-          Change profile data
-        </button>
-
-        <button type="button" className="profile__link" onClick={onLogoutClick}>
-          Log out
-        </button>
-      </aside>
-
-      <section className="profile__main">
-        <div className="profile__header-row">
-          <h3 className="profile__items-title">Your items</h3>
+    <main className="content">
+      <section className="profile">
+        <aside className="profile__sidebar">
+          <div className="profile__user">
+            <img
+              src={avatarSrc}
+              alt={currentUser?.name || 'User avatar'}
+              className="profile__avatar"
+            />
+            <p className="profile__name">{currentUser?.name}</p>
+          </div>
 
           <button
             type="button"
-            className="profile__add-btn"
-            onClick={() => onCardClick(null)}
+            className="profile__edit"
+            onClick={onEditProfileClick}
           >
-            + Add new
+            Change profile data
           </button>
-        </div>
 
-        <ClothesSection
-          clothingItems={myItems}
-          onCardClick={onCardClick}
-          onCardLike={onCardLike}
-          likePending={likePending}
-          currentUser={currentUser}
-        />
+          <button
+            type="button"
+            className="profile__logout"
+            onClick={onLogoutClick}
+          >
+            Log out
+          </button>
+        </aside>
+
+        <section className="profile__items">
+          <div className="profile__items-header">
+            <h2 className="profile__items-title">Your items</h2>
+
+            <button type="button" className="profile__add" onClick={onAddClick}>
+              + Add new
+            </button>
+          </div>
+
+          <ClothesSection items={ownItems} onCardClick={onCardClick} />
+        </section>
       </section>
-    </div>
+    </main>
   );
 }

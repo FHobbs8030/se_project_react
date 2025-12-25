@@ -37,9 +37,9 @@ export default function App() {
   const loadAuthedData = useCallback(async () => {
     try {
       const me = await Auth.getUser();
+      const items = await Items.getItems();
       setCurrentUser(me);
-      const list = await Items.getItems();
-      setClothingItems(Array.isArray(list) ? list : []);
+      setClothingItems(Array.isArray(items) ? items : []);
     } catch {
       setCurrentUser(null);
       setClothingItems([]);
@@ -91,9 +91,8 @@ export default function App() {
   const handleAddItemSubmit = useCallback(async values => {
     setIsSubmitting(true);
     try {
-      await Items.createItem(values);
-      const list = await Items.getItems();
-      setClothingItems(Array.isArray(list) ? list : []);
+      const newItem = await Items.createItem(values);
+      setClothingItems(prev => [newItem, ...prev]);
       setIsAddItemOpen(false);
     } finally {
       setIsSubmitting(false);
@@ -104,9 +103,13 @@ export default function App() {
     if (!id) return;
     setLikePending(prev => new Set(prev).add(id));
     try {
-      likedByMe ? await Items.unlikeItem(id) : await Items.likeItem(id);
-      const list = await Items.getItems();
-      setClothingItems(Array.isArray(list) ? list : []);
+      const updated = likedByMe
+        ? await Items.unlikeItem(id)
+        : await Items.likeItem(id);
+
+      setClothingItems(prev =>
+        prev.map(item => (item._id === updated._id ? updated : item))
+      );
     } finally {
       setLikePending(prev => {
         const next = new Set(prev);
@@ -128,17 +131,16 @@ export default function App() {
   }, []);
 
   const handleRequestDelete = useCallback(card => {
+    setSelectedCard(null);
     setCardToDelete(card);
     setIsConfirmDeleteOpen(true);
   }, []);
 
   const handleConfirmDelete = useCallback(async () => {
     if (!cardToDelete) return;
-    await Items.deleteItem(cardToDelete._id || cardToDelete.id);
-    const list = await Items.getItems();
-    setClothingItems(Array.isArray(list) ? list : []);
+    await Items.deleteItem(cardToDelete._id);
+    setClothingItems(prev => prev.filter(i => i._id !== cardToDelete._id));
     setIsConfirmDeleteOpen(false);
-    setSelectedCard(null);
     setCardToDelete(null);
   }, [cardToDelete]);
 
@@ -200,22 +202,20 @@ export default function App() {
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
 
-      {selectedCard && (
+      {selectedCard && !isConfirmDeleteOpen && (
         <ItemModal
           card={selectedCard}
           onClose={() => setSelectedCard(null)}
-          onDelete={handleRequestDelete}
-          canDelete={
-            currentUser &&
-            (selectedCard.owner === currentUser._id ||
-              selectedCard.owner?._id === currentUser._id)
-          }
+          onRequestDelete={handleRequestDelete}
         />
       )}
 
       <ConfirmDeleteModal
         isOpen={isConfirmDeleteOpen}
-        onClose={() => setIsConfirmDeleteOpen(false)}
+        onClose={() => {
+          setIsConfirmDeleteOpen(false);
+          setCardToDelete(null);
+        }}
         onConfirm={handleConfirmDelete}
       />
 

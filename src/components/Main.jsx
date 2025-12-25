@@ -20,9 +20,7 @@ function filterByWeather(items, tempF) {
 
 function isOwner(card, currentUser) {
   if (!card || !currentUser) return false;
-
   const ownerId = typeof card.owner === 'string' ? card.owner : card.owner?._id;
-
   return ownerId === currentUser._id;
 }
 
@@ -47,7 +45,6 @@ export default function Main() {
 
   useEffect(() => {
     let active = true;
-
     (async () => {
       try {
         setIsLoadingWeather(true);
@@ -57,7 +54,6 @@ export default function Main() {
         if (active) setIsLoadingWeather(false);
       }
     })();
-
     return () => {
       active = false;
     };
@@ -99,7 +95,7 @@ export default function Main() {
           </h3>
 
           <ClothesSection
-            clothingItems={visibleClothing}
+            items={visibleClothing}
             onCardClick={handleCardClick}
             onCardLike={onCardLike}
           />

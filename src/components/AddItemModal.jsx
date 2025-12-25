@@ -18,6 +18,7 @@ export default function AddItemModal({
   function handleSubmit(e) {
     e.preventDefault();
     if (!isValid || isSubmitting) return;
+    if (!imageUrl.startsWith('http')) return;
 
     onAddItem({
       name,
@@ -47,18 +48,33 @@ export default function AddItemModal({
               placeholder="Name"
               value={name}
               onChange={e => setName(e.target.value)}
+              required
             />
           </label>
 
           <label className="add-item__label">
             Image
             <input
+              type="url"
+              list="clothing-images"
               className="add-item__input"
-              placeholder="Image URL"
+              placeholder="http://localhost:3001/images/clothes/shoes.png"
               value={imageUrl}
               onChange={e => setImageUrl(e.target.value)}
+              required
             />
           </label>
+
+          <datalist id="clothing-images">
+            <option value="http://localhost:3001/images/clothes/cap.png" />
+            <option value="http://localhost:3001/images/clothes/Vintage_Cap.png" />
+            <option value="http://localhost:3001/images/clothes/T-shirt.png" />
+            <option value="http://localhost:3001/images/clothes/shoes.png" />
+            <option value="http://localhost:3001/images/clothes/sneakers.png" />
+            <option value="http://localhost:3001/images/clothes/shorts.png" />
+            <option value="http://localhost:3001/images/clothes/puffy_jacket.png" />
+            <option value="http://localhost:3001/images/clothes/default.png" />
+          </datalist>
 
           <fieldset className="add-item__fieldset">
             <legend className="add-item__legend">

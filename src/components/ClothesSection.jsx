@@ -23,7 +23,7 @@ const FALLBACK = {
 };
 
 export default function ClothesSection({
-  clothingItems = [],
+  items = [],
   onCardClick,
   onCardLike,
   isLoadingItems = false,
@@ -40,7 +40,7 @@ export default function ClothesSection({
     return <ul className="cards" aria-busy="true" aria-live="polite" />;
   }
 
-  const list = Array.isArray(clothingItems) ? clothingItems : [];
+  const list = Array.isArray(items) ? items : [];
 
   return (
     <ul className="cards">
@@ -66,7 +66,7 @@ export default function ClothesSection({
 }
 
 ClothesSection.propTypes = {
-  clothingItems: PropTypes.array,
+  items: PropTypes.array,
   onCardClick: PropTypes.func,
   onCardLike: PropTypes.func,
   isLoadingItems: PropTypes.bool,

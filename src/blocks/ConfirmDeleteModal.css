@@ -1,41 +1,68 @@
-.confirm-modal {
-  width: 670px;
-  height: 280px;
-  background: #ffffff;
-  border-radius: 16px;
-  padding: 0 40px;
-  position: relative;
+.confirm-delete {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  text-align: center;
 }
 
-.confirm-modal__title {
-  font-size: 20px;
+.confirm-delete__title {
+  margin: 0;
+  font-family: 'Cabinet Grotesk', sans-serif;
   font-weight: 700;
-  margin: 0 0 12px;
+  font-size: 20px;
+  line-height: 24px;
+  text-align: center;
+  color: #000000;
 }
 
-.confirm-modal__text {
-  font-size: 16px;
-  margin: 0 0 32px;
+.confirm-delete__subtitle {
+  margin: 8px 0 32px;
+  font-family: 'Cabinet Grotesk', sans-serif;
+  font-weight: 700;
+  font-size: 20px;
+  line-height: 24px;
+  text-align: center;
+  color: #000000;
 }
 
-.confirm-modal__danger {
-  color: #ff4d00;
+.confirm-delete__confirm {
   background: none;
   border: none;
-  font-size: 20px;
+  font-family: 'Cabinet Grotesk', sans-serif;
   font-weight: 700;
+  font-size: 20px;
+  line-height: 24px;
+  color: #ff4d00;
   cursor: pointer;
   margin-bottom: 24px;
 }
 
-.confirm-modal__cancel {
+.confirm-delete__cancel {
   background: none;
   border: none;
-  font-size: 16px;
+  font-family: 'Cabinet Grotesk', sans-serif;
+  font-weight: 700;
+  font-size: 20px;
+  line-height: 24px;
+  color: #000000;
   cursor: pointer;
+}
+
+.confirm-delete__close {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  width: 24px;
+  height: 24px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+}
+
+.confirm-delete__close::before {
+  content: '×';
+  display: block;
+  font-size: 24px;
+  line-height: 24px;
+  color: #000000;
 }
