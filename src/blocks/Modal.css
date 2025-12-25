@@ -5,7 +5,7 @@
 }
 
 .modal__overlay {
-  position: fixed;
+  position: absolute;
   inset: 0;
   background: rgba(0, 0, 0, 0.5);
   display: flex;
@@ -15,47 +15,29 @@
 
 .modal__content {
   position: relative;
+  top: 0%;
+  width: 496px;
+  max-width: calc(100vw - 32px);
   background: #ffffff;
   border-radius: 20px;
+  padding: 28px 28px 36px 28px;
   box-sizing: border-box;
 }
 
 .modal__close {
   position: absolute;
-  top: 16px;
-  right: 16px;
-  width: 32px;
-  height: 32px;
+  top: 20px;
+  right: 20px;
+  width: 24px;
+  height: 24px;
+  background: none;
   border: none;
-  border-radius: 50%;
-  background: rgba(255, 255, 255, 0.9);
   cursor: pointer;
-  z-index: 5;
-}
-
-.modal__close::before,
-.modal__close::after {
-  content: '';
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  width: 16px;
-  height: 2px;
-  background-color: #000000;
 }
 
 .modal__close::before {
-  transform: translate(-50%, -50%) rotate(45deg);
-}
-
-.modal__close::after {
-  transform: translate(-50%, -50%) rotate(-45deg);
-}
-
-.modal__content--confirm {
-  width: 670px;
-  height: 280px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  content: '×';
+  font-size: 24px;
+  line-height: 1;
+  color: #000;
 }

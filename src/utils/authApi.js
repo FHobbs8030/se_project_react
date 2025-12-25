@@ -46,7 +46,7 @@ export function login({ email, password }) {
 export function register({ name, email, password, avatarUrl, city }) {
   return request('/signup', {
     method: 'POST',
-    body: { name, email, password, avatarUrl, city },
+    body: { name, email, password, avatar: avatarUrl, city },
   });
 }
 

@@ -29,12 +29,7 @@ export default function LoginModal({
 
   return (
     <Modal isOpen={isOpen} onClose={onClose}>
-      <div className="login__header">
-        <h2 className="login__title">Log In</h2>
-        <button className="login__close" onClick={onClose}>
-          ×
-        </button>
-      </div>
+      <h2 className="login__title">Log In</h2>
 
       <form className="login__form" onSubmit={handleSubmit}>
         <label className="login__label">
@@ -44,6 +39,7 @@ export default function LoginModal({
             type="email"
             className="login__input"
             autoComplete="email"
+            placeholder="Email"
             value={email}
             onChange={e => setEmail(e.target.value)}
             required
@@ -57,6 +53,7 @@ export default function LoginModal({
             type="password"
             className="login__input"
             autoComplete="current-password"
+            placeholder="Password"
             value={password}
             onChange={e => setPassword(e.target.value)}
             required

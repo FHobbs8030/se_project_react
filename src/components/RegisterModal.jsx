@@ -47,12 +47,7 @@ export default function RegisterModal({
 
   return (
     <Modal isOpen={isOpen} onClose={onClose}>
-      <div className="register__header">
-        <h2 className="register__title">Sign Up</h2>
-        <button className="register__close" onClick={onClose}>
-          ×
-        </button>
-      </div>
+      <h2 className="register__title">Sign Up</h2>
 
       <form className="register__form" onSubmit={handleSubmit}>
         <label className="register__label">
