@@ -13,6 +13,15 @@ import AddItemModal from './AddItemModal.jsx';
 import * as Auth from '../utils/authApi.js';
 import * as Items from '../utils/itemsApi.js';
 import * as Users from '../utils/usersApi.js';
+import '../blocks/App.css';
+import '../blocks/AuthModal.css';
+import '../blocks/Cards.css';
+import '../blocks/Header.css';
+import '../blocks/ProfilePage.css';
+import '../blocks/global.css';
+import '../blocks/layout.css';
+import '../blocks/tokens.css';
+
 
 export default function App() {
   const [currentUser, setCurrentUser] = useState(null);
