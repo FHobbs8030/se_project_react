@@ -2,7 +2,7 @@
 import { Routes, Route, Navigate } from 'react-router-dom';
 import Layout from './Layout.jsx';
 import Main from './Main.jsx';
-import ProfilePage from './ProfilePage.jsx';
+import Profile from './Profile.jsx';
 import ProtectedRoute from './ProtectedRoute.jsx';
 import ItemModal from './ItemModal.jsx';
 import ConfirmDeleteModal from './ConfirmDeleteModal.jsx';
@@ -21,7 +21,6 @@ import '../blocks/ProfilePage.css';
 import '../blocks/global.css';
 import '../blocks/layout.css';
 import '../blocks/tokens.css';
-
 
 export default function App() {
   const [currentUser, setCurrentUser] = useState(null);
@@ -203,7 +202,7 @@ export default function App() {
             path="profile"
             element={
               <ProtectedRoute isAuth={!!currentUser} redirectTo="/">
-                <ProfilePage />
+                <Profile />
               </ProtectedRoute>
             }
           />

@@ -1,5 +1,6 @@
 import PropTypes from 'prop-types';
 import ClothesSection from './ClothesSection.jsx';
+import SideBar from './SideBar.jsx';
 
 export default function Profile({
   clothingItems,
@@ -18,15 +19,15 @@ export default function Profile({
       })
     : clothingItems;
 
-  const avatarSrc = currentUser?.avatar || '/images/Avatar.png';
-
   return (
     <main className="content">
       <section className="profile">
+        <SideBar />
+
         <aside className="profile__sidebar">
           <img
             className="profile__avatar"
-            src={avatarSrc}
+            src={currentUser?.avatar || '/images/Avatar.png'}
             alt={currentUser?.name || 'User avatar'}
           />
           <p className="profile__name">{currentUser?.name}</p>
