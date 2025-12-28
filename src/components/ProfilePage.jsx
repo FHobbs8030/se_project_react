@@ -1,5 +1,6 @@
 import { useOutletContext } from 'react-router-dom';
 import ClothesSection from './ClothesSection.jsx';
+import SideBar from './SideBar.jsx';
 
 export default function ProfilePage() {
   const {
@@ -30,6 +31,8 @@ export default function ProfilePage() {
   return (
     <main className="content">
       <section className="profile">
+        <SideBar />
+
         <aside className="profile__sidebar">
           <div className="profile__user">
             <img
