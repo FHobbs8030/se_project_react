@@ -19,8 +19,11 @@
 }
 
 .panel__title {
-  width: 100%;
-  max-width: 1360px;
-  margin: 0 auto;
-  padding: 0 16px;
+    width: 100%;
+    max-width: 1360px;
+    margin: 0 auto;
+    padding: 0 16px 34px 16px;
+    font-weight: 700;
+    font-size: 20px;
+    line-height: 100%;
 }
