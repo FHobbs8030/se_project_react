@@ -1,74 +1,57 @@
 .item-modal {
   width: 498px;
-  height: 610px;
-  background: #ffffff;
   border-radius: 20px;
   overflow: hidden;
+  background: #ffffff;
   display: flex;
   flex-direction: column;
-  position: relative;
 }
 
 .item-modal__media {
-  flex: 1;
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  overflow: hidden;
   background: #f3f3f3;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  padding: 0;
+  margin: 0;
 }
 
 .item-modal__image {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  display: block;
+  padding: 0;
+  margin: 0;
 }
 
 .item-modal__info {
-  padding: 16px;
-  background: #ffffff;
+  padding: 20px 28px 28px;
 }
 
 .item-modal__top {
-  display: grid;
-  grid-template-columns: 1fr auto;
-  align-items: start;
-  margin-bottom: 8px;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
 }
 
 .item-modal__name {
   margin: 0;
   font-size: 16px;
   font-weight: 700;
+  color: #000;
 }
 
 .item-modal__weather {
   margin: 0;
   font-size: 14px;
+  color: #000;
 }
 
 .item-modal__delete {
   background: none;
   border: none;
+  padding: 0;
+  font-size: 14px;
   color: #ff4d00;
   cursor: pointer;
-  padding: 0;
 }
-
-/* .item-modal__close {
-  position: absolute;
-  top: 16px;
-  right: 16px;
-  width: 24px;
-  height: 24px;
-  border: none;
-  background: transparent;
-  cursor: pointer;
-  z-index: 2;
-} */
-/* 
-.item-modal__close::before {
-  content: '×';
-  font-size: 24px;
-  line-height: 24px;
-} */

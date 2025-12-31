@@ -37,21 +37,21 @@ async function request(path, opts = {}) {
 }
 
 export function login({ email, password }) {
-  return request('/signin', {
+  return request('/users/signin', {
     method: 'POST',
     body: { email, password },
   });
 }
 
 export function register({ name, email, password, avatarUrl, city }) {
-  return request('/signup', {
+  return request('/users/signup', {
     method: 'POST',
     body: { name, email, password, avatar: avatarUrl, city },
   });
 }
 
 export function logout() {
-  return request('/signout', { method: 'POST' });
+  return request('/users/signout', { method: 'POST' });
 }
 
 export function getUser() {

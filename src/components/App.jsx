@@ -31,40 +31,45 @@ export default function App() {
 
   const [currentTemperatureUnit, setCurrentTemperatureUnit] = useState('F');
   const [weather, setWeather] = useState(null);
-
   const [likePending, setLikePending] = useState(() => new Set());
 
-  const loadAuthedData = useCallback(async () => {
-    try {
-      const me = await Auth.getUser();
-      const items = await Items.getItems();
-      setCurrentUser(me);
-      setClothingItems(Array.isArray(items) ? items : []);
-    } catch {
-      setCurrentUser(null);
-      setClothingItems([]);
-    }
+  const loadSession = useCallback(async () => {
+    const me = await Auth.getUser();
+    setCurrentUser(me);
+  }, []);
+
+  const loadItems = useCallback(async () => {
+    const items = await Items.getItems();
+    setClothingItems(Array.isArray(items) ? items : []);
   }, []);
 
   useEffect(() => {
     (async () => {
-      await loadAuthedData();
-      setIsCheckingAuth(false);
+      try {
+        await loadSession();
+        await loadItems();
+      } catch {
+        setCurrentUser(null);
+        setClothingItems([]);
+      } finally {
+        setIsCheckingAuth(false);
+      }
     })();
-  }, [loadAuthedData]);
+  }, [loadSession, loadItems]);
 
   const handleLoginSubmit = useCallback(
     async values => {
       setIsSubmitting(true);
       try {
         await Auth.login(values);
-        await loadAuthedData();
+        await loadSession();
+        await loadItems();
         setIsLoginOpen(false);
       } finally {
         setIsSubmitting(false);
       }
     },
-    [loadAuthedData]
+    [loadSession, loadItems]
   );
 
   const handleRegisterSubmit = useCallback(
@@ -73,13 +78,14 @@ export default function App() {
       try {
         await Auth.register(values);
         await Auth.login({ email: values.email, password: values.password });
-        await loadAuthedData();
+        await loadSession();
+        await loadItems();
         setIsRegisterOpen(false);
       } finally {
         setIsSubmitting(false);
       }
     },
-    [loadAuthedData]
+    [loadSession, loadItems]
   );
 
   const handleLogout = useCallback(async () => {

@@ -18,7 +18,9 @@ export default function Profile({
       })
     : clothingItems;
 
-  const avatarSrc = currentUser?.avatar || '/images/Avatar.png';
+  const avatarSrc = currentUser?.avatar?.startsWith('http')
+    ? currentUser.avatar
+    : '/images/Avatar.png';
 
   return (
     <main className="content">
