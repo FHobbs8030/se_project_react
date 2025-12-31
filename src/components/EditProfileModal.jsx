@@ -1,81 +1,76 @@
 import { useEffect, useState } from 'react';
-import PropTypes from 'prop-types';
-import Modal from './Modal.jsx';
-import '../blocks/EditProfileModal.css';
+import Modal from './Modal';
 
 export default function EditProfileModal({
   isOpen,
   onClose,
-  onSubmit,
-  currentUser,
+  onUpdateUser,
   isSubmitting,
+  currentUser,
 }) {
   const [name, setName] = useState('');
   const [avatar, setAvatar] = useState('');
 
   useEffect(() => {
-    if (!isOpen) {
-      setName('');
-      setAvatar('');
+    if (isOpen && currentUser) {
+      setName(currentUser.name || '');
+      setAvatar(currentUser.avatar || '');
     }
-  }, [isOpen]);
+  }, [isOpen, currentUser]);
 
   const isValid =
-    name.trim().length > 0 &&
-    /^https?:\/\/.+/i.test(avatar.trim());
+    name.trim().length >= 2 && /^https?:\/\/.+/.test(avatar.trim());
 
   function handleSubmit(e) {
     e.preventDefault();
     if (!isValid || isSubmitting) return;
-    onSubmit({ name: name.trim(), avatar: avatar.trim() });
+
+    onUpdateUser({
+      name: name.trim(),
+      avatar: avatar.trim(),
+    });
   }
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose} title="Change profile data">
-      <form className="edit-profile" onSubmit={handleSubmit} noValidate>
-        <label className="edit-profile__label">
-          Name*
+    <Modal isOpen={isOpen} onClose={onClose} variant="form">
+      <form className="modal__form" onSubmit={handleSubmit}>
+        <h2 className="modal__title">Change profile data</h2>
+
+        <label className="modal__label">
+          Name
           <input
             type="text"
-            className="edit-profile__input"
+            className="modal__input"
+            placeholder="Name"
             value={name}
             onChange={e => setName(e.target.value)}
-            placeholder={currentUser?.name || 'Enter your name'}
+            minLength="2"
             required
           />
         </label>
 
-        <label className="edit-profile__label">
-          Avatar*
+        <label className="modal__label">
+          Avatar
           <input
             type="url"
-            className="edit-profile__input"
+            className="modal__input"
+            placeholder="Avatar URL"
             value={avatar}
             onChange={e => setAvatar(e.target.value)}
-            placeholder={
-              currentUser?.avatar ||
-              'https://example.com/avatar.png'
-            }
             required
           />
         </label>
 
         <button
           type="submit"
-          className="edit-profile__submit"
+          className={`modal__submit ${
+            !isValid || isSubmitting ? 'modal__submit--disabled' : ''
+          }`}
           disabled={!isValid || isSubmitting}
         >
-          Save changes
+          Save Change
         </button>
       </form>
     </Modal>
   );
 }
-
-EditProfileModal.propTypes = {
-  isOpen: PropTypes.bool.isRequired,
-  onClose: PropTypes.func.isRequired,
-  onSubmit: PropTypes.func.isRequired,
-  currentUser: PropTypes.object,
-  isSubmitting: PropTypes.bool,
-};
