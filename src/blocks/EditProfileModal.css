@@ -1,8 +1,10 @@
 .edit-profile {
-  width: 496px;
-  display: flex;
-  flex-direction: column;
-  padding: 28px;
+    width: 100%;
+    max-width: 427px;
+    display: flex;
+    flex-direction: column;
+    padding: 0;
+    margin: 0;
 }
 
 .edit-profile__title {

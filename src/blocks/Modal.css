@@ -15,13 +15,13 @@
 
 .modal__content {
   position: relative;
-  top: 0%;
   width: 496px;
   max-width: calc(100vw - 32px);
-  background: #ffffff;
+  background: transparent;
   border-radius: 20px;
-  padding: 28px 28px 36px 28px;
+  padding: 0;
   box-sizing: border-box;
+  display: block;
 }
 
 .modal__close {
