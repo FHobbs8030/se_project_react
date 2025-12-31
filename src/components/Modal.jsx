@@ -11,6 +11,8 @@ export default function Modal({ isOpen, onClose, children, variant }) {
             variant ? `modal__content--${variant}` : ''
           }`}
           onClick={e => e.stopPropagation()}
+          role="dialog"
+          aria-modal="true"
         >
           <button
             className="modal__close"
