@@ -25,10 +25,13 @@
 }
 
 .login__form {
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
+  flex: none;
 }
+
+.login__actions {
+  margin-top: 8px;
+}
+
 
 .login__label {
   display: flex;
@@ -37,7 +40,7 @@
   font-weight: 500;
   color: #111827;
   gap: 8px;
-  margin: 0px 0px 2px 0px;
+  margin: 0px 0px 28px 0px;
 }
 
 .login__input {
@@ -57,13 +60,6 @@
 .login__input::placeholder {
   color: #9ca3af;
   opacity: 1;
-}
-
-.login__actions {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  margin-top: 8px;
 }
 
 .login__submit {
