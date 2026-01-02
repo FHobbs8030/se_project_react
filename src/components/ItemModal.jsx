@@ -2,11 +2,25 @@ import PropTypes from 'prop-types';
 import Modal from './Modal.jsx';
 import '../blocks/ItemModal.css';
 
-export default function ItemModal({ card, onClose, onRequestDelete }) {
+export default function ItemModal({
+  card,
+  currentUser,
+  onClose,
+  onRequestDelete,
+}) {
   if (!card) return null;
 
+  const currentUserId = currentUser?._id || currentUser?.id || null;
+
+  const cardOwnerId =
+    typeof card.owner === 'string'
+      ? card.owner
+      : card.owner?._id || card.owner?.id || null;
+
+  const isOwner = currentUserId && cardOwnerId === currentUserId;
+
   return (
-    <Modal isOpen={!!card} onClose={onClose}>
+    <Modal isOpen={!!card} onClose={onClose} variant="item">
       <div className="item-modal">
         <div className="item-modal__media">
           <img
@@ -19,14 +33,15 @@ export default function ItemModal({ card, onClose, onRequestDelete }) {
         <div className="item-modal__info">
           <div className="item-modal__top">
             <h2 className="item-modal__name">{card.name}</h2>
-
-            <button
-              type="button"
-              className="item-modal__delete"
-              onClick={() => onRequestDelete(card)}
-            >
-              Delete item
-            </button>
+            {isOwner && (
+              <button
+                type="button"
+                className="item-modal__delete"
+                onClick={() => onRequestDelete(card)}
+              >
+                Delete item
+              </button>
+            )}
           </div>
 
           <p className="item-modal__weather">Weather: {card.weather}</p>
@@ -39,9 +54,20 @@ export default function ItemModal({ card, onClose, onRequestDelete }) {
 ItemModal.propTypes = {
   card: PropTypes.shape({
     _id: PropTypes.string,
+    owner: PropTypes.oneOfType([
+      PropTypes.string,
+      PropTypes.shape({
+        _id: PropTypes.string,
+        id: PropTypes.string,
+      }),
+    ]),
     name: PropTypes.string.isRequired,
     imageUrl: PropTypes.string.isRequired,
     weather: PropTypes.string.isRequired,
+  }),
+  currentUser: PropTypes.shape({
+    _id: PropTypes.string,
+    id: PropTypes.string,
   }),
   onClose: PropTypes.func.isRequired,
   onRequestDelete: PropTypes.func.isRequired,

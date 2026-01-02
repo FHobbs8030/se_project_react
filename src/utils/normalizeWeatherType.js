@@ -1,12 +1,21 @@
-// utils/normalizeWeatherType.js
 export default function normalizeWeatherType(main, id) {
-  const m = (main || "").toLowerCase();
-  if (m === "thunderstorm") return "thunder";
-  if (m === "drizzle") return "rain_light";
-  if (m === "rain") return id >= 500 && id < 504 ? "rain" : "shower";
-  if (m === "snow") return "snow";
-  if (m === "mist" || m === "fog" || m === "haze" || m === "smoke") return "fog";
-  if (m === "clouds") return id === 801 ? "partly_cloudy" : "cloudy";
-  if (m === "clear") return "clear";
-  return "default";
+  const conditionLower = (main || '').toLowerCase();
+
+  if (conditionLower === 'thunderstorm') return 'thunder';
+  if (conditionLower === 'drizzle') return 'rain_light';
+  if (conditionLower === 'rain')
+    return id >= 500 && id < 504 ? 'rain' : 'shower';
+  if (conditionLower === 'snow') return 'snow';
+  if (
+    conditionLower === 'mist' ||
+    conditionLower === 'fog' ||
+    conditionLower === 'haze' ||
+    conditionLower === 'smoke'
+  )
+    return 'fog';
+  if (conditionLower === 'clouds')
+    return id === 801 ? 'partly_cloudy' : 'cloudy';
+  if (conditionLower === 'clear') return 'clear';
+
+  return 'default';
 }

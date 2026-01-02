@@ -2,58 +2,37 @@ const BASE_URL = (
   import.meta.env.VITE_API_BASE_URL || 'http://localhost:3001'
 ).replace(/\/+$/, '');
 
-async function request(path, opts = {}) {
-  const { method = 'GET', body, headers = {}, allow401 = false } = opts;
-  const url = `${BASE_URL}${path.startsWith('/') ? path : `/${path}`}`;
-  const hasBody = body !== undefined;
-
-  const res = await fetch(url, {
-    method,
-    headers: hasBody
-      ? { 'Content-Type': 'application/json', ...headers }
-      : headers,
+async function request(path, options = {}) {
+  const res = await fetch(`${BASE_URL}${path}`, {
+    ...options,
     credentials: 'include',
-    body: hasBody ? JSON.stringify(body) : undefined,
+    headers: {
+      'Content-Type': 'application/json',
+      ...(options.headers || {}),
+    },
+    body: options.body ? JSON.stringify(options.body) : undefined,
   });
 
-  if (res.status === 204) return null;
-
-  const ct = res.headers.get('content-type') || '';
-  const data = ct.includes('application/json')
-    ? await res.json().catch(() => ({}))
-    : await res.text().catch(() => '');
-
-  if (res.status === 401 && allow401) return null;
-
   if (!res.ok) {
-    const err =
-      typeof data === 'object' && data !== null
-        ? data
-        : { message: String(data || `HTTP ${res.status}`) };
+    const err = await res.json().catch(() => ({}));
     throw err;
   }
 
-  return data;
+  return res.json();
 }
 
-export function login({ email, password }) {
-  return request('/users/signin', {
+export const login = ({ email, password }) =>
+  request('/users/signin', {
     method: 'POST',
     body: { email, password },
   });
-}
 
-export function register({ name, email, password, avatarUrl, city }) {
-  return request('/users/signup', {
+export const register = ({ name, email, password, city }) =>
+  request('/users/signup', {
     method: 'POST',
-    body: { name, email, password, avatar: avatarUrl, city },
+    body: { name, email, password, city },
   });
-}
 
-export function logout() {
-  return request('/users/signout', { method: 'POST' });
-}
+export const logout = () => request('/users/signout', { method: 'POST' });
 
-export function getUser() {
-  return request('/users/me', { allow401: true });
-}
+export const getUser = () => request('/users/me');

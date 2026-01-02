@@ -25,17 +25,22 @@ export default function WeatherCard({
   unit,
   isLoadingWeather,
 }) {
-  const ctx = useOutletContext() || {};
-  const wd = weatherData ?? ctx.weather ?? null;
+  const outletContext = useOutletContext() || {};
+  const resolvedWeather = weatherData ?? outletContext.weather ?? null;
 
-  const tempUnit = unit || ctx.currentTemperatureUnit || 'F';
-  const f = Number.isFinite(tempF) ? tempF : wd?.tempF ?? null;
+  const tempUnit = unit || outletContext.currentTemperatureUnit || 'F';
+  const fahrenheit = Number.isFinite(tempF)
+    ? tempF
+    : resolvedWeather?.tempF ?? null;
+
   const display =
-    tempUnit === 'C' && f != null ? Math.round(((f - 32) * 5) / 9) : f;
+    tempUnit === 'C' && fahrenheit != null
+      ? Math.round(((fahrenheit - 32) * 5) / 9)
+      : fahrenheit;
 
-  const iconCode = wd?.icon || '';
+  const iconCode = resolvedWeather?.icon || '';
   const type = mapIcon(iconCode);
-  const isNight = !!wd?.isNight;
+  const isNight = !!resolvedWeather?.isNight;
   const iconPath = `/images/icons/${isNight ? 'night' : 'day'}/${type}.svg`;
 
   return (

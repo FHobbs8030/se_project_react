@@ -1,48 +1,30 @@
-import PropTypes from "prop-types";
-import "../blocks/SideBar.css";
+import { useOutletContext } from 'react-router-dom';
 
-function SideBar({ currentUser, onEditProfileClick, onLogoutClick }) {
-  const avatar =
-    currentUser?.avatar || "/images/Avatar.png";
-  const name =
-    currentUser?.name || "";
+export default function SideBar() {
+  const { currentUser, onEditProfileClick, onLogoutClick } = useOutletContext();
 
   return (
-    <aside className="sidebar">
-      <div className="sidebar__user">
+    <aside className="profile__sidebar">
+      <div className="profile__user">
         <img
-          src={avatar}
-          alt=""
-          className="sidebar__avatar"
+          className="profile__avatar"
+          src={currentUser?.avatar || '/images/Avatar.png'}
+          alt={currentUser?.name || 'User avatar'}
         />
-        <span className="sidebar__username">{name}</span>
+        <p className="profile__name">{currentUser?.name}</p>
       </div>
 
-      <div className="sidebar__actions">
-        <button
-          type="button"
-          className="sidebar__btn sidebar__btn--edit"
-          onClick={onEditProfileClick}
-        >
-          Change profile
-        </button>
+      <button
+        type="button"
+        className="profile__button"
+        onClick={onEditProfileClick}
+      >
+        Change profile
+      </button>
 
-        <button
-          type="button"
-          className="sidebar__btn sidebar__btn--logout"
-          onClick={onLogoutClick}
-        >
-          Log out
-        </button>
-      </div>
+      <button type="button" className="profile__button" onClick={onLogoutClick}>
+        Log out
+      </button>
     </aside>
   );
 }
-
-SideBar.propTypes = {
-  currentUser: PropTypes.object,
-  onEditProfileClick: PropTypes.func,
-  onLogoutClick: PropTypes.func,
-};
-
-export default SideBar;

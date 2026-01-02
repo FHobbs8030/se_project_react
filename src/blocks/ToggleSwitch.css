@@ -1,58 +1,58 @@
-.toggle{
-  position:relative;
-  display:inline-flex;
-  align-items:center;
-  width:64px;
-  height:32px;
-  border-radius:999px;
-  background:#e5e7eb;
-  padding:2px;
-  box-sizing:border-box;
-  -webkit-user-select:none;
-  -ms-user-select:none;
-  user-select:none;
-  -webkit-tap-highlight-color:transparent;
+.toggle {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  width: 64px;
+  height: 32px;
+  border-radius: 999px;
+  background: #e5e7eb;
+  padding: 2px;
+  box-sizing: border-box;
+  -webkit-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
 }
 
-.toggle__option{
-  position:relative;
-  z-index:2;
-  flex:1 0 0;
-  height:28px;
-  border:none;
-  background:transparent;
-  font-weight:700;
-  line-height:28px;
-  text-align:center;
-  cursor:pointer;
-  -webkit-user-select:none;
-  -ms-user-select:none;
-  user-select:none;
+.toggle__option {
+  position: relative;
+  z-index: 2;
+  flex: 1 0 0;
+  height: 28px;
+  border: none;
+  background: transparent;
+  font-weight: 700;
+  line-height: 28px;
+  text-align: center;
+  cursor: pointer;
+  -webkit-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
 }
 
-.toggle__thumb{
-  position:absolute;
-  z-index:1;
-  top:2px;
-  width:30px;
-  height:28px;
-  border-radius:999px;
-  background:#111827;
-  transition:transform .2s ease;
+.toggle__thumb {
+  position: absolute;
+  z-index: 1;
+  top: 2px;
+  width: 30px;
+  height: 28px;
+  border-radius: 999px;
+  background: #111827;
+  transition: transform 0.2s ease;
 }
 
-.toggle__option.is-active{
-  color:#ffffff;
+.toggle__option.is-active {
+  color: #ffffff;
 }
 
-.toggle__option:not(.is-active){
-  color:#111827;
+.toggle__option:not(.is-active) {
+  color: #111827;
 }
 
-.toggle__thumb.at-f{
-  transform:translateX(2px);
+.toggle__thumb.at-f {
+  transform: translateX(2px);
 }
 
-.toggle__thumb.at-c{
-  transform:translateX(32px);
+.toggle__thumb.at-c {
+  transform: translateX(32px);
 }

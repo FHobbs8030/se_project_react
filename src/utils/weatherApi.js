@@ -1,8 +1,7 @@
 const API_KEY = import.meta.env.VITE_WEATHER_API_KEY;
 
-// Convert Fahrenheit → Celsius
-function toC(f) {
-  return Math.round((f - 32) * (5 / 9));
+function toC(fahrenheit) {
+  return Math.round((fahrenheit - 32) * (5 / 9));
 }
 
 export async function getWeather() {
@@ -15,35 +14,31 @@ export async function getWeather() {
 
   const data = await res.json();
 
-  // Temperature
-  const f = Math.round(data.main.temp);
-  const c = toC(f);
+  const fahrenheit = Math.round(data.main.temp);
+  const celsius = toC(fahrenheit);
 
-  // Raw fields needed for accurate day/night
-  const dt = data.dt; // Current timestamp (UTC)
-  const sunrise = data.sys.sunrise; // Sunrise timestamp (UTC)
-  const sunset = data.sys.sunset; // Sunset timestamp (UTC)
-  const tz = data.timezone; // Offset in seconds
+  const currentTimeUtc = data.dt;
+  const sunriseUtc = data.sys.sunrise;
+  const sunsetUtc = data.sys.sunset;
+  const timezoneOffsetSeconds = data.timezone;
 
-  // Convert to local timestamps for the target city
-  const localTime = dt + tz;
-  const localSunrise = sunrise + tz;
-  const localSunset = sunset + tz;
+  const localTime = currentTimeUtc + timezoneOffsetSeconds;
+  const localSunrise = sunriseUtc + timezoneOffsetSeconds;
+  const localSunset = sunsetUtc + timezoneOffsetSeconds;
 
-  // TRUE day/night detection
   const isNight = !(localTime >= localSunrise && localTime < localSunset);
 
   const icon = data.weather?.[0]?.icon || '';
 
   return {
-    f,
-    c,
+    f: fahrenheit,
+    c: celsius,
     icon,
     isNight,
-    dt,
-    sunrise,
-    sunset,
-    timezone: tz,
+    currentTimeUtc,
+    sunriseUtc,
+    sunsetUtc,
+    timezoneOffsetSeconds,
     name: data.name,
   };
 }

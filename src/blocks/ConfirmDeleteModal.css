@@ -2,26 +2,24 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
+  text-align: center;
 }
 
 .confirm-delete__title {
   margin: 0;
   font-family: 'Cabinet Grotesk', sans-serif;
   font-weight: 700;
-  font-size: 20px;
-  line-height: 24px;
-  text-align: center;
+  font-size: 16px;
+  line-height: 20px;
   color: #000000;
 }
 
 .confirm-delete__subtitle {
-  margin: 8px 0 32px;
+  margin: 4px 0 24px;
   font-family: 'Cabinet Grotesk', sans-serif;
   font-weight: 700;
-  font-size: 20px;
-  line-height: 24px;
-  text-align: center;
+  font-size: 16px;
+  line-height: 20px;
   color: #000000;
 }
 
@@ -30,11 +28,11 @@
   border: none;
   font-family: 'Cabinet Grotesk', sans-serif;
   font-weight: 700;
-  font-size: 20px;
-  line-height: 24px;
+  font-size: 16px;
+  line-height: 20px;
   color: #ff4d00;
   cursor: pointer;
-  margin-bottom: 24px;
+  margin-bottom: 16px;
 }
 
 .confirm-delete__cancel {
@@ -42,8 +40,8 @@
   border: none;
   font-family: 'Cabinet Grotesk', sans-serif;
   font-weight: 700;
-  font-size: 20px;
-  line-height: 24px;
+  font-size: 16px;
+  line-height: 20px;
   color: #000000;
   cursor: pointer;
 }

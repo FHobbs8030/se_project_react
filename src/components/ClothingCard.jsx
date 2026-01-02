@@ -8,11 +8,12 @@ export default function ClothingCard({
   currentUser,
 }) {
   const name = (item?.name || '').trim();
-  const uid = currentUser?._id || currentUser?.id || null;
+
+  const currentUserId = currentUser?._id || currentUser?.id || null;
 
   const liked =
-    Array.isArray(item.likes) && uid
-      ? item.likes.some(l => String(l) === String(uid))
+    Array.isArray(item.likes) && currentUserId
+      ? item.likes.some(like => String(like) === String(currentUserId))
       : false;
 
   function handleToggle(e) {

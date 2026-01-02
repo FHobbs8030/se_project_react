@@ -1,13 +1,18 @@
-const BASE_URL = 'http://localhost:3001';
+const BASE_URL = (
+  import.meta.env.VITE_API_BASE_URL || 'http://localhost:3001'
+).replace(/\/+$/, '');
 
 function check(res) {
-  if (res.ok) return res.json();
-  throw new Error(`API error: ${res.status}`);
+  if (!res.ok) {
+    throw res;
+  }
+  return res.json();
 }
 
 export function getItems() {
   return fetch(`${BASE_URL}/items`, {
     credentials: 'include',
+    cache: 'no-store',
   }).then(check);
 }
 
