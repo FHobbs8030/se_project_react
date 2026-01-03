@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import Modal from './Modal';
+import '../blocks/EditProfileModal.css';
 
 export default function EditProfileModal({
   isOpen,

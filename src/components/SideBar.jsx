@@ -1,4 +1,5 @@
 import { useOutletContext } from 'react-router-dom';
+import '../blocks/SideBar.css';
 
 export default function SideBar() {
   const { currentUser, onEditProfileClick, onLogoutClick } = useOutletContext();
