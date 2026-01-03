@@ -113,20 +113,6 @@
   white-space: nowrap;
 }
 
-.card__like {
-  width: 24px;
-  height: 24px;
-  border: 0;
-  border-radius: 50%;
-  background: transparent center/contain no-repeat url('/images/heart-empty.png');
-  cursor: pointer;
-}
-
-.card__like.is-liked,
-.card__like.card__like_active {
-  background-image: url('/images/heart-filled.png');
-}
-
 @media (max-width: 480px) {
   .cards {
     grid-template-columns: 1fr;

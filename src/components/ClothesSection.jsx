@@ -50,13 +50,17 @@ export default function ClothesSection({
         const src = item?.imageUrl || FALLBACK[name.toLowerCase()] || null;
         const hydrated = src ? { ...item, imageUrl: src } : item;
 
+        const uid = _currentUser?._id || _currentUser?.id;
+        const likes = Array.isArray(item?.likes) ? item.likes : [];
+        const isLiked = uid ? likes.some(id => id === uid) : false;
+
         return (
           <ItemCard
             key={key}
             item={hydrated}
-            currentUser={_currentUser}
             onCardClick={_onCardClick}
             onCardLike={_onCardLike}
+            isLiked={isLiked}
             likePending={_likePending}
           />
         );

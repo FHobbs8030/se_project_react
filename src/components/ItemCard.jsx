@@ -1,6 +1,7 @@
 import PropTypes from 'prop-types';
+import '../blocks/ItemCard.css';
 
-export default function ItemCard({ item, onCardClick, isLiked }) {
+export default function ItemCard({ item, onCardClick, onCardLike, isLiked }) {
   const scale =
     item?.scale === 'down' ? 'down' : item?.scale === 'up' ? 'up' : 'normal';
 
@@ -20,8 +21,12 @@ export default function ItemCard({ item, onCardClick, isLiked }) {
       <div className="card__meta">
         <span className="card__title">{item.name}</span>
         <button
-          className={`card__like ${isLiked ? 'card__like_active' : ''}`}
+          className={`card__like ${isLiked ? 'is-liked' : ''}`}
           type="button"
+          onClick={e => {
+            e.stopPropagation();
+            onCardLike(item._id, isLiked);
+          }}
         />
       </div>
     </li>
@@ -31,5 +36,6 @@ export default function ItemCard({ item, onCardClick, isLiked }) {
 ItemCard.propTypes = {
   item: PropTypes.object.isRequired,
   onCardClick: PropTypes.func.isRequired,
+  onCardLike: PropTypes.func.isRequired,
   isLiked: PropTypes.bool,
 };

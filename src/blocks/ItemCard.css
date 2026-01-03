@@ -21,11 +21,16 @@
   cursor: pointer;
 }
 
-/* .card__image {
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
-} */
+.card__surface {
+  position: absolute;
+  inset: 0;
+}
+
+.card__image-wrap {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
 
 .card__image {
   max-height: 220px;
@@ -34,7 +39,7 @@
   object-fit: contain;
 }
 
-.card__image[data-scale='down'] {
+.card[data-scale='down'] .card__image {
   width: 78%;
   height: 78%;
 }
@@ -67,7 +72,8 @@
   height: 24px;
   border: 0;
   border-radius: 50%;
-  background: transparent center/contain no-repeat url('/images/heart-empty.png');
+  background: transparent center/contain no-repeat
+    url('/images/heart-empty.png');
   cursor: pointer;
 }
 

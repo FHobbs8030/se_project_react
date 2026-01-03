@@ -4,11 +4,14 @@
 @import "./blocks/tokens.css";
 @import "./blocks/global.css";
 @import "./blocks/layout.css";
+@import "./blocks/EditProfileModal.css";
 @import "./blocks/Header.css";
+@import "./blocks/ItemCard.css";
 @import "./blocks/Cards.css";
 @import "./blocks/ProfilePage.css";
 @import "./blocks/AuthModal.css";
 @import "./blocks/App.css";
+@import "./blocks/SideBar.css";
 @import "./blocks/ToggleSwitch.css";
 
 *, *::before, *::after { box-sizing: border-box; }

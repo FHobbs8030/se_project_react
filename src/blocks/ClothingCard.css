@@ -37,18 +37,6 @@
   border: 1px solid #e3e3e3;
 }
 
-.card__like {
-  width: 20px;
-  height: 20px;
-  background: url("/images/heart-empty.png") center/contain no-repeat;
-  border: none;
-  cursor: pointer;
-}
-
-.card__like.is-liked {
-  background-image: url("/images/heart-filled.png");
-}
-
 /************** MEDIA **************/
 .card__media {
   flex: 1;
