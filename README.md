@@ -25,7 +25,8 @@ including authentication, likes, profile editing, and modal workflows.
 
 ## Project Structure
 
-```
+```text
+
 se_project_react/
 ├─ public/
 ├─ src/
@@ -50,7 +51,8 @@ Create a `.env` file based on `.env.example`.
 
 Example `.env.example`:
 
-```
+```text
+
 VITE_API_BASE_URL=http://localhost:3001
 VITE_WEATHER_API_URL=https://api.openweathermap.org/data/2.5/weather
 VITE_WEATHER_API_KEY=your_openweather_api_key_here
@@ -62,19 +64,19 @@ VITE_LOCATION_NAME=New York
 
 Install dependencies:
 
-```
+```text
 npm install
 ```
 
 Run the development server:
 
-```
+```text
 npm run dev
 ```
 
 The application will be available at:
 
-```
+```text
 http://localhost:5175
 ```
 
