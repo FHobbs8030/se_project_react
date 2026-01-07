@@ -237,7 +237,7 @@ export default function App() {
       <EditProfileModal
         isOpen={isEditProfileOpen}
         onClose={() => setIsEditProfileOpen(false)}
-        onSubmit={handleEditProfileSubmit}
+        onUpdateUser={handleEditProfileSubmit}
         currentUser={currentUser}
         isSubmitting={isSubmitting}
       />

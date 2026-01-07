@@ -22,17 +22,20 @@ async function request(path, options = {}) {
 }
 
 export const login = ({ email, password }) =>
-  request('/users/signin', {
+  request('/signin', {
     method: 'POST',
     body: { email, password },
   });
 
 export const register = ({ name, email, password, city }) =>
-  request('/users/signup', {
+  request('/signup', {
     method: 'POST',
     body: { name, email, password, city },
   });
 
-export const logout = () => request('/users/signout', { method: 'POST' });
+export const logout = () =>
+  request('/signout', {
+    method: 'POST',
+  });
 
 export const getUser = () => request('/users/me');
