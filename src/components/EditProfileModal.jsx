@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
-import Modal from './Modal';
+import { useOutletContext } from 'react-router-dom';
+import ModalWithForm from './ModalWithForm';
 import '../blocks/EditProfileModal.css';
 
 export default function EditProfileModal({
@@ -7,8 +8,10 @@ export default function EditProfileModal({
   onClose,
   onUpdateUser,
   isSubmitting,
-  currentUser,
 }) {
+  const outletContext = useOutletContext();
+  const currentUser = outletContext?.currentUser ?? null;
+
   const [name, setName] = useState('');
   const [avatar, setAvatar] = useState('');
 
@@ -33,45 +36,38 @@ export default function EditProfileModal({
   }
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose} variant="form">
-      <form className="modal__form" onSubmit={handleSubmit}>
-        <h2 className="modal__title">Change profile data</h2>
+    <ModalWithForm
+      name="edit-profile"
+      isOpen={isOpen}
+      onClose={onClose}
+      onSubmit={handleSubmit}
+      title="Change profile data"
+      submitText="Save Change"
+      isSubmitting={isSubmitting}
+      isValid={isValid}
+    >
+      <label className="modal__label">
+        Name
+        <input
+          type="text"
+          className="modal__input"
+          value={name}
+          onChange={e => setName(e.target.value)}
+          minLength="2"
+          required
+        />
+      </label>
 
-        <label className="modal__label">
-          Name
-          <input
-            type="text"
-            className="modal__input"
-            placeholder="Name"
-            value={name}
-            onChange={e => setName(e.target.value)}
-            minLength="2"
-            required
-          />
-        </label>
-
-        <label className="modal__label">
-          Avatar
-          <input
-            type="url"
-            className="modal__input"
-            placeholder="Avatar URL"
-            value={avatar}
-            onChange={e => setAvatar(e.target.value)}
-            required
-          />
-        </label>
-
-        <button
-          type="submit"
-          className={`modal__submit ${
-            !isValid || isSubmitting ? 'modal__submit--disabled' : ''
-          }`}
-          disabled={!isValid || isSubmitting}
-        >
-          Save Change
-        </button>
-      </form>
-    </Modal>
+      <label className="modal__label">
+        Avatar
+        <input
+          type="url"
+          className="modal__input"
+          value={avatar}
+          onChange={e => setAvatar(e.target.value)}
+          required
+        />
+      </label>
+    </ModalWithForm>
   );
 }

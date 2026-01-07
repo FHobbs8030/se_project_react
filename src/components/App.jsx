@@ -42,13 +42,23 @@ export default function App() {
   const [likePending, setLikePending] = useState(() => new Set());
 
   const loadSession = useCallback(async () => {
-    const me = await Auth.getUser();
-    setCurrentUser(me);
+    try {
+      const me = await Auth.getUser();
+      setCurrentUser(me);
+    } catch (err) {
+      setCurrentUser(null);
+      console.error(err);
+    }
   }, []);
 
   const loadItems = useCallback(async () => {
-    const items = await Items.getItems();
-    setClothingItems(Array.isArray(items) ? items : []);
+    try {
+      const items = await Items.getItems();
+      setClothingItems(Array.isArray(items) ? items : []);
+    } catch (err) {
+      setClothingItems([]);
+      console.error(err);
+    }
   }, []);
 
   useEffect(() => {
@@ -56,9 +66,6 @@ export default function App() {
       try {
         await loadSession();
         await loadItems();
-      } catch {
-        setCurrentUser(null);
-        setClothingItems([]);
       } finally {
         setIsCheckingAuth(false);
       }
@@ -73,6 +80,8 @@ export default function App() {
         await loadSession();
         await loadItems();
         setIsLoginOpen(false);
+      } catch (err) {
+        console.error(err);
       } finally {
         setIsSubmitting(false);
       }
@@ -89,6 +98,8 @@ export default function App() {
         await loadSession();
         await loadItems();
         setIsRegisterOpen(false);
+      } catch (err) {
+        console.error(err);
       } finally {
         setIsSubmitting(false);
       }
@@ -97,9 +108,13 @@ export default function App() {
   );
 
   const handleLogout = useCallback(async () => {
-    await Auth.logout();
-    setCurrentUser(null);
-    setClothingItems([]);
+    try {
+      await Auth.logout();
+      setCurrentUser(null);
+      setClothingItems([]);
+    } catch (err) {
+      console.error(err);
+    }
   }, []);
 
   const handleAddItemSubmit = useCallback(async values => {
@@ -108,6 +123,8 @@ export default function App() {
       const newItem = await Items.createItem(values);
       setClothingItems(prev => [newItem, ...prev]);
       setIsAddItemOpen(false);
+    } catch (err) {
+      console.error(err);
     } finally {
       setIsSubmitting(false);
     }
@@ -124,6 +141,8 @@ export default function App() {
       setClothingItems(prev =>
         prev.map(item => (item._id === updated._id ? updated : item))
       );
+    } catch (err) {
+      console.error(err);
     } finally {
       setLikePending(prev => {
         const next = new Set(prev);
@@ -139,6 +158,8 @@ export default function App() {
       const updatedUser = await Users.updateProfile(values);
       setCurrentUser(updatedUser);
       setIsEditProfileOpen(false);
+    } catch (err) {
+      console.error(err);
     } finally {
       setIsSubmitting(false);
     }
@@ -152,10 +173,14 @@ export default function App() {
 
   const handleConfirmDelete = useCallback(async () => {
     if (!cardToDelete) return;
-    await Items.deleteItem(cardToDelete._id);
-    setClothingItems(prev => prev.filter(i => i._id !== cardToDelete._id));
-    setIsConfirmDeleteOpen(false);
-    setCardToDelete(null);
+    try {
+      await Items.deleteItem(cardToDelete._id);
+      setClothingItems(prev => prev.filter(i => i._id !== cardToDelete._id));
+      setIsConfirmDeleteOpen(false);
+      setCardToDelete(null);
+    } catch (err) {
+      console.error(err);
+    }
   }, [cardToDelete]);
 
   const outletContext = useMemo(
@@ -238,7 +263,6 @@ export default function App() {
         isOpen={isEditProfileOpen}
         onClose={() => setIsEditProfileOpen(false)}
         onUpdateUser={handleEditProfileSubmit}
-        currentUser={currentUser}
         isSubmitting={isSubmitting}
       />
 
