@@ -244,7 +244,6 @@ export default function App() {
       {selectedCard && !isConfirmDeleteOpen && (
         <ItemModal
           card={selectedCard}
-          currentUser={currentUser}
           onClose={() => setSelectedCard(null)}
           onRequestDelete={handleRequestDelete}
         />
