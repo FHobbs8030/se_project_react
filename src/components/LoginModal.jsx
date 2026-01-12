@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import Modal from './Modal.jsx';
+import ModalWithForm from './ModalWithForm';
 import '../blocks/LoginModal.css';
 
 export default function LoginModal({
@@ -28,52 +28,46 @@ export default function LoginModal({
   };
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose}>
-      <h2 className="login__title">Log In</h2>
+    <ModalWithForm
+      name="login"
+      title="Log In"
+      submitText="Log In"
+      isOpen={isOpen}
+      onClose={onClose}
+      onSubmit={handleSubmit}
+      isDisabled={!isValid || isSubmitting}
+    >
+      <label className="login__label">
+        Email
+        <input
+          name="email"
+          type="email"
+          className="login__input"
+          autoComplete="email"
+          placeholder="Email"
+          value={email}
+          onChange={e => setEmail(e.target.value)}
+          required
+        />
+      </label>
 
-      <form className="login__form" onSubmit={handleSubmit}>
-        <label className="login__label">
-          Email
-          <input
-            name="email"
-            type="email"
-            className="login__input"
-            autoComplete="email"
-            placeholder="Email"
-            value={email}
-            onChange={e => setEmail(e.target.value)}
-            required
-          />
-        </label>
+      <label className="login__label">
+        Password
+        <input
+          name="password"
+          type="password"
+          className="login__input"
+          autoComplete="current-password"
+          placeholder="Password"
+          value={password}
+          onChange={e => setPassword(e.target.value)}
+          required
+        />
+      </label>
 
-        <label className="login__label">
-          Password
-          <input
-            name="password"
-            type="password"
-            className="login__input"
-            autoComplete="current-password"
-            placeholder="Password"
-            value={password}
-            onChange={e => setPassword(e.target.value)}
-            required
-          />
-        </label>
-
-        <div className="login__actions">
-          <button
-            type="submit"
-            className="login__submit"
-            disabled={!isValid || isSubmitting}
-          >
-            Log In
-          </button>
-
-          <button type="button" className="login__alt" onClick={onAltClick}>
-            or Sign Up
-          </button>
-        </div>
-      </form>
-    </Modal>
+      <button type="button" className="login__alt" onClick={onAltClick}>
+        or Sign Up
+      </button>
+    </ModalWithForm>
   );
 }
