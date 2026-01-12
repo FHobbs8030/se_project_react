@@ -22,12 +22,18 @@ export default function EditProfileModal({
     }
   }, [isOpen, currentUser]);
 
-  const isValid =
+  const isValidFormat =
     name.trim().length >= 2 && /^https?:\/\/.+/.test(avatar.trim());
+
+  const isChanged =
+    currentUser &&
+    (name.trim() !== currentUser.name || avatar.trim() !== currentUser.avatar);
+
+  const isValid = isValidFormat && isChanged;
 
   function handleSubmit(e) {
     e.preventDefault();
-    if (!isValid || isSubmitting) return;
+    if (!isValid) return;
 
     onUpdateUser({
       name: name.trim(),
@@ -42,9 +48,8 @@ export default function EditProfileModal({
       onClose={onClose}
       onSubmit={handleSubmit}
       title="Change profile data"
-      submitText="Save Change"
-      isSubmitting={isSubmitting}
-      isValid={isValid}
+      submitText="Save changes"
+      isDisabled={!isValid || isSubmitting}
     >
       <label className="modal__label">
         Name
@@ -53,6 +58,7 @@ export default function EditProfileModal({
           className="modal__input"
           value={name}
           onChange={e => setName(e.target.value)}
+          placeholder="Name"
           minLength="2"
           required
         />
@@ -65,6 +71,7 @@ export default function EditProfileModal({
           className="modal__input"
           value={avatar}
           onChange={e => setAvatar(e.target.value)}
+          placeholder="Avatar URL"
           required
         />
       </label>

@@ -8,7 +8,7 @@ export default function ModalWithForm({
   onClose,
   onSubmit,
   submitText,
-  isSubmitting,
+  isDisabled,
 }) {
   if (!isOpen) return null;
 
@@ -26,8 +26,10 @@ export default function ModalWithForm({
           {children}
           <button
             type="submit"
-            className="modal__submit"
-            disabled={isSubmitting}
+            className={`modal__submit ${
+              isDisabled ? 'modal__submit_disabled' : ''
+            }`}
+            disabled={isDisabled}
           >
             {submitText}
           </button>
@@ -45,5 +47,5 @@ ModalWithForm.propTypes = {
   onClose: PropTypes.func.isRequired,
   onSubmit: PropTypes.func.isRequired,
   submitText: PropTypes.string.isRequired,
-  isSubmitting: PropTypes.bool,
+  isDisabled: PropTypes.bool.isRequired,
 };
