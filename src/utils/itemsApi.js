@@ -28,10 +28,10 @@ export function createItem({ name, imageUrl, weather }) {
 }
 
 export function deleteItem(id) {
-  return fetch(`${this._baseUrl}/items/${id}`, {
+  return fetch(`${BASE_URL}/items/${id}`, {
     method: 'DELETE',
     credentials: 'include',
-  }).then(this._checkResponse);
+  }).then(check);
 }
 
 export function likeItem(itemId) {
