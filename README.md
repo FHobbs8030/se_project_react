@@ -1,8 +1,12 @@
 # WTWR — Frontend (React + Vite)
 
-What to Wear (WTWR) is a weather-aware clothing recommendation application.
-The frontend fetches live weather data and displays clothing items from a custom backend API,
-including authentication, likes, profile editing, and modal workflows.
+What to Wear (WTWR) is a weather-aware clothing recommendation application that helps users
+decide what to wear based on real-time weather conditions in their selected location.
+
+This repository contains the frontend implementation built with React and Vite.
+The application integrates with a custom Express + MongoDB backend to support user authentication,
+profile editing, liking and deleting clothing items, and consistent modal-based workflows,
+all presented through a clean, responsive user interface.
 
 ---
 
