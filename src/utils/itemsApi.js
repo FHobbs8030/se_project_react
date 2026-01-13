@@ -27,11 +27,11 @@ export function createItem({ name, imageUrl, weather }) {
   }).then(check);
 }
 
-export function deleteItem(itemId) {
-  return fetch(`${BASE_URL}/items/${itemId}`, {
+export function deleteItem(id) {
+  return fetch(`${this._baseUrl}/items/${id}`, {
     method: 'DELETE',
     credentials: 'include',
-  }).then(check);
+  }).then(this._checkResponse);
 }
 
 export function likeItem(itemId) {
