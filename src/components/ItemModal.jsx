@@ -1,13 +1,12 @@
+import { useContext } from 'react';
 import PropTypes from 'prop-types';
 import Modal from './Modal.jsx';
+import { CurrentUserContext } from '../contexts/CurrentUserContext';
 import '../blocks/ItemModal.css';
 
-export default function ItemModal({
-  card,
-  currentUser,
-  onClose,
-  onRequestDelete,
-}) {
+export default function ItemModal({ card, onClose, onRequestDelete }) {
+  const currentUser = useContext(CurrentUserContext);
+
   if (!card) return null;
 
   const currentUserId = currentUser?._id || currentUser?.id || null;
@@ -64,10 +63,6 @@ ItemModal.propTypes = {
     name: PropTypes.string.isRequired,
     imageUrl: PropTypes.string.isRequired,
     weather: PropTypes.string.isRequired,
-  }),
-  currentUser: PropTypes.shape({
-    _id: PropTypes.string,
-    id: PropTypes.string,
   }),
   onClose: PropTypes.func.isRequired,
   onRequestDelete: PropTypes.func.isRequired,

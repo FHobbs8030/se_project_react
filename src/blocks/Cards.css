@@ -13,7 +13,7 @@
   display: grid;
   grid-template-columns: repeat(auto-fill, var(--card-w));
   gap: var(--gap);
-  justify-content: start;
+  justify-content: center;
   width: 100%;
   margin: 0;
   padding: 0;
@@ -86,7 +86,7 @@
   max-height: 100%;
   object-fit: contain;
   display: block;
-  border-radius: 5%
+  border-radius: 5%;
 }
 
 .card__meta {

@@ -1,7 +1,13 @@
+import { useContext } from 'react';
 import PropTypes from 'prop-types';
+import { CurrentUserContext } from '../contexts/CurrentUserContext';
 import '../blocks/ItemCard.css';
 
-export default function ItemCard({ item, onCardClick, onCardLike, isLiked }) {
+export default function ItemCard({ item, onCardClick, onCardLike }) {
+  const currentUser = useContext(CurrentUserContext);
+
+  const isLiked = currentUser && item.likes.some(id => id === currentUser._id);
+
   const scale =
     item?.scale === 'down' ? 'down' : item?.scale === 'up' ? 'up' : 'normal';
 
@@ -25,7 +31,7 @@ export default function ItemCard({ item, onCardClick, onCardLike, isLiked }) {
           type="button"
           onClick={e => {
             e.stopPropagation();
-            onCardLike(item._id, isLiked);
+            onCardLike({ ...item, isLiked });
           }}
         />
       </div>
@@ -37,5 +43,4 @@ ItemCard.propTypes = {
   item: PropTypes.object.isRequired,
   onCardClick: PropTypes.func.isRequired,
   onCardLike: PropTypes.func.isRequired,
-  isLiked: PropTypes.bool,
 };

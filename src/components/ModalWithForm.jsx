@@ -1,51 +1,50 @@
 import PropTypes from 'prop-types';
+import Modal from './Modal.jsx';
 
 export default function ModalWithForm({
-  title,
   name,
-  children,
+  title,
+  submitText,
   isOpen,
   onClose,
   onSubmit,
-  submitText,
   isDisabled,
+  children,
 }) {
-  if (!isOpen) return null;
-
   return (
-    <div className={`modal modal_type_${name}`}>
-      <div className="modal__content">
+    <Modal isOpen={isOpen} onClose={onClose}>
+      <form
+        className={`modal__form modal__form--${name}`}
+        name={name}
+        onSubmit={onSubmit}
+        noValidate
+      >
         <button
           type="button"
           className="modal__close"
           onClick={onClose}
           aria-label="Close"
         />
+
         <h2 className="modal__title">{title}</h2>
-        <form className="modal__form" name={name} onSubmit={onSubmit}>
-          {children}
-          <button
-            type="submit"
-            className={`modal__submit ${
-              isDisabled ? 'modal__submit_disabled' : ''
-            }`}
-            disabled={isDisabled}
-          >
-            {submitText}
-          </button>
-        </form>
-      </div>
-    </div>
+
+        {children}
+
+        <button type="submit" className="modal__submit" disabled={isDisabled}>
+          {submitText}
+        </button>
+      </form>
+    </Modal>
   );
 }
 
 ModalWithForm.propTypes = {
-  title: PropTypes.string.isRequired,
   name: PropTypes.string.isRequired,
-  children: PropTypes.node.isRequired,
+  title: PropTypes.string.isRequired,
+  submitText: PropTypes.string.isRequired,
   isOpen: PropTypes.bool.isRequired,
   onClose: PropTypes.func.isRequired,
   onSubmit: PropTypes.func.isRequired,
-  submitText: PropTypes.string.isRequired,
-  isDisabled: PropTypes.bool.isRequired,
+  isDisabled: PropTypes.bool,
+  children: PropTypes.node.isRequired,
 };

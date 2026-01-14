@@ -8,10 +8,12 @@ import ItemModal from './ItemModal.jsx';
 import ConfirmDeleteModal from './ConfirmDeleteModal.jsx';
 import EditProfileModal from './EditProfileModal.jsx';
 import AddItemModal from './AddItemModal.jsx';
+import LoginModal from './LoginModal.jsx';
 import { CurrentUserContext } from '../contexts/CurrentUserContext';
 import * as Auth from '../utils/authApi.js';
 import * as Items from '../utils/itemsApi.js';
 import * as Users from '../utils/usersApi.js';
+
 import '../blocks/App.css';
 import '../blocks/AuthModal.css';
 import '../blocks/Cards.css';
@@ -28,8 +30,7 @@ export default function App() {
   const [selectedCard, setSelectedCard] = useState(null);
   const [cardToDelete, setCardToDelete] = useState(null);
   const [isConfirmDeleteOpen, setIsConfirmDeleteOpen] = useState(false);
-  const [isEditProfileOpen, setIsEditProfileOpen] = useState(false);
-  const [isAddItemOpen, setIsAddItemOpen] = useState(false);
+  const [activeModal, setActiveModal] = useState(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [currentTemperatureUnit, setCurrentTemperatureUnit] = useState('F');
   const [weather, setWeather] = useState(null);
@@ -63,12 +64,26 @@ export default function App() {
     })();
   }, [loadSession, loadItems]);
 
+  const handleLoginSubmit = useCallback(
+    async values => {
+      setIsSubmitting(true);
+      try {
+        await Auth.login(values);
+        await loadSession();
+        setActiveModal(null);
+      } finally {
+        setIsSubmitting(false);
+      }
+    },
+    [loadSession]
+  );
+
   const handleAddItemSubmit = useCallback(async values => {
     setIsSubmitting(true);
     try {
       const newItem = await Items.createItem(values);
       setClothingItems(prev => [newItem, ...prev]);
-      setIsAddItemOpen(false);
+      setActiveModal(null);
     } finally {
       setIsSubmitting(false);
     }
@@ -79,18 +94,36 @@ export default function App() {
     try {
       const updatedUser = await Users.updateProfile(values);
       setCurrentUser(updatedUser);
-      setIsEditProfileOpen(false);
+      setActiveModal(null);
     } finally {
       setIsSubmitting(false);
     }
   }, []);
 
+  const handleCardLike = useCallback(
+    async card => {
+      if (!currentUser) return;
+
+      const updatedCard = card.isLiked
+        ? await Items.removeItemLike(card._id)
+        : await Items.addItemLike(card._id);
+
+      setClothingItems(prev =>
+        prev.map(item => (item._id === card._id ? updatedCard : item))
+      );
+    },
+    [currentUser]
+  );
+
   const outletContext = useMemo(
     () => ({
+      currentUser,
       clothingItems,
       onCardClick: setSelectedCard,
-      onEditProfileClick: () => setIsEditProfileOpen(true),
-      onAddClick: () => setIsAddItemOpen(true),
+      onCardLike: handleCardLike,
+      onAddClick: () => setActiveModal('add-item'),
+      onEditProfileClick: () => setActiveModal('edit-profile'),
+      onLoginClick: () => setActiveModal('login'),
       onLogoutClick: async () => {
         await Auth.logout();
         setCurrentUser(null);
@@ -101,7 +134,13 @@ export default function App() {
       currentTemperatureUnit,
       setCurrentTemperatureUnit,
     }),
-    [clothingItems, weather, currentTemperatureUnit]
+    [
+      currentUser,
+      clothingItems,
+      weather,
+      currentTemperatureUnit,
+      handleCardLike,
+    ]
   );
 
   if (isCheckingAuth) return null;
@@ -126,6 +165,7 @@ export default function App() {
       {selectedCard && !isConfirmDeleteOpen && (
         <ItemModal
           card={selectedCard}
+          currentUser={currentUser}
           onClose={() => setSelectedCard(null)}
           onRequestDelete={card => {
             setSelectedCard(null);
@@ -145,26 +185,39 @@ export default function App() {
           if (!cardToDelete) return;
           await Items.deleteItem(cardToDelete._id);
           setClothingItems(prev =>
-            prev.filter(i => i._id !== cardToDelete._id)
+            prev.filter(item => item._id !== cardToDelete._id)
           );
           setIsConfirmDeleteOpen(false);
           setCardToDelete(null);
         }}
       />
 
-      <EditProfileModal
-        isOpen={isEditProfileOpen}
-        onClose={() => setIsEditProfileOpen(false)}
-        onUpdateUser={handleEditProfileSubmit}
-        isSubmitting={isSubmitting}
-      />
+      {activeModal === 'edit-profile' && (
+        <EditProfileModal
+          isOpen
+          onClose={() => setActiveModal(null)}
+          onUpdateUser={handleEditProfileSubmit}
+          isSubmitting={isSubmitting}
+        />
+      )}
 
-      <AddItemModal
-        isOpen={isAddItemOpen}
-        onClose={() => setIsAddItemOpen(false)}
-        onAddItem={handleAddItemSubmit}
-        isSubmitting={isSubmitting}
-      />
+      {activeModal === 'add-item' && (
+        <AddItemModal
+          isOpen
+          onClose={() => setActiveModal(null)}
+          onAddItem={handleAddItemSubmit}
+          isSubmitting={isSubmitting}
+        />
+      )}
+
+      {activeModal === 'login' && (
+        <LoginModal
+          isOpen
+          onClose={() => setActiveModal(null)}
+          onSubmit={handleLoginSubmit}
+          isSubmitting={isSubmitting}
+        />
+      )}
     </CurrentUserContext.Provider>
   );
 }

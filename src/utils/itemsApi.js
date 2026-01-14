@@ -1,49 +1,35 @@
-const BASE_URL = (
-  import.meta.env.VITE_API_BASE_URL || 'http://localhost:3001'
-).replace(/\/+$/, '');
+const BASE_URL = 'http://localhost:3001';
 
-function check(res) {
-  if (!res.ok) {
-    throw res;
-  }
-  return res.json();
-}
-
-export function getItems() {
-  return fetch(`${BASE_URL}/items`, {
+const request = (url, options = {}) =>
+  fetch(`${BASE_URL}${url}`, {
     credentials: 'include',
-    cache: 'no-store',
-  }).then(check);
-}
-
-export function createItem({ name, imageUrl, weather }) {
-  return fetch(`${BASE_URL}/items`, {
-    method: 'POST',
     headers: {
       'Content-Type': 'application/json',
     },
-    credentials: 'include',
-    body: JSON.stringify({ name, imageUrl, weather }),
-  }).then(check);
-}
+    ...options,
+  }).then(res =>
+    res.ok ? res.json() : Promise.reject(res.status)
+  );
 
-export function deleteItem(id) {
-  return fetch(`${BASE_URL}/items/${id}`, {
+export const getItems = () => request('/items');
+
+export const createItem = data =>
+  request('/items', {
+    method: 'POST',
+    body: JSON.stringify(data),
+  });
+
+export const deleteItem = itemId =>
+  request(`/items/${itemId}`, {
     method: 'DELETE',
-    credentials: 'include',
-  }).then(check);
-}
+  });
 
-export function likeItem(itemId) {
-  return fetch(`${BASE_URL}/items/${itemId}/likes`, {
+export const addItemLike = itemId =>
+  request(`/items/${itemId}/likes`, {
     method: 'PUT',
-    credentials: 'include',
-  }).then(check);
-}
+  });
 
-export function unlikeItem(itemId) {
-  return fetch(`${BASE_URL}/items/${itemId}/likes`, {
+export const removeItemLike = itemId =>
+  request(`/items/${itemId}/likes`, {
     method: 'DELETE',
-    credentials: 'include',
-  }).then(check);
-}
+  });

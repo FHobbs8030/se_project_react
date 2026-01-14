@@ -3,8 +3,8 @@ import ToggleSwitch from './ToggleSwitch.jsx';
 
 export default function Header({
   currentUser,
-  value,
-  onToggle,
+  currentTemperatureUnit,
+  setCurrentTemperatureUnit,
   onAddClick,
   onLoginClick,
   onRegisterClick,
@@ -40,7 +40,10 @@ export default function Header({
           </div>
 
           <div className="header__actions">
-            <ToggleSwitch value={value} onToggle={onToggle} />
+            <ToggleSwitch
+              value={currentTemperatureUnit}
+              onToggle={setCurrentTemperatureUnit}
+            />
 
             {currentUser ? (
               <>
