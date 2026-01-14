@@ -1,13 +1,14 @@
+import { useContext } from 'react';
 import { useOutletContext } from 'react-router-dom';
+import { CurrentUserContext } from '../contexts/CurrentUserContext';
 import ClothesSection from './ClothesSection.jsx';
 import SideBar from './SideBar.jsx';
 
 export default function Profile() {
+  const currentUser = useContext(CurrentUserContext);
   const {
     clothingItems = [],
     onCardClick,
-    onAfterToggle,
-    currentUser,
     onEditProfileClick,
     onLogoutClick,
   } = useOutletContext();
@@ -16,12 +17,13 @@ export default function Profile() {
 
   const ownedItems = currentUserId
     ? clothingItems.filter(item => {
-        const owner = item.owner;
-        const ownerId =
-          typeof owner === 'string' ? owner : owner?._id || owner?.id || null;
-        return ownerId === currentUserId;
+        const owner =
+          typeof item.owner === 'string'
+            ? item.owner
+            : item.owner?._id || item.owner?.id;
+        return owner === currentUserId;
       })
-    : clothingItems;
+    : [];
 
   return (
     <main className="content">
@@ -31,11 +33,7 @@ export default function Profile() {
           onLogoutClick={onLogoutClick}
         />
 
-        <ClothesSection
-          items={ownedItems}
-          onCardClick={onCardClick}
-          onAfterToggle={onAfterToggle}
-        />
+        <ClothesSection items={ownedItems} onCardClick={onCardClick} />
       </section>
     </main>
   );

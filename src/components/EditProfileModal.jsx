@@ -1,6 +1,6 @@
-import { useEffect, useState } from 'react';
-import { useOutletContext } from 'react-router-dom';
+import { useContext, useEffect, useState } from 'react';
 import ModalWithForm from './ModalWithForm';
+import { CurrentUserContext } from '../contexts/CurrentUserContext';
 import '../blocks/EditProfileModal.css';
 
 export default function EditProfileModal({
@@ -9,8 +9,7 @@ export default function EditProfileModal({
   onUpdateUser,
   isSubmitting,
 }) {
-  const outletContext = useOutletContext();
-  const currentUser = outletContext?.currentUser ?? null;
+  const currentUser = useContext(CurrentUserContext);
 
   const [name, setName] = useState('');
   const [avatar, setAvatar] = useState('');

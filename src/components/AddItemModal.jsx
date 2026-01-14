@@ -1,108 +1,80 @@
 import { useEffect, useState } from 'react';
+import { useOutletContext } from 'react-router-dom';
 import ModalWithForm from './ModalWithForm';
-import '../blocks/AddItemModal.css';
+import '../blocks/EditProfileModal.css';
 
-export default function AddItemModal({
+export default function EditProfileModal({
   isOpen,
   onClose,
-  onAddItem,
+  onUpdateUser,
   isSubmitting,
 }) {
+  const outletContext = useOutletContext();
+  const currentUser = outletContext?.currentUser ?? null;
+
   const [name, setName] = useState('');
-  const [imageUrl, setImageUrl] = useState('');
-  const [weather, setWeather] = useState('');
+  const [avatar, setAvatar] = useState('');
 
   useEffect(() => {
-    if (isOpen) {
-      setName('');
-      setImageUrl('');
-      setWeather('');
+    if (isOpen && currentUser) {
+      setName(currentUser.name || '');
+      setAvatar(currentUser.avatar || '');
     }
-  }, [isOpen]);
+  }, [isOpen, currentUser]);
 
-  const isValid =
-    name.trim() !== '' &&
-    imageUrl.trim() !== '' &&
-    weather !== '' &&
-    imageUrl.startsWith('http');
+  const isValidFormat =
+    name.trim().length >= 2 && /^https?:\/\/.+/.test(avatar.trim());
+
+  const isChanged =
+    currentUser &&
+    (name.trim() !== currentUser.name || avatar.trim() !== currentUser.avatar);
+
+  const isValid = isValidFormat && isChanged;
 
   function handleSubmit(e) {
     e.preventDefault();
     if (!isValid) return;
 
-    onAddItem({
+    onUpdateUser({
       name: name.trim(),
-      imageUrl: imageUrl.trim(),
-      weather,
+      avatar: avatar.trim(),
     });
   }
 
   return (
     <ModalWithForm
-      name="add-item"
-      title="New garment"
-      submitText="Add garment"
+      name="edit-profile"
       isOpen={isOpen}
       onClose={onClose}
       onSubmit={handleSubmit}
+      title="Change profile data"
+      submitText="Save changes"
       isDisabled={!isValid || isSubmitting}
     >
-      <label className="add-item__label">
+      <label className="modal__label">
         Name
         <input
-          className="add-item__input"
-          placeholder="Name"
+          type="text"
+          className="modal__input"
           value={name}
           onChange={e => setName(e.target.value)}
+          placeholder="Name"
+          minLength="2"
           required
         />
       </label>
 
-      <label className="add-item__label">
-        Image
+      <label className="modal__label">
+        Avatar
         <input
           type="url"
-          className="add-item__input"
-          placeholder="Image URL"
-          value={imageUrl}
-          onChange={e => setImageUrl(e.target.value)}
+          className="modal__input"
+          value={avatar}
+          onChange={e => setAvatar(e.target.value)}
+          placeholder="Avatar URL"
           required
         />
       </label>
-
-      <fieldset className="add-item__fieldset">
-        <legend className="add-item__legend">Select the weather type:</legend>
-
-        <label className="add-item__radio-row">
-          <input
-            type="radio"
-            className="add-item__radio"
-            checked={weather === 'hot'}
-            onChange={() => setWeather('hot')}
-          />
-          <span className="add-item__radio-label">Hot</span>
-        </label>
-
-        <label className="add-item__radio-row">
-          <input
-            type="radio"
-            className="add-item__radio"
-            checked={weather === 'warm'}
-            onChange={() => setWeather('warm')}
-          />
-          <span className="add-item__radio-label">Warm</span>
-        </label>
-
-        <label className="add-item__radio-row">
-          <input
-            type="radio"
-            className="add-item__radio"
-            checked={weather === 'cold'}
-            onChange={() => setWeather('cold')}
-          />
-          <span className="add-item__radio-label">Cold</span>
-        </label>
-      </fieldset>
     </ModalWithForm>
   );
 }
