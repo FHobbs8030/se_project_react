@@ -1,19 +1,17 @@
-const BASE_URL = import.meta.env.VITE_API_BASE_URL;
+const baseUrl = 'http://localhost:3001';
 
-function check(res) {
-  if (!res.ok) {
-    return Promise.reject(res);
+const checkResponse = res => {
+  if (res.ok) {
+    return res.json();
   }
-  return res.json();
-}
+  return Promise.reject(res.status);
+};
 
-export function updateProfile(data) {
-  return fetch(`${BASE_URL}/users/me`, {
+export const updateProfile = ({ name, avatar }) => {
+  return fetch(`${baseUrl}/users/me`, {
     method: 'PATCH',
-    headers: {
-      'Content-Type': 'application/json',
-    },
+    headers: { 'Content-Type': 'application/json' },
     credentials: 'include',
-    body: JSON.stringify(data),
-  }).then(check);
-}
+    body: JSON.stringify({ name, avatar }),
+  }).then(checkResponse);
+};
