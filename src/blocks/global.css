@@ -5,7 +5,6 @@
 @import "./ToggleSwitch.css";
 @import "./ClothesSection.css";
 @import "./ProfilePage.css";
-@import "./AuthModal.css";
 
 *, *::before, *::after {
   box-sizing: border-box;

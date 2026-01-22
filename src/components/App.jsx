@@ -9,13 +9,12 @@ import ConfirmDeleteModal from './ConfirmDeleteModal.jsx';
 import EditProfileModal from './EditProfileModal.jsx';
 import AddItemModal from './AddItemModal.jsx';
 import LoginModal from './LoginModal.jsx';
+import RegisterModal from './RegisterModal.jsx';
 import { CurrentUserContext } from '../contexts/CurrentUserContext';
 import * as Auth from '../utils/authApi.js';
 import * as Items from '../utils/itemsApi.js';
 import * as Users from '../utils/usersApi.js';
-
 import '../blocks/App.css';
-import '../blocks/AuthModal.css';
 import '../blocks/Cards.css';
 import '../blocks/Header.css';
 import '../blocks/ProfilePage.css';
@@ -70,12 +69,29 @@ export default function App() {
       try {
         await Auth.login(values);
         await loadSession();
+        await loadItems();
         setActiveModal(null);
       } finally {
         setIsSubmitting(false);
       }
     },
-    [loadSession]
+    [loadSession, loadItems]
+  );
+
+  const handleRegisterSubmit = useCallback(
+    async values => {
+      setIsSubmitting(true);
+      try {
+        await Auth.register(values);
+        await Auth.login({ email: values.email, password: values.password });
+        await loadSession();
+        await loadItems();
+        setActiveModal(null);
+      } finally {
+        setIsSubmitting(false);
+      }
+    },
+    [loadSession, loadItems]
   );
 
   const handleAddItemSubmit = useCallback(async values => {
@@ -124,6 +140,7 @@ export default function App() {
       onAddClick: () => setActiveModal('add-item'),
       onEditProfileClick: () => setActiveModal('edit-profile'),
       onLoginClick: () => setActiveModal('login'),
+      onRegisterClick: () => setActiveModal('register'),
       onLogoutClick: async () => {
         await Auth.logout();
         setCurrentUser(null);
@@ -215,6 +232,17 @@ export default function App() {
           isOpen
           onClose={() => setActiveModal(null)}
           onSubmit={handleLoginSubmit}
+          onAltClick={() => setActiveModal('register')}
+          isSubmitting={isSubmitting}
+        />
+      )}
+
+      {activeModal === 'register' && (
+        <RegisterModal
+          isOpen
+          onClose={() => setActiveModal(null)}
+          onSubmit={handleRegisterSubmit}
+          onAltClick={() => setActiveModal('login')}
           isSubmitting={isSubmitting}
         />
       )}

@@ -10,6 +10,7 @@ export default function ModalWithForm({
   onSubmit,
   isDisabled,
   children,
+  footer,
 }) {
   return (
     <Modal isOpen={isOpen} onClose={onClose}>
@@ -28,11 +29,15 @@ export default function ModalWithForm({
 
         <h2 className="modal__title">{title}</h2>
 
-        {children}
+        <div className="modal__fields">{children}</div>
 
-        <button type="submit" className="modal__submit" disabled={isDisabled}>
-          {submitText}
-        </button>
+        <div className="modal__footer">
+          <button type="submit" className="modal__submit" disabled={isDisabled}>
+            {submitText}
+          </button>
+
+          {footer}
+        </div>
       </form>
     </Modal>
   );
@@ -47,4 +52,5 @@ ModalWithForm.propTypes = {
   onSubmit: PropTypes.func.isRequired,
   isDisabled: PropTypes.bool,
   children: PropTypes.node.isRequired,
+  footer: PropTypes.node,
 };

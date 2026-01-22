@@ -14,7 +14,6 @@ export default function RegisterModal({
   const [password, setPassword] = useState('');
   const [name, setName] = useState('');
   const [avatarUrl, setAvatarUrl] = useState('');
-  const [city, setCity] = useState('');
 
   useEffect(() => {
     if (!isOpen) {
@@ -22,15 +21,11 @@ export default function RegisterModal({
       setPassword('');
       setName('');
       setAvatarUrl('');
-      setCity('');
     }
   }, [isOpen]);
 
   const isValid =
-    email.trim() !== '' &&
-    password.trim() !== '' &&
-    name.trim() !== '' &&
-    avatarUrl.trim() !== '';
+    email.trim() && password.trim() && name.trim() && avatarUrl.trim();
 
   const handleSubmit = e => {
     e.preventDefault();
@@ -41,24 +36,27 @@ export default function RegisterModal({
       password,
       name,
       avatarUrl: normalizeImage(avatarUrl),
-      city,
     });
   };
 
   return (
     <ModalWithForm
       name="register"
+      title="Sign Up"
+      submitText="Sign Up"
       isOpen={isOpen}
       onClose={onClose}
       onSubmit={handleSubmit}
-      title="Sign Up"
-      submitText="Sign Up"
       isDisabled={!isValid || isSubmitting}
+      footer={
+        <button type="button" className="register__alt" onClick={onAltClick}>
+          or Log In
+        </button>
+      }
     >
       <label className="register__label">
         Email*
         <input
-          name="email"
           type="email"
           className="register__input"
           value={email}
@@ -71,7 +69,6 @@ export default function RegisterModal({
       <label className="register__label">
         Password*
         <input
-          name="password"
           type="password"
           className="register__input"
           value={password}
@@ -84,7 +81,6 @@ export default function RegisterModal({
       <label className="register__label">
         Name*
         <input
-          name="name"
           type="text"
           className="register__input"
           value={name}
@@ -97,32 +93,14 @@ export default function RegisterModal({
       <label className="register__label">
         Avatar URL*
         <input
-          name="avatarUrl"
           type="text"
           className="register__input"
           value={avatarUrl}
           onChange={e => setAvatarUrl(e.target.value)}
-          placeholder="https://example.com/me.png or /images/me.png"
-          pattern="https?://.*|/images/.*|.*\.(png|jpg|jpeg|gif|svg)"
+          placeholder="Avatar URL"
           required
         />
       </label>
-
-      <label className="register__label">
-        City
-        <input
-          name="city"
-          type="text"
-          className="register__input"
-          value={city}
-          onChange={e => setCity(e.target.value)}
-          placeholder="City"
-        />
-      </label>
-
-      <button type="button" className="register__alt" onClick={onAltClick}>
-        or Log In
-      </button>
     </ModalWithForm>
   );
 }
