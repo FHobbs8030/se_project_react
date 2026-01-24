@@ -38,7 +38,8 @@ export default function App() {
     try {
       const me = await Auth.getUser();
       setCurrentUser(me);
-    } catch {
+    } catch (err) {
+      console.error(err);
       setCurrentUser(null);
     }
   }, []);
@@ -47,7 +48,8 @@ export default function App() {
     try {
       const items = await Items.getItems();
       setClothingItems(Array.isArray(items) ? items : []);
-    } catch {
+    } catch (err) {
+      console.error(err);
       setClothingItems([]);
     }
   }, []);
@@ -57,6 +59,8 @@ export default function App() {
       try {
         await loadSession();
         await loadItems();
+      } catch (err) {
+        console.error(err);
       } finally {
         setIsCheckingAuth(false);
       }
@@ -71,6 +75,8 @@ export default function App() {
         await loadSession();
         await loadItems();
         setActiveModal(null);
+      } catch (err) {
+        console.error(err);
       } finally {
         setIsSubmitting(false);
       }
@@ -87,6 +93,8 @@ export default function App() {
         await loadSession();
         await loadItems();
         setActiveModal(null);
+      } catch (err) {
+        console.error(err);
       } finally {
         setIsSubmitting(false);
       }
@@ -100,6 +108,8 @@ export default function App() {
       const newItem = await Items.createItem(values);
       setClothingItems(prev => [newItem, ...prev]);
       setActiveModal(null);
+    } catch (err) {
+      console.error(err);
     } finally {
       setIsSubmitting(false);
     }
@@ -111,6 +121,8 @@ export default function App() {
       const updatedUser = await Users.updateProfile(values);
       setCurrentUser(updatedUser);
       setActiveModal(null);
+    } catch (err) {
+      console.error(err);
     } finally {
       setIsSubmitting(false);
     }
@@ -119,14 +131,17 @@ export default function App() {
   const handleCardLike = useCallback(
     async card => {
       if (!currentUser) return;
+      try {
+        const updatedCard = card.isLiked
+          ? await Items.removeItemLike(card._id)
+          : await Items.addItemLike(card._id);
 
-      const updatedCard = card.isLiked
-        ? await Items.removeItemLike(card._id)
-        : await Items.addItemLike(card._id);
-
-      setClothingItems(prev =>
-        prev.map(item => (item._id === card._id ? updatedCard : item))
-      );
+        setClothingItems(prev =>
+          prev.map(item => (item._id === card._id ? updatedCard : item))
+        );
+      } catch (err) {
+        console.error(err);
+      }
     },
     [currentUser]
   );
@@ -142,9 +157,13 @@ export default function App() {
       onLoginClick: () => setActiveModal('login'),
       onRegisterClick: () => setActiveModal('register'),
       onLogoutClick: async () => {
-        await Auth.logout();
-        setCurrentUser(null);
-        setClothingItems([]);
+        try {
+          await Auth.logout();
+          setCurrentUser(null);
+          setClothingItems([]);
+        } catch (err) {
+          console.error(err);
+        }
       },
       weather,
       setWeather,
@@ -200,12 +219,17 @@ export default function App() {
         }}
         onConfirm={async () => {
           if (!cardToDelete) return;
-          await Items.deleteItem(cardToDelete._id);
-          setClothingItems(prev =>
-            prev.filter(item => item._id !== cardToDelete._id)
-          );
-          setIsConfirmDeleteOpen(false);
-          setCardToDelete(null);
+          try {
+            await Items.deleteItem(cardToDelete._id);
+            setClothingItems(prev =>
+              prev.filter(item => item._id !== cardToDelete._id)
+            );
+          } catch (err) {
+            console.error(err);
+          } finally {
+            setIsConfirmDeleteOpen(false);
+            setCardToDelete(null);
+          }
         }}
       />
 
