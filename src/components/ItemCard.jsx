@@ -26,14 +26,17 @@ export default function ItemCard({ item, onCardClick, onCardLike }) {
 
       <div className="card__meta">
         <span className="card__title">{item.name}</span>
-        <button
-          className={`card__like ${isLiked ? 'is-liked' : ''}`}
-          type="button"
-          onClick={e => {
-            e.stopPropagation();
-            onCardLike({ ...item, isLiked });
-          }}
-        />
+
+        {currentUser && (
+          <button
+            className={`card__like ${isLiked ? 'is-liked' : ''}`}
+            type="button"
+            onClick={e => {
+              e.stopPropagation();
+              onCardLike({ ...item, isLiked });
+            }}
+          />
+        )}
       </div>
     </li>
   );
