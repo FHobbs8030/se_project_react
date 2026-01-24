@@ -36,6 +36,11 @@ export default function LoginModal({
       onClose={onClose}
       onSubmit={handleSubmit}
       isDisabled={!isValid || isSubmitting}
+      footer={
+        <button type="button" className="login__alt" onClick={onAltClick}>
+          or Sign Up
+        </button>
+      }
     >
       <label className="login__label">
         Email
@@ -64,10 +69,6 @@ export default function LoginModal({
           required
         />
       </label>
-
-      <button type="button" className="login__alt" onClick={onAltClick}>
-        or Sign Up
-      </button>
     </ModalWithForm>
   );
 }

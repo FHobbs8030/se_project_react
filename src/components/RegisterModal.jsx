@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react';
-import ModalWithForm from './ModalWithForm.jsx';
+import ModalWithForm from './ModalWithForm';
 import '../blocks/RegisterModal.css';
-import { normalizeImage } from '../utils/normalizeImage.js';
 
 export default function RegisterModal({
   isOpen,
@@ -13,30 +12,27 @@ export default function RegisterModal({
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [name, setName] = useState('');
-  const [avatarUrl, setAvatarUrl] = useState('');
+  const [avatar, setAvatar] = useState('');
+
+  const isValid =
+    email.trim() !== '' &&
+    password.trim() !== '' &&
+    name.trim() !== '' &&
+    avatar.trim() !== '';
 
   useEffect(() => {
     if (!isOpen) {
       setEmail('');
       setPassword('');
       setName('');
-      setAvatarUrl('');
+      setAvatar('');
     }
   }, [isOpen]);
-
-  const isValid =
-    email.trim() && password.trim() && name.trim() && avatarUrl.trim();
 
   const handleSubmit = e => {
     e.preventDefault();
     if (!isValid) return;
-
-    onSubmit({
-      email,
-      password,
-      name,
-      avatarUrl: normalizeImage(avatarUrl),
-    });
+    onSubmit({ email, password, name, avatar });
   };
 
   return (
@@ -57,11 +53,13 @@ export default function RegisterModal({
       <label className="register__label">
         Email*
         <input
+          name="email"
           type="email"
           className="register__input"
+          autoComplete="email"
+          placeholder="Email"
           value={email}
           onChange={e => setEmail(e.target.value)}
-          placeholder="Email"
           required
         />
       </label>
@@ -69,11 +67,13 @@ export default function RegisterModal({
       <label className="register__label">
         Password*
         <input
+          name="password"
           type="password"
           className="register__input"
+          autoComplete="new-password"
+          placeholder="Password"
           value={password}
           onChange={e => setPassword(e.target.value)}
-          placeholder="Password"
           required
         />
       </label>
@@ -81,11 +81,12 @@ export default function RegisterModal({
       <label className="register__label">
         Name*
         <input
+          name="name"
           type="text"
           className="register__input"
+          placeholder="Name"
           value={name}
           onChange={e => setName(e.target.value)}
-          placeholder="Name"
           required
         />
       </label>
@@ -93,11 +94,12 @@ export default function RegisterModal({
       <label className="register__label">
         Avatar URL*
         <input
-          type="text"
+          name="avatar"
+          type="url"
           className="register__input"
-          value={avatarUrl}
-          onChange={e => setAvatarUrl(e.target.value)}
           placeholder="Avatar URL"
+          value={avatar}
+          onChange={e => setAvatar(e.target.value)}
           required
         />
       </label>
