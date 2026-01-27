@@ -16,7 +16,13 @@ The backend API for this project (Express + MongoDB) is available here:
 
 [WTWR Backend Repository](https://github.com/FHobbs8030/se_project_express)
 
-Please clone and run the backend before starting the frontend.
+The backend provides:
+- User authentication and authorization
+- Item creation, liking, and deletion
+- Profile editing (name and avatar)
+- JWT-based protected routes
+
+Please clone and run the backend server before starting the frontend.
 
 ---
 
