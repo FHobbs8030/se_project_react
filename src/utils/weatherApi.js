@@ -1,4 +1,4 @@
-const API_KEY = import.meta.env.VITE_WEATHER_API_KEY;
+const API_KEY = import.meta.env.VITE_WEATHER_API_KEY || 'demo';
 
 function toC(fahrenheit) {
   return Math.round((fahrenheit - 32) * (5 / 9));
