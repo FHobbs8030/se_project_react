@@ -39,7 +39,6 @@ export default function App() {
       const me = await Auth.getUser();
       setCurrentUser(me);
     } catch (err) {
-      console.error(err);
       setCurrentUser(null);
     }
   }, []);
@@ -160,7 +159,6 @@ export default function App() {
         try {
           await Auth.logout();
           setCurrentUser(null);
-          setClothingItems([]);
         } catch (err) {
           console.error(err);
         }
