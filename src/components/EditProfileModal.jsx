@@ -21,9 +21,31 @@ export default function EditProfileModal({
     }
   }, [currentUser, isOpen]);
 
+  const normalizeAvatarUrl = url => {
+    const trimmed = url.trim();
+
+    if (/^https:\/\/(www\.)?imgur\.com\/[^/.]+$/.test(trimmed)) {
+      const id = trimmed.split('/').pop();
+      return `https://i.imgur.com/${id}.jpg`;
+    }
+
+    return trimmed;
+  };
+
+  const normalizedAvatar = normalizeAvatarUrl(avatar);
+
+  const isValid =
+    name.trim().length >= 2 &&
+    /^https:\/\/.+\.(jpg|jpeg|png|webp|gif)$/i.test(normalizedAvatar) &&
+    !/localhost/.test(normalizedAvatar);
+
   const handleSubmit = e => {
     e.preventDefault();
-    onUpdateUser({ name, avatar });
+    if (!isValid) return;
+    onUpdateUser({
+      name: name.trim(),
+      avatar: normalizedAvatar,
+    });
   };
 
   return (
@@ -34,7 +56,7 @@ export default function EditProfileModal({
       onClose={onClose}
       onSubmit={handleSubmit}
       submitText="Save changes"
-      isDisabled={isSubmitting}
+      isDisabled={!isValid || isSubmitting}
     >
       <div className="edit-profile">
         <label className="edit-profile__label">
@@ -51,11 +73,10 @@ export default function EditProfileModal({
         </label>
 
         <label className="edit-profile__label">
-          Avatar URL *
+          Avatar *
           <input
             type="url"
             className="edit-profile__input"
-            placeholder="https://example.com/images/avatar.jpg"
             value={avatar}
             onChange={e => setAvatar(e.target.value)}
             required

@@ -14,7 +14,7 @@ export default function AddItemModal({
 
   const isValid =
     name.trim().length >= 2 &&
-    /^https?:\/\/.+/.test(imageUrl.trim()) &&
+    /^\/images\/.+\.(png|jpg|jpeg|webp|svg)$/.test(imageUrl.trim()) &&
     weather;
 
   function handleSubmit(e) {
@@ -54,11 +54,11 @@ export default function AddItemModal({
       <label className="modal__label">
         Image
         <input
-          type="url"
+          type="text"
           className="modal__input"
           value={imageUrl}
           onChange={e => setImageUrl(e.target.value)}
-          placeholder="Image URL"
+          placeholder="/images/clothes/puffy_jacket.png"
           required
         />
       </label>
