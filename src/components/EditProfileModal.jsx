@@ -1,5 +1,5 @@
 import { useContext, useEffect, useState } from 'react';
-import ModalWithForm from './ModalWithForm';
+import ModalWithForm from './ModalWithForm.jsx';
 import { CurrentUserContext } from '../contexts/CurrentUserContext';
 import '../blocks/EditProfileModal.css';
 
@@ -15,65 +15,52 @@ export default function EditProfileModal({
   const [avatar, setAvatar] = useState('');
 
   useEffect(() => {
-    if (isOpen && currentUser) {
+    if (currentUser && isOpen) {
       setName(currentUser.name || '');
       setAvatar(currentUser.avatar || '');
     }
-  }, [isOpen, currentUser]);
+  }, [currentUser, isOpen]);
 
-  const isValidFormat =
-    name.trim().length >= 2 && /^https?:\/\/.+/.test(avatar.trim());
-
-  const isChanged =
-    currentUser &&
-    (name.trim() !== currentUser.name || avatar.trim() !== currentUser.avatar);
-
-  const isValid = isValidFormat && isChanged;
-
-  function handleSubmit(e) {
+  const handleSubmit = e => {
     e.preventDefault();
-    if (!isValid) return;
-
-    onUpdateUser({
-      name: name.trim(),
-      avatar: avatar.trim(),
-    });
-  }
+    onUpdateUser({ name, avatar });
+  };
 
   return (
     <ModalWithForm
+      title="Change profile data"
       name="edit-profile"
       isOpen={isOpen}
       onClose={onClose}
       onSubmit={handleSubmit}
-      title="Change profile data"
       submitText="Save changes"
-      isDisabled={!isValid || isSubmitting}
+      isSubmitting={isSubmitting}
     >
-      <label className="modal__label">
-        Name
-        <input
-          type="text"
-          className="modal__input"
-          value={name}
-          onChange={e => setName(e.target.value)}
-          placeholder="Name"
-          minLength="2"
-          required
-        />
-      </label>
+      <div className="edit-profile">
+        <label className="edit-profile__label">
+          Name *
+          <input
+            type="text"
+            className="edit-profile__input"
+            minLength="2"
+            maxLength="30"
+            required
+            value={name}
+            onChange={e => setName(e.target.value)}
+          />
+        </label>
 
-      <label className="modal__label">
-        Avatar
-        <input
-          type="url"
-          className="modal__input"
-          value={avatar}
-          onChange={e => setAvatar(e.target.value)}
-          placeholder="Avatar URL"
-          required
-        />
-      </label>
+        <label className="edit-profile__label">
+          Avatar *
+          <input
+            type="url"
+            className="edit-profile__input"
+            required
+            value={avatar}
+            onChange={e => setAvatar(e.target.value)}
+          />
+        </label>
+      </div>
     </ModalWithForm>
   );
 }

@@ -27,10 +27,10 @@ export const login = ({ email, password }) =>
     body: { email, password },
   });
 
-export const register = ({ name, email, password, avatar, city }) =>
+export const register = ({ name, email, password, avatar }) =>
   request('/signup', {
     method: 'POST',
-    body: { name, email, password, avatar, city },
+    body: { name, email, password, avatar },
   });
 
 export const logout = () =>

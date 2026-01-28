@@ -1,54 +1,30 @@
 .edit-profile {
   width: 100%;
   max-width: 496px;
-  min-height: 304px;
   display: flex;
   flex-direction: column;
-  gap: 24px;
-  padding: 28px;
+  gap: 20px;
+  padding: 0;
   box-sizing: border-box;
-}
-
-.edit-profile__title {
-  margin: 0 0 24px;
-  font-size: 20px;
-  font-weight: 700;
-  color: #000;
 }
 
 .edit-profile__label {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 4px;
   font-size: 14px;
   font-weight: 700;
+  line-height: 18px;
   color: #000;
 }
 
 .edit-profile__input {
   width: 100%;
-  padding: 8px 0;
+  padding: 4px 0;
   border: none;
   border-bottom: 1px solid #000;
   font-size: 14px;
+  line-height: 18px;
   background: transparent;
   outline: none;
-}
-
-.edit-profile__submit {
-  margin-top: auto;
-  align-self: flex-start;
-  padding: 12px 20px;
-  background: #000;
-  color: #fff;
-  border: none;
-  border-radius: 8px;
-  font-size: 16px;
-  font-weight: 700;
-  cursor: pointer;
-}
-
-.edit-profile__submit:disabled {
-  opacity: 0.4;
-  cursor: not-allowed;
 }

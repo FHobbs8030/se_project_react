@@ -35,22 +35,13 @@ export default function App() {
   const [weather, setWeather] = useState(null);
 
   const loadSession = useCallback(async () => {
-    try {
-      const me = await Auth.getUser();
-      setCurrentUser(me);
-    } catch (err) {
-      setCurrentUser(null);
-    }
+    const me = await Auth.getUser();
+    setCurrentUser(me);
   }, []);
 
   const loadItems = useCallback(async () => {
-    try {
-      const items = await Items.getItems();
-      setClothingItems(Array.isArray(items) ? items : []);
-    } catch (err) {
-      console.error(err);
-      setClothingItems([]);
-    }
+    const items = await Items.getItems();
+    setClothingItems(Array.isArray(items) ? items : []);
   }, []);
 
   useEffect(() => {
@@ -58,8 +49,6 @@ export default function App() {
       try {
         await loadSession();
         await loadItems();
-      } catch (err) {
-        console.error(err);
       } finally {
         setIsCheckingAuth(false);
       }
@@ -74,8 +63,6 @@ export default function App() {
         await loadSession();
         await loadItems();
         setActiveModal(null);
-      } catch (err) {
-        console.error(err);
       } finally {
         setIsSubmitting(false);
       }
@@ -92,8 +79,6 @@ export default function App() {
         await loadSession();
         await loadItems();
         setActiveModal(null);
-      } catch (err) {
-        console.error(err);
       } finally {
         setIsSubmitting(false);
       }
@@ -107,8 +92,6 @@ export default function App() {
       const newItem = await Items.createItem(values);
       setClothingItems(prev => [newItem, ...prev]);
       setActiveModal(null);
-    } catch (err) {
-      console.error(err);
     } finally {
       setIsSubmitting(false);
     }
@@ -120,8 +103,6 @@ export default function App() {
       const updatedUser = await Users.updateProfile(values);
       setCurrentUser(updatedUser);
       setActiveModal(null);
-    } catch (err) {
-      console.error(err);
     } finally {
       setIsSubmitting(false);
     }
@@ -130,17 +111,14 @@ export default function App() {
   const handleCardLike = useCallback(
     async card => {
       if (!currentUser) return;
-      try {
-        const updatedCard = card.isLiked
-          ? await Items.removeItemLike(card._id)
-          : await Items.addItemLike(card._id);
 
-        setClothingItems(prev =>
-          prev.map(item => (item._id === card._id ? updatedCard : item))
-        );
-      } catch (err) {
-        console.error(err);
-      }
+      const updatedCard = card.isLiked
+        ? await Items.removeItemLike(card._id)
+        : await Items.addItemLike(card._id);
+
+      setClothingItems(prev =>
+        prev.map(item => (item._id === card._id ? updatedCard : item))
+      );
     },
     [currentUser]
   );
@@ -149,19 +127,15 @@ export default function App() {
     () => ({
       currentUser,
       clothingItems,
-      onCardClick: setSelectedCard,
+      onCardClick: card => setSelectedCard(card),
       onCardLike: handleCardLike,
       onAddClick: () => setActiveModal('add-item'),
       onEditProfileClick: () => setActiveModal('edit-profile'),
       onLoginClick: () => setActiveModal('login'),
       onRegisterClick: () => setActiveModal('register'),
       onLogoutClick: async () => {
-        try {
-          await Auth.logout();
-          setCurrentUser(null);
-        } catch (err) {
-          console.error(err);
-        }
+        await Auth.logout();
+        setCurrentUser(null);
       },
       weather,
       setWeather,
@@ -222,8 +196,6 @@ export default function App() {
             setClothingItems(prev =>
               prev.filter(item => item._id !== cardToDelete._id)
             );
-          } catch (err) {
-            console.error(err);
           } finally {
             setIsConfirmDeleteOpen(false);
             setCardToDelete(null);

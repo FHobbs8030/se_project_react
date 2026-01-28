@@ -16,6 +16,7 @@
 .modal__content {
   position: relative;
   width: 496px;
+  transform: translateY(-40px);
   padding: 28px;
   background: #ffffff;
   border-radius: 20px;
@@ -97,7 +98,14 @@
   font-weight: 700;
 }
 
-.modal__submit {
+.modal__footer {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 30px;
+}
+
+.modal__footer .modal__submit {
   width: 128px;
   height: 44px;
   background: #000;
@@ -125,11 +133,4 @@
   font-size: 12px;
   line-height: 16px;
   color: red;
-}
-
-.modal__footer {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  margin-top: 30px;
 }
