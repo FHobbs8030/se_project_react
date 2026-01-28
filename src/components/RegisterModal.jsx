@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react';
-import ModalWithForm from './ModalWithForm';
-import '../blocks/RegisterModal.css';
+import ModalWithForm from './ModalWithForm.jsx';
 
 export default function RegisterModal({
   isOpen,
@@ -14,14 +13,8 @@ export default function RegisterModal({
   const [name, setName] = useState('');
   const [avatar, setAvatar] = useState('');
 
-  const isValid =
-    email.trim() !== '' &&
-    password.trim() !== '' &&
-    name.trim() !== '' &&
-    avatar.trim() !== '';
-
   useEffect(() => {
-    if (!isOpen) {
+    if (isOpen) {
       setEmail('');
       setPassword('');
       setName('');
@@ -31,73 +24,65 @@ export default function RegisterModal({
 
   const handleSubmit = e => {
     e.preventDefault();
-    if (!isValid) return;
     onSubmit({ email, password, name, avatar });
   };
 
   return (
     <ModalWithForm
-      name="register"
       title="Sign Up"
-      submitText="Sign Up"
+      name="register"
       isOpen={isOpen}
       onClose={onClose}
       onSubmit={handleSubmit}
-      isDisabled={!isValid || isSubmitting}
+      submitText="Sign Up"
+      isDisabled={isSubmitting}
       footer={
-        <button type="button" className="register__alt" onClick={onAltClick}>
+        <button type="button" className="modal__alt" onClick={onAltClick}>
           or Log In
         </button>
       }
     >
-      <label className="register__label">
-        Email*
+      <label className="modal__label">
+        Email
         <input
-          name="email"
           type="email"
-          className="register__input"
-          autoComplete="email"
-          placeholder="Email"
+          className="modal__input"
           value={email}
           onChange={e => setEmail(e.target.value)}
           required
         />
       </label>
 
-      <label className="register__label">
-        Password*
+      <label className="modal__label">
+        Password
         <input
-          name="password"
           type="password"
-          className="register__input"
-          autoComplete="new-password"
-          placeholder="Password"
+          className="modal__input"
           value={password}
           onChange={e => setPassword(e.target.value)}
           required
         />
       </label>
 
-      <label className="register__label">
-        Name*
+      <label className="modal__label">
+        Name
         <input
-          name="name"
           type="text"
-          className="register__input"
-          placeholder="Name"
+          className="modal__input"
           value={name}
           onChange={e => setName(e.target.value)}
+          minLength="2"
+          maxLength="30"
           required
         />
       </label>
 
-      <label className="register__label">
-        Avatar URL*
+      <label className="modal__label">
+        Avatar URL
         <input
-          name="avatar"
           type="url"
-          className="register__input"
-          placeholder="Avatar URL"
+          className="modal__input"
+          placeholder="https://example.com/images/avatar.jpg"
           value={avatar}
           onChange={e => setAvatar(e.target.value)}
           required
