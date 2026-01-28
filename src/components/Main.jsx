@@ -10,11 +10,10 @@ function filterByWeather(items, tempF) {
   const t = Number(tempF);
 
   return items.filter(it => {
-    const tag = String(it.weather || it.weatherType || '').toLowerCase();
-    if (!tag) return true;
-    if (t <= 40) return tag.includes('cold');
-    if (t >= 75) return tag.includes('hot');
-    return tag.includes('warm') || tag.includes('mild') || tag.includes('cool');
+    const tag = String(it.weather || '').toLowerCase();
+    if (t >= 86) return tag === 'hot';
+    if (t >= 66) return tag === 'warm';
+    return tag === 'cold';
   });
 }
 
