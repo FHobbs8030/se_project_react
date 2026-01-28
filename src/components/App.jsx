@@ -47,7 +47,10 @@ export default function App() {
   useEffect(() => {
     (async () => {
       try {
-        await loadSession();
+        const token = localStorage.getItem('jwt');
+        if (token) {
+          await loadSession();
+        }
         await loadItems();
       } finally {
         setIsCheckingAuth(false);
