@@ -1,28 +1,21 @@
 # WTWR — Frontend (React + Vite)
 
-What to Wear (WTWR) is a weather-aware clothing recommendation application that helps users
-decide what to wear based on real-time weather conditions in their selected location.
+What to Wear (WTWR) is a weather-aware clothing recommendation application that helps users decide what to wear based on real-time weather conditions in their selected location.
 
-This repository contains the frontend implementation built with React and Vite.
-The application integrates with a custom Express + MongoDB backend to support user authentication,
-profile editing, liking and deleting clothing items, and consistent modal-based workflows,
-all presented through a clean, responsive user interface.
+This repository contains the frontend implementation built with React and Vite. The application integrates with a custom Express + MongoDB backend to support user authentication, profile editing, liking and deleting clothing items, and consistent modal-based workflows, all presented through a clean, responsive user interface.
 
 ---
 
-## Backend Repository
+## Live Project
 
-The backend API for this project (Express + MongoDB) is available here:
+Frontend (deployed):  
+[https://YOUR_DEPLOYED_FRONTEND_DOMAIN_HERE](https://YOUR_DEPLOYED_FRONTEND_DOMAIN_HERE)
 
-[WTWR Backend Repository](https://github.com/FHobbs8030/se_project_express)
+Frontend Repository:  
+[https://github.com/FHobbs8030/se_project_react](https://github.com/FHobbs8030/se_project_react)
 
-The backend provides:
-- User authentication and authorization
-- Item creation, liking, and deletion
-- Profile editing (name and avatar)
-- JWT-based protected routes
-
-Please clone and run the backend server before starting the frontend.
+Backend Repository:  
+[https://github.com/FHobbs8030/se_project_express](https://github.com/FHobbs8030/se_project_express)
 
 ---
 
@@ -76,8 +69,6 @@ se_project_react/
 
 Create a `.env` file based on `.env.example`.
 
-Example `.env.example`:
-
 ```text
 VITE_API_BASE_URL=http://localhost:3001
 VITE_WEATHER_API_URL=https://api.openweathermap.org/data/2.5/weather
@@ -120,10 +111,10 @@ http://localhost:5175
 
 ## Available Scripts
 
-- `npm run dev` — Start Vite development server
-- `npm run build` — Build production assets
-- `npm run preview` — Preview production build
-- `npm run lint` — Run ESLint
+- `npm run dev`
+- `npm run build`
+- `npm run preview`
+- `npm run lint`
 
 ---
 
