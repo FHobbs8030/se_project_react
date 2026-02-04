@@ -8,14 +8,24 @@ This repository contains the frontend implementation built with React and Vite. 
 
 ## Live Project
 
-Frontend (deployed):  
-[https://eloquent-sfogliatella-dfc39f.netlify.app](https://eloquent-sfogliatella-dfc39f.netlify.app)
+Frontend (deployed on Google Cloud Compute Engine):  
+[http://34.42.205.0](http://34.42.205.0)
 
 Frontend Repository:  
 [https://github.com/FHobbs8030/se_project_react](https://github.com/FHobbs8030/se_project_react)
 
 Backend Repository:  
 [https://github.com/FHobbs8030/se_project_express](https://github.com/FHobbs8030/se_project_express)
+
+---
+
+## Deployment
+
+The frontend is deployed on a Google Cloud Compute Engine virtual machine and served via nginx.
+
+- Production build generated with `npm run build`
+- Static files served from `/var/www/wtwr`
+- nginx configured for SPA routing using `try_files` to support client-side navigation
 
 ---
 
