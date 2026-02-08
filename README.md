@@ -9,23 +9,27 @@ This repository contains the frontend implementation built with React and Vite. 
 ## Live Project
 
 Frontend (deployed on Google Cloud Compute Engine):  
-[http://34.42.205.0](http://34.42.205.0)
+<http://34.42.205.0>
 
 Frontend Repository:  
-[https://github.com/FHobbs8030/se_project_react](https://github.com/FHobbs8030/se_project_react)
+<https://github.com/FHobbs8030/se_project_react>
 
 Backend Repository:  
-[https://github.com/FHobbs8030/se_project_express](https://github.com/FHobbs8030/se_project_express)
+<https://github.com/FHobbs8030/se_project_express>
+
+Backend API (deployed via Nginx):  
+<http://34.42.205.0/api>
 
 ---
 
 ## Deployment
 
-The frontend is deployed on a Google Cloud Compute Engine virtual machine and served via nginx.
+The frontend is deployed on a Google Cloud Compute Engine virtual machine and served via **Nginx**.
 
 - Production build generated with `npm run build`
 - Static files served from `/var/www/wtwr`
-- nginx configured for SPA routing using `try_files` to support client-side navigation
+- Nginx configured for SPA routing using `try_files`
+- API requests are proxied to the backend via `/api`
 
 ---
 
@@ -80,7 +84,7 @@ se_project_react/
 Create a `.env` file based on `.env.example`.
 
 ```text
-VITE_API_BASE_URL=http://localhost:3001
+VITE_API_BASE_URL=/api
 VITE_WEATHER_API_URL=https://api.openweathermap.org/data/2.5/weather
 VITE_WEATHER_API_KEY=your_openweather_api_key_here
 VITE_DEFAULT_COORDS=40.7128,-74.0060
@@ -89,7 +93,7 @@ VITE_LOCATION_NAME=New York
 
 ---
 
-## Getting Started
+## Getting Started (Local Development)
 
 Install dependencies:
 
@@ -108,6 +112,8 @@ The application will be available at:
 ```text
 http://localhost:5175
 ```
+
+Note: In production, the frontend communicates with the backend via `/api` using an Nginx reverse proxy.
 
 ---
 
