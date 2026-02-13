@@ -62,7 +62,10 @@ export default function App() {
     async values => {
       setIsSubmitting(true);
       try {
-        await Auth.login(values);
+        const data = await Auth.login(values);
+
+        localStorage.setItem('jwt', data.token);
+
         await loadSession();
         await loadItems();
         setActiveModal(null);
@@ -78,7 +81,13 @@ export default function App() {
       setIsSubmitting(true);
       try {
         await Auth.register(values);
-        await Auth.login({ email: values.email, password: values.password });
+        const data = await Auth.login({
+          email: values.email,
+          password: values.password,
+        });
+
+        localStorage.setItem('jwt', data.token);
+
         await loadSession();
         await loadItems();
         setActiveModal(null);

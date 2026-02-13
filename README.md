@@ -8,17 +8,17 @@ This repository contains the frontend implementation built with React and Vite. 
 
 ## Live Project
 
-Frontend (deployed on Google Cloud Compute Engine):  
-<http://34.42.205.0>
+Frontend (Production):  
+<https://fhobbs.twilightparadox.com>
+
+Backend API (Production):  
+<https://api.fhobbs.twilightparadox.com>
 
 Frontend Repository:  
 <https://github.com/FHobbs8030/se_project_react>
 
 Backend Repository:  
 <https://github.com/FHobbs8030/se_project_express>
-
-Backend API (deployed via Nginx):  
-<http://34.42.205.0/api>
 
 ---
 

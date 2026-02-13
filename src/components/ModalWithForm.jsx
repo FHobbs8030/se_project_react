@@ -16,7 +16,7 @@ export default function ModalWithForm({
     <Modal isOpen={isOpen} onClose={onClose}>
       <form
         className={`modal__form modal__form--${name}`}
-        name={name}
+        data-name={name}
         onSubmit={onSubmit}
         noValidate
       >

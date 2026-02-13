@@ -23,6 +23,8 @@ export default function RegisterModal({
     }
   }, [isOpen]);
 
+  const isFormValid = email && password && name && avatar;
+
   const handleSubmit = e => {
     e.preventDefault();
     onSubmit({ email, password, name, avatar });
@@ -31,12 +33,12 @@ export default function RegisterModal({
   return (
     <ModalWithForm
       title="Sign Up"
-      name="register"
+      name="signup"
       isOpen={isOpen}
       onClose={onClose}
       onSubmit={handleSubmit}
       submitText="Sign Up"
-      isDisabled={isSubmitting}
+      isDisabled={isSubmitting || !isFormValid}
       footer={
         <button type="button" className="modal__alt" onClick={onAltClick}>
           or Log In
