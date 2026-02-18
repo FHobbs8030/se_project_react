@@ -1,4 +1,4 @@
-const baseUrl = 'http://localhost:3001';
+const baseUrl = import.meta.env.VITE_API_BASE_URL;
 
 const checkResponse = res => {
   if (res.ok) {

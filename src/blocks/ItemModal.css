@@ -16,7 +16,7 @@
 .item-modal__media {
   width: 100%;
   aspect-ratio: 1 / 1;
-  background: #f3f3f3;
+  background: #fff;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -24,9 +24,8 @@
 
 .item-modal__image {
   width: 100%;
-  height: 100%;
-  object-fit: cover;
-  display: block;
+  max-height: 65vh;
+  object-fit: contain;
 }
 
 .item-modal__info {
@@ -34,13 +33,13 @@
   display: flex;
   flex-direction: column;
   gap: 8px;
+  background: #fff;
 }
 
 .item-modal__top {
   display: flex;
   justify-content: space-between;
-  align-items: flex-start;
-  gap: 12px;
+  align-items: center;
 }
 
 .item-modal__name {
@@ -59,10 +58,10 @@
 .item-modal__delete {
   background: none;
   border: none;
-  padding: 0;
-  font-size: 14px;
   color: #ff4d00;
+  font-weight: 500;
   cursor: pointer;
+  padding: 0;
 }
 
 @media (max-width: 440px) {

@@ -9,14 +9,18 @@ export default function ItemModal({ card, onClose, onRequestDelete }) {
 
   if (!card) return null;
 
-  const currentUserId = currentUser?._id || currentUser?.id || null;
-
-  const cardOwnerId =
+  const currentUserId = String(currentUser?._id || currentUser?.id || '');
+  const cardOwnerId = String(
     typeof card.owner === 'string'
       ? card.owner
-      : card.owner?._id || card.owner?.id || null;
+      : card.owner?._id || card.owner?.id || ''
+  );
 
   const isOwner = currentUserId && cardOwnerId === currentUserId;
+
+  console.log('currentUserId:', currentUserId);
+  console.log('cardOwnerId:', cardOwnerId);
+  console.log('isOwner:', isOwner);
 
   return (
     <Modal isOpen={!!card} onClose={onClose} variant="item">

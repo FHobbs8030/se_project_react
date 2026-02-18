@@ -11,11 +11,9 @@ export default function AddItemModal({
   const [name, setName] = useState('');
   const [imageUrl, setImageUrl] = useState('');
   const [weather, setWeather] = useState('');
-
   const isValid =
-    name.trim().length >= 2 &&
-    /^\/images\/.+\.(png|jpg|jpeg|webp|svg)$/.test(imageUrl.trim()) &&
-    weather;
+    name.trim().length >= 2 && imageUrl.trim().length > 5 && weather !== '';
+
 
   function handleSubmit(e) {
     e.preventDefault();

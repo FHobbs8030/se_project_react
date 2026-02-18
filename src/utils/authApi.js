@@ -3,13 +3,11 @@ const BASE_URL = (
 ).replace(/\/+$/, '');
 
 async function request(path, options = {}) {
-  const token = localStorage.getItem('jwt');
-
   const res = await fetch(`${BASE_URL}${path}`, {
     ...options,
+    credentials: 'include',
     headers: {
       'Content-Type': 'application/json',
-      ...(token && { Authorization: `Bearer ${token}` }),
       ...(options.headers || {}),
     },
     body: options.body ? JSON.stringify(options.body) : undefined,
@@ -20,7 +18,7 @@ async function request(path, options = {}) {
     throw err;
   }
 
-  return res.json();
+  return res.status === 204 ? null : res.json();
 }
 
 export const login = ({ email, password }) =>
