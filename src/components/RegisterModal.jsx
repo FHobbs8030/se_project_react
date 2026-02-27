@@ -50,6 +50,7 @@ export default function RegisterModal({
         <input
           type="email"
           className="modal__input"
+          placeholder="Email"
           value={email}
           onChange={e => setEmail(e.target.value)}
           required
@@ -61,6 +62,7 @@ export default function RegisterModal({
         <input
           type="password"
           className="modal__input"
+          placeholder="Password"
           value={password}
           onChange={e => setPassword(e.target.value)}
           required
@@ -72,6 +74,7 @@ export default function RegisterModal({
         <input
           type="text"
           className="modal__input"
+          placeholder="Name"
           value={name}
           onChange={e => setName(e.target.value)}
           minLength="2"
