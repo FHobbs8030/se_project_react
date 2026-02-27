@@ -39,3 +39,5 @@ desktop.ini
 # --- Backups & archives ---
 backup-*/
 _archive/
+dist/
+dist.tar.gz
