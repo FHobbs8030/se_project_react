@@ -37,14 +37,12 @@
   transform: translateY(-40px);
 }
 
-.modal__content-item {
-  max-width: 520px;
-  width: 90%;
-  max-height: 90vh;
-  display: flex;
-  flex-direction: column;
-  overflow: visible;
-  border-radius: 12px;
+.modal__content--item {
+  width: 498px;
+  max-width: 498px;
+  padding: 0;
+  overflow: hidden;
+  border-radius: 20px;
 }
 
 .modal__close {
@@ -158,4 +156,24 @@
   background: #f3f4f6;
   padding: 2px 4px;
   border-radius: 4px;
+}
+
+@media (max-width: 440px) {
+  .modal__overlay {
+    padding: 12px;
+    align-items: flex-start;
+    overflow-y: auto;
+  }
+
+  .modal__content--item {
+    width: 100%;
+    max-width: 100%;
+    margin: 16px auto;
+    border-radius: 16px;
+  }
+
+  .modal__close {
+    top: 12px;
+    right: 12px;
+  }
 }
