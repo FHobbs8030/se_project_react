@@ -186,16 +186,4 @@
     width: 100%;
     max-width: 280px;
   }
-
-}
-
-.item-modal {
-  max-width: 90vw;
-}
-
-.item-modal__image {
-  width: 100%;
-  height: auto;
-  max-width: 100%;
-  object-fit: contain;
 }
