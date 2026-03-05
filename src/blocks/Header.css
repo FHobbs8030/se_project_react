@@ -124,6 +124,10 @@
   background: #f3f4f6;
 }
 
+/* ===============================
+   HEADER RESPONSIVE
+================================ */
+
 @media (max-width: 900px) {
   .header__inner {
     justify-content: center;
@@ -183,4 +187,15 @@
     max-width: 280px;
   }
 
+}
+
+.item-modal {
+  max-width: 90vw;
+}
+
+.item-modal__image {
+  width: 100%;
+  height: auto;
+  max-width: 100%;
+  object-fit: contain;
 }
