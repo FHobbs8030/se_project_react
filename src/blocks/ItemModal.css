@@ -61,10 +61,12 @@
 
 @media (max-width: 440px) {
   .item-modal {
-    width: 100%;
+    width: min(420px, 92vw);
     max-width: 100%;
     max-height: 90vh;
   }
+
+  
 
   .item-modal__info {
     padding: 16px;
@@ -72,6 +74,7 @@
 }
 
 @media (max-width: 360px) {
+
   .item-modal {
     max-height: 90vh;
   }
@@ -79,15 +82,17 @@
   .item-modal__media {
     height: 200px;
     flex-shrink: 0;
+    overflow: hidden;
   }
 
-  .item-modal__image {
+  .item-modal_image {
     width: 100%;
     height: 100%;
-    object-fit: cover;
+    object-fit: contain;
   }
 
   .item-modal__info {
     overflow-y: auto;
   }
+
 }
