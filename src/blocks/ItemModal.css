@@ -59,6 +59,26 @@
   padding: 0;
 }
 
+@media (max-width: 520px) {
+  .item-modal {
+    width: min(420px, 92vw);  /* Adjust the modal width */
+    max-width: 100%;
+    max-height: 90vh;
+    margin-top: 0;  /* Ensuring the modal stays centered */
+  }
+
+  .item-modal__image {
+    width: 100%;
+    height: auto;
+    object-fit: contain;
+  }
+
+  .item-modal__info {
+    padding: 16px;
+    overflow-y: auto;
+  }
+}
+
 @media (max-width: 440px) {
   .item-modal {
     width: min(420px, 92vw);
@@ -66,10 +86,15 @@
     max-height: 90vh;
   }
 
-  
+  .item-modal__image {
+    width: 100%;
+    height: auto;
+    object-fit: contain;
+  }
 
   .item-modal__info {
     padding: 16px;
+    overflow-y: auto;
   }
 }
 

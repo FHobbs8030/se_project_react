@@ -10,7 +10,7 @@
   background: rgba(0, 0, 0, 0.4);
   display: flex;
   justify-content: center;
-  align-items: center;
+  align-items: flex-start; 
   z-index: 9999;
 }
 
@@ -158,11 +158,26 @@
   border-radius: 4px;
 }
 
+@media (min-width: 769px) {
+  .modal__overlay {
+    padding: 12px;
+    align-items: flex-start;
+    overflow-y: auto;
+  }
+}
+
 @media (max-width: 440px) {
   .modal__overlay {
     padding: 12px;
     align-items: flex-start;
     overflow-y: auto;
+  }
+
+   .modal__content {
+    max-width: 90vw;
+    width: min(420px, 92vw);
+    padding: 16px;
+    overflow: hidden;
   }
 
   .modal__content--item {
