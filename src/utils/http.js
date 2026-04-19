@@ -1,6 +1,6 @@
 import { getToken } from "./token.js";
 
-const API_BASE = import.meta.env.VITE_API_BASE_URL || "http://localhost:3001";
+const API_BASE = import.meta.env.VITE_API_BASE_URL.replace(/\/+$/, "");
 
 export async function api(path, { method = "GET", headers = {}, body } = {}) {
   const token = getToken();
@@ -13,7 +13,10 @@ export async function api(path, { method = "GET", headers = {}, body } = {}) {
       ...headers,
     },
   };
-  if (body !== undefined) opts.body = JSON.stringify(body);
+
+  if (body !== undefined) {
+    opts.body = JSON.stringify(body);
+  }
 
   const res = await fetch(`${API_BASE}${path}`, opts);
 
@@ -34,10 +37,9 @@ export async function api(path, { method = "GET", headers = {}, body } = {}) {
   return data;
 }
 
-// Verb helpers (compatible with your clothingApi usage)
-api.get  = (path, opts = {}) => api(path, { ...opts, method: "GET" });
+api.get = (path, opts = {}) => api(path, { ...opts, method: "GET" });
 api.post = (path, body, opts = {}) => api(path, { ...opts, method: "POST", body });
-api.put  = (path, body, opts = {}) => api(path, { ...opts, method: "PUT", body });
-api.del  = (path, opts = {}) => api(path, { ...opts, method: "DELETE" });
+api.put = (path, body, opts = {}) => api(path, { ...opts, method: "PUT", body });
+api.del = (path, opts = {}) => api(path, { ...opts, method: "DELETE" });
 
 export const http = api;
