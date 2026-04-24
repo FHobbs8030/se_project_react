@@ -1,14 +1,15 @@
-import { getToken } from "./token.js";
+import { getToken } from './token.js';
 
-const API_BASE = import.meta.env.VITE_API_BASE_URL.replace(/\/+$/, "");
+const API_BASE = import.meta.env.VITE_API_BASE_URL.replace(/\/+$/, '');
 
-export async function api(path, { method = "GET", headers = {}, body } = {}) {
+export async function api(path, { method = 'GET', headers = {}, body } = {}) {
   const token = getToken();
 
   const opts = {
     method,
+    credentials: 'include',
     headers: {
-      "Content-Type": "application/json",
+      'Content-Type': 'application/json',
       ...(token ? { Authorization: `Bearer ${token}` } : {}),
       ...headers,
     },
@@ -28,7 +29,7 @@ export async function api(path, { method = "GET", headers = {}, body } = {}) {
   }
 
   if (!res.ok) {
-    const msg = (data && data.message) || res.statusText || "Request failed";
+    const msg = (data && data.message) || res.statusText || 'Request failed';
     const err = new Error(msg);
     err.status = res.status;
     throw err;
@@ -37,9 +38,11 @@ export async function api(path, { method = "GET", headers = {}, body } = {}) {
   return data;
 }
 
-api.get = (path, opts = {}) => api(path, { ...opts, method: "GET" });
-api.post = (path, body, opts = {}) => api(path, { ...opts, method: "POST", body });
-api.put = (path, body, opts = {}) => api(path, { ...opts, method: "PUT", body });
-api.del = (path, opts = {}) => api(path, { ...opts, method: "DELETE" });
+api.get = (path, opts = {}) => api(path, { ...opts, method: 'GET' });
+api.post = (path, body, opts = {}) =>
+  api(path, { ...opts, method: 'POST', body });
+api.put = (path, body, opts = {}) =>
+  api(path, { ...opts, method: 'PUT', body });
+api.del = (path, opts = {}) => api(path, { ...opts, method: 'DELETE' });
 
 export const http = api;
