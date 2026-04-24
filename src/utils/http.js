@@ -1,25 +1,21 @@
-import { getToken } from './token.js';
-
 const API_BASE = import.meta.env.VITE_API_BASE_URL.replace(/\/+$/, '');
 
-export async function api(path, { method = 'GET', headers = {}, body } = {}) {
+export const getToken = () => localStorage.getItem('jwt');
+export const setToken = t => localStorage.setItem('jwt', t);
+export const removeToken = () => localStorage.removeItem('jwt');
+
+async function request(path, { method = 'GET', headers = {}, body } = {}) {
   const token = getToken();
 
-  const opts = {
+  const res = await fetch(`${API_BASE}${path}`, {
     method,
-    credentials: 'include',
     headers: {
       'Content-Type': 'application/json',
       ...(token ? { Authorization: `Bearer ${token}` } : {}),
       ...headers,
     },
-  };
-
-  if (body !== undefined) {
-    opts.body = JSON.stringify(body);
-  }
-
-  const res = await fetch(`${API_BASE}${path}`, opts);
+    body: body ? JSON.stringify(body) : undefined,
+  });
 
   let data = null;
   try {
@@ -38,11 +34,33 @@ export async function api(path, { method = 'GET', headers = {}, body } = {}) {
   return data;
 }
 
-api.get = (path, opts = {}) => api(path, { ...opts, method: 'GET' });
-api.post = (path, body, opts = {}) =>
-  api(path, { ...opts, method: 'POST', body });
-api.put = (path, body, opts = {}) =>
-  api(path, { ...opts, method: 'PUT', body });
-api.del = (path, opts = {}) => api(path, { ...opts, method: 'DELETE' });
+// AUTH
+export const login = ({ email, password }) =>
+  request('/signin', {
+    method: 'POST',
+    body: { email, password },
+  });
 
-export const http = api;
+export const register = ({ name, email, password, avatar }) =>
+  request('/signup', {
+    method: 'POST',
+    body: { name, email, password, avatar },
+  });
+
+export const logout = () =>
+  request('/signout', {
+    method: 'POST',
+  });
+
+// USER
+export const getUser = () => request('/users/me');
+
+// GENERIC METHODS (optional)
+export const api = {
+  get: (path, opts = {}) => request(path, { ...opts, method: 'GET' }),
+  post: (path, body, opts = {}) =>
+    request(path, { ...opts, method: 'POST', body }),
+  put: (path, body, opts = {}) =>
+    request(path, { ...opts, method: 'PUT', body }),
+  del: (path, opts = {}) => request(path, { ...opts, method: 'DELETE' }),
+};
