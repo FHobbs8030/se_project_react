@@ -1,12 +1,9 @@
-import { request } from './http.js';
+import { api } from './http.js';
 
 export const getUser = () => {
-  return request('/users/me');
+  return api.get('/users/me');
 };
 
 export const updateProfile = ({ name, avatar }) => {
-  return request('/users/me', {
-    method: 'PATCH',
-    body: { name, avatar },
-  });
+  return api.put('/users/me', { name, avatar });
 };

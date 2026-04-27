@@ -1,30 +1,21 @@
-import { request } from './http.js';
+import { api } from './http.js';
 
 export const getItems = () => {
-  return request('/items');
+  return api.get('/items');
 };
 
 export const createItem = data => {
-  return request('/items', {
-    method: 'POST',
-    body: data,
-  });
+  return api.post('/items', data);
 };
 
 export const deleteItem = itemId => {
-  return request(`/items/${itemId}`, {
-    method: 'DELETE',
-  });
+  return api.del(`/items/${itemId}`);
 };
 
 export const addItemLike = itemId => {
-  return request(`/items/${itemId}/likes`, {
-    method: 'PUT',
-  });
+  return api.put(`/items/${itemId}/likes`);
 };
 
 export const removeItemLike = itemId => {
-  return request(`/items/${itemId}/likes`, {
-    method: 'DELETE',
-  });
+  return api.del(`/items/${itemId}/likes`);
 };

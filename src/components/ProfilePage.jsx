@@ -2,8 +2,6 @@ import { useOutletContext } from 'react-router-dom';
 import ClothesSection from './ClothesSection.jsx';
 import SideBar from './SideBar.jsx';
 
-const BASE_URL = import.meta.env.VITE_API_BASE_URL.replace(/\/+$/, '');
-
 export default function ProfilePage() {
   const {
     currentUser,
@@ -16,11 +14,10 @@ export default function ProfilePage() {
 
   const userId = currentUser?._id || currentUser?.id;
 
-  const avatarSrc = currentUser?.avatar?.startsWith('http')
-    ? currentUser.avatar
-    : currentUser?.avatarUrl?.startsWith('http')
-    ? currentUser.avatarUrl
-    : `${BASE_URL}/users/avatar.png`;
+ const avatarSrc =
+  currentUser?.avatar ||
+  currentUser?.avatarUrl ||
+  '/images/avatar.png';
 
   const ownItems = clothingItems.filter((item) => {
     const ownerId =

@@ -35,8 +35,13 @@ export default function App() {
   const [weather, setWeather] = useState(null);
 
   const loadSession = useCallback(async () => {
-    const me = await Auth.getUser();
-    setCurrentUser(me);
+    try {
+      const me = await Auth.getUser();
+      setCurrentUser(me);
+    } catch (err) {
+      console.log('Auth check failed:', err);
+      setCurrentUser(null);
+    }
   }, []);
 
   const loadItems = useCallback(async () => {
@@ -50,8 +55,8 @@ export default function App() {
         const token = localStorage.getItem('jwt');
         if (token) {
           await loadSession();
+          await loadItems();
         }
-        await loadItems();
       } finally {
         setIsCheckingAuth(false);
       }
@@ -64,11 +69,18 @@ export default function App() {
       try {
         const data = await Auth.login(values);
 
+        console.log('TOKEN SAVED:', data.token);
+
         localStorage.setItem('jwt', data.token);
+
+        console.log('TOKEN IN STORAGE:', localStorage.getItem('jwt'));
 
         await loadSession();
         await loadItems();
+
         setActiveModal(null);
+      } catch (err) {
+        console.error('LOGIN ERROR:', err);
       } finally {
         setIsSubmitting(false);
       }
@@ -81,16 +93,24 @@ export default function App() {
       setIsSubmitting(true);
       try {
         await Auth.register(values);
+
         const data = await Auth.login({
           email: values.email,
           password: values.password,
         });
 
+        console.log('TOKEN SAVED:', data.token);
+
         localStorage.setItem('jwt', data.token);
+
+        console.log('TOKEN IN STORAGE:', localStorage.getItem('jwt'));
 
         await loadSession();
         await loadItems();
+
         setActiveModal(null);
+      } catch (err) {
+        console.error('REGISTER ERROR:', err);
       } finally {
         setIsSubmitting(false);
       }
@@ -147,6 +167,7 @@ export default function App() {
       onRegisterClick: () => setActiveModal('register'),
       onLogoutClick: async () => {
         await Auth.logout();
+        localStorage.removeItem('jwt');
         setCurrentUser(null);
       },
       weather,
