@@ -9,10 +9,10 @@ This repository contains the frontend implementation built with React and Vite. 
 ## Live Project
 
 Frontend (Production):  
-<https://fhobbs.twilightparadox.com>
+<https://se-project-react-kappa.vercel.app>
 
 Backend API (Production):  
-<https://api.fhobbs.twilightparadox.com>
+<https://se-project-express-1-gasc.onrender.com>
 
 Frontend Repository:  
 <https://github.com/FHobbs8030/se_project_react>
@@ -24,12 +24,23 @@ Backend Repository:
 
 ## Deployment
 
-The frontend is deployed on a Google Cloud Compute Engine virtual machine and served via **Nginx**.
+The WTWR frontend is deployed on Vercel and connected to a Render-hosted Express backend with MongoDB Atlas as the database layer.
 
-- Production build generated with `npm run build`
-- Static files served from `/var/www/wtwr`
-- Nginx configured for SPA routing using `try_files`
-- API requests are proxied to the backend via `/api`
+### Frontend Deployment
+
+- Hosted on Vercel
+- Automatic deployments from GitHub
+- Production builds generated with `npm run build`
+
+### Backend Deployment
+
+- Hosted on Render
+- Express.js REST API
+- Connected to MongoDB Atlas
+
+### Database
+
+- MongoDB Atlas cloud database
 
 ---
 
@@ -84,7 +95,7 @@ se_project_react/
 Create a `.env` file based on `.env.example`.
 
 ```text
-VITE_API_BASE_URL=/api
+VITE_API_BASE_URL=https://se-project-express-1-gasc.onrender.com
 VITE_WEATHER_API_URL=https://api.openweathermap.org/data/2.5/weather
 VITE_WEATHER_API_KEY=your_openweather_api_key_here
 VITE_DEFAULT_COORDS=40.7128,-74.0060
@@ -113,7 +124,7 @@ The application will be available at:
 http://localhost:5175
 ```
 
-Note: In production, the frontend communicates with the backend via `/api` using an Nginx reverse proxy.
+Note: In production, the frontend communicates directly with the Render-hosted backend API using the `VITE_API_BASE_URL` environment variable.
 
 ---
 
