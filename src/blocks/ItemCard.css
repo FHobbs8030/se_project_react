@@ -66,6 +66,7 @@
   font-weight: 700;
   white-space: nowrap;
   line-height: 1.2;
+  min-width: max-content;
 }
 
 .card__like {
