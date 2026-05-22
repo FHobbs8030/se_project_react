@@ -5,5 +5,5 @@ export const getUser = () => {
 };
 
 export const updateProfile = ({ name, avatar }) => {
-  return api.put('/users/me', { name, avatar });
+  return api.patch('/users/me', { name, avatar });
 };

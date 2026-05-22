@@ -1,11 +1,20 @@
-import { api } from './http.js';
+import { request } from './http.js';
 
-export const login = ({ email, password }) =>
-  api.post('/signin', { email, password });
+export const register = data =>
+  request('/signup', {
+    method: 'POST',
+    body: data,
+  });
 
-export const register = ({ name, email, password, avatar }) =>
-  api.post('/signup', { name, email, password, avatar });
+export const login = data =>
+  request('/signin', {
+    method: 'POST',
+    body: data,
+  });
 
-export const logout = () => api.post('/signout');
+export const getUser = () => request('/users/me');
 
-export const getUser = () => api.get('/users/me');
+export const logout = () =>
+  request('/signout', {
+    method: 'POST',
+  });

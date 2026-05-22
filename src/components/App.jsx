@@ -38,59 +38,44 @@ export default function App() {
     try {
       const me = await Auth.getUser();
       setCurrentUser(me);
-    } catch (err) {
-      console.log('Auth check failed:', err);
+    } catch {
       setCurrentUser(null);
     }
   }, []);
 
   const loadItems = useCallback(async () => {
-    const items = await Items.getItems();
-    setClothingItems(Array.isArray(items) ? items : []);
+    try {
+      const items = await Items.getItems();
+      setClothingItems(Array.isArray(items) ? items : []);
+    } catch (err) {
+      console.error('LOAD ITEMS ERROR:', err);
+    }
   }, []);
 
   useEffect(() => {
-    (async () => {
+    const init = async () => {
       try {
+        await loadItems();
+
         const token = localStorage.getItem('jwt');
+
         if (token) {
           await loadSession();
-          await loadItems();
         }
+      } catch (err) {
+        console.error('App init error:', err);
       } finally {
         setIsCheckingAuth(false);
       }
-    })();
-  }, [loadSession, loadItems]);
+    };
 
-  const handleLoginSubmit = useCallback(
-    async values => {
-      setIsSubmitting(true);
-      try {
-        const data = await Auth.login(values);
-
-        console.log('TOKEN SAVED:', data.token);
-
-        localStorage.setItem('jwt', data.token);
-
-        console.log('TOKEN IN STORAGE:', localStorage.getItem('jwt'));
-
-        await loadSession();
-        await loadItems();
-
-        setActiveModal(null);
-      } catch (err) {
-        console.error('LOGIN ERROR:', err);
-      } finally {
-        setIsSubmitting(false);
-      }
-    },
-    [loadSession, loadItems]
-  );
+    init();
+  }, [loadItems, loadSession]);
 
   const handleRegisterSubmit = useCallback(
     async values => {
       setIsSubmitting(true);
+
       try {
         await Auth.register(values);
 
@@ -99,14 +84,9 @@ export default function App() {
           password: values.password,
         });
 
-        console.log('TOKEN SAVED:', data.token);
-
         localStorage.setItem('jwt', data.token);
 
-        console.log('TOKEN IN STORAGE:', localStorage.getItem('jwt'));
-
         await loadSession();
-        await loadItems();
 
         setActiveModal(null);
       } catch (err) {
@@ -115,14 +95,17 @@ export default function App() {
         setIsSubmitting(false);
       }
     },
-    [loadSession, loadItems]
+    [loadSession]
   );
 
   const handleAddItemSubmit = useCallback(async values => {
     setIsSubmitting(true);
+
     try {
       const newItem = await Items.createItem(values);
+
       setClothingItems(prev => [newItem, ...prev]);
+
       setActiveModal(null);
     } finally {
       setIsSubmitting(false);
@@ -131,9 +114,12 @@ export default function App() {
 
   const handleEditProfileSubmit = useCallback(async values => {
     setIsSubmitting(true);
+
     try {
       const updatedUser = await Users.updateProfile(values);
+
       setCurrentUser(updatedUser);
+
       setActiveModal(null);
     } finally {
       setIsSubmitting(false);
@@ -155,6 +141,35 @@ export default function App() {
     [currentUser]
   );
 
+  const handleLoginSubmit = useCallback(
+    async values => {
+      setIsSubmitting(true);
+
+      try {
+        const data = await Auth.login(values);
+
+        console.log('LOGIN RESPONSE:', data);
+
+        if (!data || !data.token) {
+          console.error('LOGIN FAILED RESPONSE:', data);
+
+          throw new Error('Login failed: no token returned');
+        }
+
+        localStorage.setItem('jwt', data.token);
+
+        await loadSession();
+
+        setActiveModal(null);
+      } catch (err) {
+        console.error('LOGIN ERROR:', err);
+      } finally {
+        setIsSubmitting(false);
+      }
+    },
+    [loadSession]
+  );
+
   const outletContext = useMemo(
     () => ({
       currentUser,
@@ -167,7 +182,9 @@ export default function App() {
       onRegisterClick: () => setActiveModal('register'),
       onLogoutClick: async () => {
         await Auth.logout();
+
         localStorage.removeItem('jwt');
+
         setCurrentUser(null);
       },
       weather,
@@ -191,6 +208,7 @@ export default function App() {
       <Routes>
         <Route path="/" element={<Layout outletContext={outletContext} />}>
           <Route index element={<Main />} />
+
           <Route
             path="profile"
             element={
@@ -200,6 +218,7 @@ export default function App() {
             }
           />
         </Route>
+
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
 
@@ -224,8 +243,10 @@ export default function App() {
         }}
         onConfirm={async () => {
           if (!cardToDelete) return;
+
           try {
             await Items.deleteItem(cardToDelete._id);
+
             setClothingItems(prev =>
               prev.filter(item => item._id !== cardToDelete._id)
             );
