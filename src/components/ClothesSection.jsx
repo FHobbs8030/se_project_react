@@ -60,6 +60,8 @@ export default function ClothesSection({
             item={hydrated}
             onCardClick={_onCardClick}
             onCardLike={_onCardLike}
+            onDelete={outlet.handleDeleteClick}
+            canDelete={hydrated.canDelete}
             isLiked={isLiked}
             likePending={_likePending}
           />

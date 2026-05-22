@@ -3,7 +3,13 @@ import PropTypes from 'prop-types';
 import { CurrentUserContext } from '../contexts/CurrentUserContext';
 import '../blocks/ItemCard.css';
 
-export default function ItemCard({ item, onCardClick, onCardLike }) {
+export default function ItemCard({
+  item,
+  onCardClick,
+  onCardLike,
+  onDelete,
+  canDelete,
+}) {
   const currentUser = useContext(CurrentUserContext);
 
   const isLiked = currentUser && item.likes.some(id => id === currentUser._id);
@@ -19,6 +25,7 @@ export default function ItemCard({ item, onCardClick, onCardLike }) {
         onClick={() => onCardClick(item)}
       >
         <div className="card__surface" />
+
         <div className="card__image-wrap">
           <img className="card__image" src={item.imageUrl} alt={item.name} />
         </div>
@@ -37,6 +44,17 @@ export default function ItemCard({ item, onCardClick, onCardLike }) {
             }}
           />
         )}
+
+        {canDelete && (
+          <button
+            className="card__delete"
+            type="button"
+            onClick={e => {
+              e.stopPropagation();
+              onDelete(item);
+            }}
+          />
+        )}
       </div>
     </li>
   );
@@ -46,4 +64,6 @@ ItemCard.propTypes = {
   item: PropTypes.object.isRequired,
   onCardClick: PropTypes.func.isRequired,
   onCardLike: PropTypes.func.isRequired,
+  onDelete: PropTypes.func,
+  canDelete: PropTypes.bool,
 };
