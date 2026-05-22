@@ -58,10 +58,7 @@ export default function Main() {
     };
   }, []);
 
-  const visibleClothing = useMemo(
-    () => filterByWeather(clothingItems || [], weather.f),
-    [clothingItems, weather.f]
-  );
+  const visibleClothing = clothingItems || [];
 
   const handleCardClick = useCallback(
     card => {
