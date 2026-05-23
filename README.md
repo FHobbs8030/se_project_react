@@ -1,4 +1,12 @@
-# WTWR — Frontend (React + Vite)
+# 🌦️ WTWR — Frontend (React + Vite)
+
+![React](https://img.shields.io/badge/React-18-61DAFB?style=for-the-badge&logo=react&logoColor=black)
+![Vite](https://img.shields.io/badge/Vite-Frontend-646CFF?style=for-the-badge&logo=vite&logoColor=white)
+![JavaScript](https://img.shields.io/badge/JavaScript-ES6+-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black)
+![MongoDB](https://img.shields.io/badge/MongoDB-Atlas-47A248?style=for-the-badge&logo=mongodb&logoColor=white)
+![Express](https://img.shields.io/badge/Express.js-Backend-000000?style=for-the-badge&logo=express&logoColor=white)
+![Vercel](https://img.shields.io/badge/Vercel-Deployed-000000?style=for-the-badge&logo=vercel&logoColor=white)
+![Render](https://img.shields.io/badge/Render-API-46E3B7?style=for-the-badge&logo=render&logoColor=black)
 
 What to Wear (WTWR) is a weather-aware clothing recommendation application that helps users decide what to wear based on real-time weather conditions in their selected location.
 
@@ -6,58 +14,76 @@ This repository contains the frontend implementation built with React and Vite. 
 
 ---
 
-## Live Project
+## 🚀 Live Project
 
-Frontend (Production):  
+## 🌐 Frontend (Production)
+
 <https://se-project-react-kappa.vercel.app>
 
-Backend API (Production):  
+## ⚙️ Backend API (Production)
+
 <https://se-project-express-1-gasc.onrender.com>
 
-Frontend Repository:  
+## 💻 Frontend Repository
+
 <https://github.com/FHobbs8030/se_project_react>
 
-Backend Repository:  
+## 🛠️ Backend Repository
+
 <https://github.com/FHobbs8030/se_project_express>
 
 ---
 
-## Deployment
+## ☁️ Deployment
 
 The WTWR frontend is deployed on Vercel and connected to a Render-hosted Express backend with MongoDB Atlas as the database layer.
 
-### Frontend Deployment
+## ▲ Frontend Deployment
+
+![Vercel](https://img.shields.io/badge/Vercel-Live-black?style=flat-square&logo=vercel)
 
 - Hosted on Vercel
 - Automatic deployments from GitHub
 - Production builds generated with `npm run build`
 
-### Backend Deployment
+## ⚡ Backend Deployment
+
+![Render](https://img.shields.io/badge/Render-Express_API-46E3B7?style=flat-square&logo=render&logoColor=black)
 
 - Hosted on Render
 - Express.js REST API
 - Connected to MongoDB Atlas
 
-### Database
+## 🍃 Database
+
+![MongoDB Atlas](https://img.shields.io/badge/MongoDB-Atlas-47A248?style=flat-square&logo=mongodb&logoColor=white)
 
 - MongoDB Atlas cloud database
 
 ---
 
-## Features
+## ✨ Features
 
-- Real-time weather data (OpenWeatherMap)
-- Temperature-based clothing recommendations
-- Like and unlike clothing items
-- Delete items (owner-only, with confirmation modal)
-- User authentication (signup, login, logout)
-- Edit profile data (name and avatar)
-- Accessible modal system
-- Clean, responsive UI
+| Feature | Status |
+| --- | --- |
+| 🌦️ Real-time weather data (OpenWeatherMap) | ![Complete](https://img.shields.io/badge/Complete-success?style=flat-square) |
+| 👕 Temperature-based clothing recommendations | ![Complete](https://img.shields.io/badge/Complete-success?style=flat-square) |
+| ❤️ Like and unlike clothing items | ![Complete](https://img.shields.io/badge/Complete-success?style=flat-square) |
+| 🗑️ Delete items (owner-only with confirmation modal) | ![Complete](https://img.shields.io/badge/Complete-success?style=flat-square) |
+| 🔐 User authentication (signup, login, logout) | ![Complete](https://img.shields.io/badge/Complete-success?style=flat-square) |
+| 👤 Edit profile data (name and avatar) | ![Complete](https://img.shields.io/badge/Complete-success?style=flat-square) |
+| 🪟 Accessible modal system | ![Complete](https://img.shields.io/badge/Complete-success?style=flat-square) |
+| 📱 Clean, responsive UI | ![Complete](https://img.shields.io/badge/Complete-success?style=flat-square) |
 
 ---
 
-## Tech Stack
+## 🧰 Tech Stack
+
+![React](https://img.shields.io/badge/React-18-61DAFB?style=flat-square&logo=react&logoColor=black)
+![Vite](https://img.shields.io/badge/Vite-646CFF?style=flat-square&logo=vite&logoColor=white)
+![React Router](https://img.shields.io/badge/React_Router-DOM-CA4245?style=flat-square&logo=reactrouter&logoColor=white)
+![CSS](https://img.shields.io/badge/CSS-BEM_Methodology-1572B6?style=flat-square&logo=css3&logoColor=white)
+![Normalize.css](https://img.shields.io/badge/normalize.css-Used-222222?style=flat-square)
 
 - React 18
 - Vite
@@ -67,7 +93,7 @@ The WTWR frontend is deployed on Vercel and connected to a Render-hosted Express
 
 ---
 
-## Project Structure
+## 📁 Project Structure
 
 ```text
 se_project_react/
@@ -90,7 +116,7 @@ se_project_react/
 
 ---
 
-## Environment Variables
+## 🔑 Environment Variables
 
 Create a `.env` file based on `.env.example`.
 
@@ -104,30 +130,32 @@ VITE_LOCATION_NAME=New York
 
 ---
 
-## Getting Started (Local Development)
+## 🖥️ Getting Started (Local Development)
 
-Install dependencies:
+## 📦 Install Dependencies
 
 ```bash
 npm install
 ```
 
-Run the development server:
+## ▶️ Run the Development Server
 
 ```bash
 npm run dev
 ```
 
-The application will be available at:
+## 🌍 Local URL
 
 ```text
 http://localhost:5175
 ```
 
-Note: In production, the frontend communicates directly with the Render-hosted backend API using the `VITE_API_BASE_URL` environment variable.
+> ⚠️ Note: In production, the frontend communicates directly with the Render-hosted backend API using the `VITE_API_BASE_URL` environment variable.
 
 ---
 
-## License
+## 📜 License
+
+![MIT License](https://img.shields.io/badge/License-MIT-yellow?style=for-the-badge)
 
 MIT
